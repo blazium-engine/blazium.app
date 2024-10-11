@@ -1,0 +1,59 @@
+name: Golang Build & HTTP Validation
+
+
+
+on:
+  push:
+    branches: [ 'master', 'main', 'prod', 'production' ]
+  pull_request:
+    branches: [ 'master', 'main', 'prod', 'production' ]
+  workflow_dispatch:
+  
+concurrency:
+  group: ci-${{ github.actor }}-${{ github.head_ref || github.run_number }}-${{ github.ref }}-runner
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Docker build
+      - name: Build the Docker image
+        run: |
+          docker build -t my-go-app .
+
+      # Run the container in detached mode
+      - name: Run the Docker container
+        run: |
+          docker run -d -p 8080:8080 --name go-app my-go-app
+          
+      # Wait for the server to start
+      - name: Wait for the server to start
+        run: sleep 10
+
+      # Test the /api/mirrorlist endpoint
+      - name: Test /api/mirrorlist/{version}/json endpoint
+        run: |
+          curl --fail http://localhost:8080/api/mirrorlist/v1/json | jq .
+        shell: bash
+
+      # Test that accessing / returns 200
+      - name: Test accessing /
+        run: |
+          http_status=$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:8080)
+          if [ "$http_status" != "200" ]; then
+            echo "Expected HTTP 200, but got $http_status"
+            exit 1
+          fi
+        shell: bash
+
+      # Cleanup
+      - name: Stop and remove the Docker container
+        run: |
+          docker stop go-app
+          docker rm go-app
