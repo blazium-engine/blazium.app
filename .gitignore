@@ -1,1 +1,4 @@
 TestResults-*
+.env
+*.env
+*.env.*
