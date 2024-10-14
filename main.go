@@ -156,7 +156,7 @@ func embedMiddleware(next http.Handler) http.Handler {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta property="og:title" content="Blazium Engine">
                     <meta property="og:description" content="Blazium Engine forked from Godot.">
-                    <meta property="og:image" content="https://blazium.app/static/assets/logo.png">
+                    <meta property="og:image" content="https://blazium.app/static/assets/logo.svg">
                     <meta property="og:url" content="https://blazium.app">
                     <meta property="og:type" content="website">
                     <meta name="twitter:card" content="summary_large_image">
