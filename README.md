@@ -1,4 +1,4 @@
-This is how it is ment to be, fuck you Redot <3 GG
+This is how it is meant to be, fuck you Redot <3 GG
 
 Made by Randolph William Aarseth II
 
