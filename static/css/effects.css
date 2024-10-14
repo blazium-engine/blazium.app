@@ -4,7 +4,9 @@ html, body, .wrap {
 
 body {
   background: black;
-  background-image: radial-gradient(circle at center, #8858ff 0%, #4800FF 5%, #11003a 60%);
+  /*background-image: url("https://i.pinimg.com/originals/eb/f9/28/ebf92832fd0e8ef1744ddd9de4afc820.png");*/
+  background-image: radial-gradient(circle at center, #4c21b880 0%, #3301b385 5%, #11003a85 65%);
+  opacity: 80,0;
   overflow: hidden;
 }
 
