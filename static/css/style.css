@@ -53,11 +53,6 @@ body {
   background: black;
 }
 
-#particles {
-  height: 100vh;
-  width: 100vw;
-  position: relative;
-}
 
 #intro {
   position: absolute;
