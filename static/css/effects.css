@@ -4,7 +4,7 @@ html, body, .wrap {
 
 body {
   background: black;
-  background-image: radial-gradient(circle at center, #cdbaff 0%, #4800FF 5%, black 75%);
+  background-image: radial-gradient(circle at center, #8858ff 0%, #4800FF 5%, #11003a 60%);
   overflow: hidden;
 }
 
