@@ -17,7 +17,7 @@ function fetchReleaseInfo() {
       const releaseMessage = document.getElementById('release-message');
       
       if (data.mirrors.length === 0) {
-        releaseMessage.innerHTML = 'Release is pending, visit our <a href="https://discord.gg/sZaf9KYzDp" style="color: #E83951;">Discord</a> for more information.';
+        releaseMessage.innerHTML = 'Release is pending, visit our <a href="https://chat.blazium.app" style="color: #E83951;">Discord</a> for more information.';
       } else {
         const mirrors = data.mirrors.map(mirror => `
           <li>
