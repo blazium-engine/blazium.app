@@ -1,5 +1,3 @@
-This is how it is meant to be, fuck you Redot <3 GG
+# Blazium Engine Website
 
-Made by Randolph William Aarseth II
-
-Hyper-reality happened..
+nothing right now.....
