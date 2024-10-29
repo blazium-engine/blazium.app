@@ -15,6 +15,7 @@ jobs:
         with:
           node-version: "20"
       # Pick your own package manager and build script
+      - run : cd blazium
       - run: npm install
       - run: npx nuxt build --preset github_pages
       - name: Upload artifact
