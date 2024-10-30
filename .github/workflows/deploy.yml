@@ -55,7 +55,7 @@ jobs:
           path: |
             blazium/dist
             blazium/.nuxt
-          key: ${{ runner.os }}-nuxt-build-${{ hashFiles('blazium/dist') }}
+          key: ${{ runner.os }}-nuxt-build-${{ hashFiles('blazium/package-lock.json', 'blazium/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-nuxt-build-
 
