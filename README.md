@@ -1,5 +1,7 @@
-This is how it is meant to be, fuck you Redot <3 GG
+https://blazium.app/
+
+This is how it was always meant to be, fuck you Redot <3
 
 Made by Randolph William Aarseth II
 
-Hyper-reality happened..
+Hyper-reality happened...
