@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   <!-- Fetch Release Info -->
-  <script type="text/javascript" src="static/js/background.js"></script>
+  <script type="text/javascript" src="static/js/fetch_info.js"></script>
 
 </head>
 
@@ -246,27 +246,25 @@
   </div>
 
   <!-- Logo Image -->
-  <div id="logo">
+  <div id="logo" class="unselectable">
     <img src="static/assets/logo_white_outline.svg" alt="Blazium Engine Logo">
   </div>
 
   <!-- Intro Section -->
   <div id="intro">
-    <h2 style="font-family: 'Syncopate', sans-serif; font-weight: bolder;">Blazium Engine</h2>
-    <hr>
-    <a title="Discord / Community" href="https://chat.blazium.app"><i class="fab fa-discord" style="font-size: 2em;"></i></a>
-    &nbsp
-    <a title="Source Code" href="https://github.com/blazium-engine/blazium"><i class="fab fa-github" style="font-size: 2em;"></i></a>
-    &nbsp
-    <a title="Twitter / X" href="https://x.com/BlaziumEngine"><i class="fab fa-x-twitter" style="font-size: 2em;"></i></a>
-    &nbsp
-    <a title="Documentation" href="https://docs.blazium.app"><i class="fa-solid fa-book" style="font-size: 2em;"></i></a>
+    <h1>Blazium Engine</h1>
+    <span class="unselectable">
+      <a title="Discord / Community" href="https://chat.blazium.app"><i class="fab fa-discord"></i></a>
+      <a title="Source Code" href="https://github.com/blazium-engine/blazium"><i class="fab fa-github"></i></a>
+      <a title="Twitter / X" href="https://x.com/BlaziumEngine"><i class="fab fa-x-twitter"></i></a>
+      <a title="Documentation" href="https://docs.blazium.app"><i class="fa-solid fa-book"></i></a>
+    </span>
   </div>
 
   <!-- Release Information Box -->
   <div id="release-info">
-    <h3 style="font-family: 'Syncopate', sans-serif; text-align: center;">Blazium Engine Release Info</h3>
-    <p id="release-message" style="text-align: center;">Loading release information...</p>
+    <h2>Blazium Engine Release Info</h2>
+    <p id="release-message">Loading release information...</p>
   </div>
 </div>
 
