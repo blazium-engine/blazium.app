@@ -22,7 +22,7 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  background-image: url("https://github.com/blazium-engine/blazium-assets/blob/main/Blazium%20Engine%20-%20Brand%20Kit/Logo/SVG/Blazium%20Logo.svg?raw=true");
+  background-image: url("/static/assets/logo.svg");
   background-size: cover;
 }
 
