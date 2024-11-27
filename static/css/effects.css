@@ -3,7 +3,7 @@ html, body, .wrap {
 }
 
 body {
-  background: black;
+  background: #11003a;
   /*background-image: url("https://i.pinimg.com/originals/eb/f9/28/ebf92832fd0e8ef1744ddd9de4afc820.png"), radial-gradient(circle at center, #4c21b8da 0%, #3301b3e0 5%, #11003a 65%);*/
   background-image: radial-gradient(circle at center, #4c21b8da 0%, #3301b3e0 5%, #11003a 65%);
   overflow: hidden;
