@@ -15,8 +15,28 @@ import (
 // MirrorListResponse represents the structure of the JSON response for the mirrorlist API.
 type MirrorListResponse struct {
 	Version string   `json:"version"`
-	Mirrors []string `json:"mirrors"`
+	Timestamp string   `json:"timestamp"`
+	Mirrors []MirrorEntry `json:"mirrors"`
 }
+type MirrorEntry struct {
+	Name string `json:"name"`
+	Url string `json:"url"`
+	Checksum  Checksum `json:"checksum"`
+}
+
+type Release struct {
+	Name         string `json:"name"`
+	ReleaseDate  string `json:"release_date"`
+	ReleaseNotes string `json:"release_notes"`
+}
+
+type Version struct {
+	Name     string    `json:"name"`
+	Releases []Release `json:"releases"`
+}
+
+type Versions []Version
+
 
 // LoadMirrors reads the mirrors from a JSON file and returns them as a slice of strings.
 func LoadMirrors() ([]string, error) {
@@ -71,8 +91,15 @@ func main() {
 	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
 	r.PathPrefix("/static/").Handler(staticFileHandler)
 
-	// API endpoint for /api/mirrorlist/:version/json
-	r.HandleFunc("/api/mirrorlist/{version}/json", MirrorListHandler).Methods("GET")
+	// API endpoint for /api/mirrorlist/{version}.json
+	// Format: 0.1.0.nightly.mono
+	// Note: .mono is only on the mono-build of the Game Engine
+	// URL: https://cdn.blazium.app/nightly/0.2.4/details.json
+	r.HandleFunc("/api/mirrorlist/{version}.json", MirrorListHandler).Methods("GET")
+
+	// Format: versions-nightly.json
+	// Note: only for nightly,prerelease,release
+	r.HandleFunc("/api/versions-{type}.json", VersionsHandler).Methods("GET")
 
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)
@@ -82,41 +109,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", corsHandler))
 }
 
-// MirrorListHandler handles the /api/mirrorlist/:version/json endpoint
-func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	version := vars["version"]
-
-	// Load mirrors from the JSON file
-	mirrors, err := LoadMirrors()
-	if err != nil {
-		log.Printf("Error loading mirrors: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	// Create the response
-	response := MirrorListResponse{
-		Version: version,
-		Mirrors: mirrors,
-	}
-
-	// Convert the response to JSON
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		log.Printf("Error generating JSON response: %v", err)
-		http.Error(w, "Error generating JSON", http.StatusInternalServerError)
-		return
-	}
-
-	// Set content-type to application/json and write the response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(jsonResponse)
-	if err != nil {
-		log.Printf("Error writing JSON response: %v", err)
-	}
-}
 
 func enableCORS(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -174,4 +166,42 @@ func embedMiddleware(next http.Handler) http.Handler {
         // If the User-Agent is not from Discord, pass the request to the next handler
         next.ServeHTTP(w, r)
     })
+}
+
+// VersionsHandler handles the /api/versions.json endpoint
+func VersionsHandler(w http.ResponseWriter, r *http.Request) {
+	// Load versions from the JSON file
+	versions, err := LoadVersions()
+	if err != nil {
+		log.Printf("Error loading versions: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Set content-type to application/json and write the response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(versions)
+}
+
+func LoadVersions() (Versions, error) {
+	// Construct the file path for versions.json
+	filePath := filepath.Join("data", "versions.json")
+
+	// Read the JSON file
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		log.Printf("Error reading versions file %s: %v", filePath, err)
+		return nil, fmt.Errorf("failed to read versions file: %v", err)
+	}
+
+	// Parse the JSON file into the Versions struct
+	var versions Versions
+	err = json.Unmarshal(data, &versions)
+	if err != nil {
+		log.Printf("Error parsing versions JSON file: %v", err)
+		return nil, fmt.Errorf("failed to parse versions JSON: %v", err)
+	}
+
+	return versions, nil
 }
