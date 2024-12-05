@@ -1,0 +1,32 @@
+{{/* Meta Tags Template */}}
+
+{{define "meta_tags"}}
+    {{- $title := "Blazium Engine - A community-driven, powerful, and flexible game engine."}}
+    {{- $description := "Develop your 2D & 3D games, cross-platform projects, and XR experiences—all in one place."}}
+    {{- $domain := "https://blazium.app"}}
+    {{- $embed_img := (printf "%s/static/assets/embed_img.webp" $domain)}}
+
+    {{- /* Website title */}}
+    <title>{{$title}}</title>
+
+    {{- /* SEO Meta Tags */}}
+    <meta name="author" content="Blazium Team">
+    <meta name="description" content={{$description}}>
+    <meta name="keywords" content="Blazium, Game Engine, Game Development, Blazium Engine, Blazium App, Community-driven">
+
+    {{- /* Open Graph Meta Tags (for Google, Facebook, LinkedIn) */}}
+    <meta property="og:title" content={{$title}}>
+    <meta property="og:description" content={{$description}}>
+    <meta property="og:url" content={{$domain}}>
+    <meta property="og:image" content={{$embed_img}}>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content={{$title}}>
+
+    {{- /* Twitter Meta Tags */}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={{$title}}>
+    <meta name="twitter:site" content="@BlaziumEngine">
+    <meta name="twitter:description" content={{$description}}>
+    <meta name="twitter:image" content={{$embed_img}}>
+    <meta name="twitter:url" content={{$domain}}>
+{{end}}

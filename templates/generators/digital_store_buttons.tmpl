@@ -1,0 +1,11 @@
+{{define "digital-store-buttons"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "digital-store-buttons"{{"}}"}}
+{{- range .}}
+  <a class="primary-btn brand-btn" href={{.Link}}>
+    <img src="/static/assets/brands/{{.Image}}" alt="{{.Name}} Logo">
+    {{.Name}}
+  </a>
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{- end}}

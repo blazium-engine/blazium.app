@@ -1,0 +1,12 @@
+{{/* Template for the 404 not found page */}}
+
+{{define "not_found"}}
+  {{template "main-head" .}}
+  {{template "content-404" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-404"}}
+  <h1>Page not found</h1>
+  <p id="not-found">If there is a problem with the website, <a href={{template "link-website-git"}}>open an issue on GitHub</a>.</p>
+{{end}}

@@ -1,0 +1,12 @@
+{{/* Template for the digital store tab */}}
+
+{{define "digital-store"}}
+  {{template "download" (dict "DownloadTab" "digital-store")}}
+{{end}}
+
+{{define "download-content-digital-store"}}
+  <p>Digital store versions do not include .NET/C# support.</p>
+  <section id="digital-stores">
+    {{template "digital-store-buttons"}}
+  </section>
+{{end}}

@@ -1,0 +1,23 @@
+{{/* Template for the package manager tab */}}
+
+{{define "package-manager"}}
+{{template "download" (dict "DownloadTab" "package-manager")}}
+{{end}}
+
+{{define "download-content-package-manager"}}
+<section id="release-selection">
+  <div>
+    Install Blazium
+    {{template "dropdown" (dict "Name" "version")}}
+    {{template "dropdown" (dict "Name" "branch")}}
+    on
+    {{template "dropdown" (dict "Name" "os")}}
+    <br>
+    {{template "dropdown" (dict "Name" "csharp")}}
+    C# support using
+    {{template "dropdown" (dict "Name" "pkgmngr")}}.
+  </div>
+  <pre id="download-cmd" class="lang-none command-line" data-prompt="$"><code></code></pre>
+  <a class="secondary-btn"><i class="fa-solid fa-arrow-right"></i> Read the blog post for this version</a>
+</section>
+{{end}}

@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Steam",
+        "link": "https://store.steampowered.com/app/3293450",
+        "image": "Steam.svg"
+    },
+    {
+        "name": "Epic Games Store",
+        "link": "epic_link",
+        "image": "Epic_Games.svg"
+    },
+    {
+        "name": "Itch.io",
+        "link": "https://blaziumengine.itch.io/blazium-engine",
+        "image": "Itch_io.svg"
+    },
+    {
+        "name": "Google Play",
+        "link": "google_link",
+        "image": "Google_Play.svg"
+    },
+    {
+        "name": "App Store",
+        "link": "apple_link",
+        "image": "Apple.svg"
+    },
+    {
+        "name": "Meta Store",
+        "link": "meta_link",
+        "image": "Meta.svg"
+    },
+    {
+        "name": "Microsoft Store",
+        "link": "microsoft_link",
+        "image": "Microsoft_Store.svg"
+    }
+]
