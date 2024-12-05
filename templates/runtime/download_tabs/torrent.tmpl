@@ -1,0 +1,24 @@
+{{/* Template for the torrent tab */}}
+
+{{define "torrent"}}
+{{template "download" (dict "DownloadTab" "torrent")}}
+{{end}}
+
+{{define "download-content-torrent"}}
+<section id="release-selection">
+  <div>
+    I want the
+    {{template "dropdown" (dict "Name" "version")}}
+    {{template "dropdown" (dict "Name" "branch")}}
+    release of Blazium for
+    {{template "dropdown" (dict "Name" "os")}}
+    <br>
+    running
+    {{template "dropdown" (dict "Name" "arch")}}
+    {{template "dropdown" (dict "Name" "csharp")}}
+    C# support.
+  </div>
+  <a id="download-btn" class="primary-btn"><i class="fa-solid fa-download"></i> Get Blazium <span></span> Torrent</a>
+  <a class="secondary-btn"><i class="fa-solid fa-arrow-right"></i> Read the blog post for this version</a>
+</section>
+{{end}}

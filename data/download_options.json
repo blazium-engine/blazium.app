@@ -1,0 +1,38 @@
+{
+    "options": {
+        "version": [
+            "0.3.7",
+            "0.2.4",
+            "0.2.0",
+            "0.1.0"
+        ],
+        "branch": [
+            "stable",
+            "nigthly"
+        ],
+        "os": [
+            "Windows",
+            "Linux",
+            "Mac OS",
+            "Android"
+        ],
+        "arch": [
+            "x86_64",
+            "x86_32",
+            "ARM64",
+            "ARM32"
+        ],
+        "pkgmngr": [
+            "Pacman",
+            "Chocolatey"
+        ],
+        "csharp": [
+            "without",
+            "with"
+        ]
+    },
+    "commands": {
+        "Pacman": "sudo pacman -S blazium-{version}",
+        "Chocolatey": "choco install blazium-{version}"
+    }
+}

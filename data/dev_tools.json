@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Package Manager",
+        "description": "Blazium's Package Manager simplifies managing Engine modules and addons by enabling easy discovery, download, and integration. It ensures compatibility, handles dependencies, and extends Blazium's capabilities efficiently.",
+        "link": "pkgmng_link",
+        "image": "code.webp"
+    },
+    {
+        "name": "Blazium Services",
+        "description": "Blazium's Package Manager simplifies managing Engine modules and addons by enabling easy discovery, download, and integration. It ensures compatibility, handles dependencies, and extends Blazium's capabilities efficiently.",
+        "link": "tool_link",
+        "image": "code.webp"
+    },
+    {
+        "name": "Other tool",
+        "description": "Descrition for the other tools",
+        "link": "tool_link",
+        "image": "code.webp"
+    }
+]

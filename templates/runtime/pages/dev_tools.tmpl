@@ -1,0 +1,18 @@
+{{/* Template for the dev tools page */}}
+
+{{define "dev_tools"}}
+  {{template "main-head" .}}
+  {{template "content-devtools" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-devtools"}}
+  <section class="head-section">
+    <h1>Blazium developer tools</h1>
+    <p>Utilities, services, and tools created by Blazium's team to support developers on their journey.
+    </p>
+  </section>
+  <section id="devtools" class="card-grid-container">
+    {{template "dev-tools-cards"}}
+  </section>
+{{end}}

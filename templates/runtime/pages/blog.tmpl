@@ -1,0 +1,62 @@
+{{/* Template for the blog page */}}
+
+{{define "blog"}}
+  {{template "main-head" .}}
+  {{template "content-blog" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-blog"}}
+  <section id="blog-head" class="flex-between-center head-section">
+    <h1>Blazium blog</h1>
+    <a class="secondary-btn"><i class="fa-solid fa-square-rss"></i> RSS feed</a>
+  </section>
+  <section class="flex-between-center">
+    <input type="search" id="blog-search" placeholder="Search articles" class="secondary-btn">
+    <fieldset class="filters">
+      <label>
+        <input type="radio" name="blog-category" value="all" checked>
+        All
+      </label>
+      <label>
+        <input type="radio" name="blog-category" value="news">
+        News
+      </label>
+      <label>
+        <input type="radio" name="blog-category" value="release">
+        Release
+      </label>
+      <label>
+        <input type="radio" name="blog-category" value="pre-release">
+        Pre-Release
+      </label>
+      <label>
+        <input type="radio" name="blog-category" value="events">
+        Events
+      </label>
+      <label>
+        <input type="radio" name="blog-category" value="devlog">
+        Devlog
+      </label>
+    </fieldset>
+  </section>
+  <section id="blogs" class="card-grid-container">
+    {{range (seq 9)}}
+      <div class="card" hx-get="/blog/article" hx-target="body" hx-push-url="true">
+        <img src="/static/assets/embed_img.webp">
+        <section>
+          <p><i class="fa-solid fa-user"></i> John Smith - 1 January 1970</p>
+          <h4>Long Long Long Long Long Long Long Long Long Long Long</h4>
+        </section>
+      </div>
+      <div class="card" hx-get="/blog/article" hx-target="body" hx-push-url="true">
+        <img src="/static/assets/embed_img.webp">
+        <section>
+          <p><i class="fa-solid fa-user"></i> John Smith - 1 January 1970</p>
+          <h4>0.1.0 Nigthly Released</h4>
+        </section>
+      </div>
+    {{end}}
+  </section>
+  {{template "page-selector" (dict "Page" 1 "Max" 8 "Url" "/blog")}}
+{{end}}

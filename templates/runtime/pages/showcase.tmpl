@@ -1,0 +1,96 @@
+{{/* Template for the showcase page */}}
+
+{{define "showcase"}}
+  {{template "main-head" .}}
+  {{template "content-show" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-show"}}
+  <section>
+    <h1>Made with Blazium</h1>
+  </section>
+  <section id="showcase-page">
+    <div>
+      <fieldset id="software-type">
+        <label>
+          <input type="radio" name="showcase-tab" value="games" checked>
+          Games
+        </label>
+        <label>
+          <input type="radio" name="showcase-tab" value="apps">
+          Apps & Tools
+        </label>
+        <label>
+          <input type="radio" name="showcase-tab" value="soon">
+          Coming Soon
+        </label>
+      </fieldset>
+      <section class="card-grid-container">
+        {{range (seq 11)}}
+          <div class="card">
+            <img src="/static/assets/blazia.webp" alt="">
+            <section>
+              <div>
+                <h4>Blazia adventures: robots invasion</h4>
+                <p>John Smith</p>
+              </div>
+              <span>
+                <i title="Windows" class="fa-brands fa-windows"></i>
+                <i title="Linux" class="fa-brands fa-linux"></i>
+                <i title="Mac OS" class="fa-brands fa-apple"></i>
+                <i title="Web" class="fa-brands fa-html5"></i>
+                <i title="PlayStation" class="fa-brands fa-playstation"></i>
+              </span>
+            </section>
+          </div>
+        {{end}}
+      </section>
+    </div>
+    <aside>
+      <h3>Filter by:</h3>
+      <fieldset class="filters">
+        <label>
+          <input type="checkbox" value="windows">
+          <i class="fa-brands fa-windows"></i> Windows
+        </label>
+        <label>
+          <input type="checkbox" value="linux">
+          <i class="fa-brands fa-linux"></i> Linux
+        </label>
+        <label>
+          <input type="checkbox" value="macos">
+          <i class="fa-brands fa-apple"></i> Mac OS
+        </label>
+        <label>
+          <input type="checkbox" value="ios">
+          <i class="fa-brands fa-apple"></i> IOS
+        </label>
+        <label>
+          <input type="checkbox" value="android">
+          <i class="fa-brands fa-android"></i> Android
+        </label>
+        <label>
+          <input type="checkbox" value="web">
+          <i class="fa-brands fa-html5"></i> Web
+        </label>
+        <label>
+          <input type="checkbox" value="playstation">
+          <i class="fa-brands fa-playstation"></i> PlayStation
+        </label>
+        <label>
+          <input type="checkbox" value="xbox">
+          <i class="fa-brands fa-xbox"></i> XBox
+        </label>
+        <label>
+          <input type="checkbox" value="nintendo-switch">
+          <i class="fa-solid fa-gamepad"></i> Nintendo Switch
+        </label>
+        <label>
+          <input type="checkbox" value="nintedo-3ds">
+          <i class="fa-solid fa-gamepad"></i> Nintendo 3Ds
+        </label>
+      </fieldset>
+    </aside>
+  </section>
+{{end}}

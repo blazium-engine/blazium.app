@@ -1,0 +1,43 @@
+{{/* Template for the showcase page */}}
+
+{{define "blog_article"}}
+  {{template "main-head" .}}
+  {{template "content-blog-article" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-blog-article"}}
+  <section id="blog-intro">
+    <img src="/static/assets/embed_img.webp">
+    <section>
+      <h1>Blazium 1.0 released!</h1>
+      <p><i class="fa-solid fa-user"></i> John Smith - 1 January 1970</p>
+    </section>
+  </section>
+  <section id="blog-article">
+    <p>My really cool snippet of code is a test.<br>Lorem ipsum dolor sit amet consectetur adipisicing
+      elit.
+      Laborum molestiae <a href="">perferendis</a> quasi laboriosam illo impedit nostrum ipsa voluptatem quas tenetur, neque iure omnis
+      itaque quidem modi explicabo nulla laudantium. <a href="">Deserunt</a>.
+    </p>
+    <h2>I'm movin' different</h2>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing
+      elit.
+      Laborum molestiae <a href="">perferendis</a> quasi laboriosam illo impedit nostrum ipsa voluptatem quas tenetur, neque iure omnis
+      itaque quidem modi explicabo nulla laudantium. <a href="">Deserunt</a>.
+    </p>
+    <h3>This blog aint nothing to me man</h3>
+    <img src="/static/assets/features/code.webp" alt="">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing
+      elit.
+      Laborum molestiae <a href="">perferendis</a> quasi laboriosam illo impedit nostrum ipsa voluptatem quas tenetur, neque iure omnis
+      itaque quidem modi explicabo nulla laudantium. <a href="">Deserunt</a>.
+    </p>
+    <h3>This blog aint nothing to me man</h3>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing
+      elit.
+      Laborum molestiae <a href="">perferendis</a> quasi laboriosam illo impedit nostrum ipsa voluptatem quas tenetur, neque iure omnis
+      itaque quidem modi explicabo nulla laudantium. <a href="">Deserunt</a>.
+    </p>
+  </section>
+{{end}}

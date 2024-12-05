@@ -1,0 +1,62 @@
+{{/* Template for the dropdown menus */}}
+
+{{define "dropdown"}}
+  {{$name := .Name}}
+  <div class="dropdown" id={{$name}}>
+    <button class="dropdown-button" type="menu" aria-haspopup="true">
+      <span class="text"></span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      {{/* <li class="selected" value=>Text</li> */}}
+    </ul>
+  </div>
+{{end}}
+
+
+{{/* Template for the download page */}}
+
+{{define "download"}}
+  {{template "main-head" .}}
+  {{template "content-download" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-download"}}
+  <h1>Download Blazium the way you want.</h1>
+  <section id="download">
+    <section id="release-info">
+      <i class="fa-solid fa-exclamation"></i>
+      Release is pending, visit our <a href="https://chat.blazium.app">Discord</a> for more information.
+    </section>
+    <span id="download-type">
+      <a {{if eq .DownloadTab "prebuilt-binaries" }}class="select" {{end}} href="/download/prebuilt-binaries">
+        Prebuilt Binaries</a>
+      <a {{if eq .DownloadTab "digital-store" }}class="select" {{end}} href="/download/digital-store">
+        Digital Store</a>
+      <a {{if eq .DownloadTab "package-manager" }}class="select" {{end}} href="/download/package-manager">
+        Package Manager</a>
+      <a {{if eq .DownloadTab "torrent" }}class="select" {{end}} href="/download/torrent">
+        Torrent</a>
+    </span>
+    <section id="download-options">
+      {{if eq .DownloadTab "prebuilt-binaries"}}
+      {{template "download-content-prebuilt-binaries" .}}
+      {{else if eq .DownloadTab "digital-store"}}
+      {{template "download-content-digital-store" .}}
+      {{else if eq .DownloadTab "package-manager"}}
+      {{template "download-content-package-manager" .}}
+      {{else if eq .DownloadTab "torrent"}}
+      {{template "download-content-torrent" .}}
+      {{end}}
+    </section>
+    <section id="export-templates">
+      <h3>Export templates</h3>
+      <p>Used to export your games to all supported platforms.</p>
+      <div>
+        <a class="secondary-btn" href=""><i class="fa-solid fa-download"></i> Download templates</a>
+        <a class="secondary-btn" href=""><i class="fa-solid fa-download"></i> Download templates - .NET</a>
+      </div>
+    </section>
+  </section>
+{{end}}

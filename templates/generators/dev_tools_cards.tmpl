@@ -1,0 +1,16 @@
+{{define "dev-tools-cards"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "dev-tools-cards"{{"}}"}}
+{{- range .}}
+  <div class="card">
+    <img src="/static/assets/dev_tools/{{.Image}}" alt="{{.Name}} image">
+    <section>
+      <h3>{{.Name}}</h3>
+      <p>{{.Description}}</p>
+      <a class="secondary-btn" href={{.Link}} target="_blank">
+        <i class="fa-solid fa-arrow-right"></i> See on GitHub</a>
+    </section>
+  </div>
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{- end}}

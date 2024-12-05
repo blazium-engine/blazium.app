@@ -1,0 +1,28 @@
+{{/* Template for the page selector */}}
+
+{{define "page-selector"}}
+  {{$page := .Page}}
+  {{$max := .Max}}
+  {{$url := .Url}}
+
+  <section id="page-selector" class="no-select">
+  {{if ne $page 1}}
+    <a class="secondary-btn" href="{{$url}}/{{sub $page 1}}"><i class="fa-solid fa-angle-left"></i></a>
+  {{end}}
+
+  {{range $value := (seq 8)}}
+    {{$back := (sub $page 2)}}
+    {{$front := (add $page 2)}}
+
+    {{if (or (and (eq $value $back) (ne $back 1)) (and (eq $value $front) (ne $front $max)))}}
+      <i class="fa-solid fa-ellipsis"></i>
+    {{else if (or (eq $value 1) (and (gt $value $back) (lt $value $front)) (eq $value $max))}}
+      <a class="secondary-btn{{if eq $value $page}} selected{{end}}" href="{{$url}}/{{$value}}">{{$value}}</a>
+    {{end}}
+  {{end}}
+
+  {{if ne $page $max}}
+    <a class="secondary-btn" href="{{$url}}/{{add $page 1}}"><i class="fa-solid fa-angle-right"></i></a>
+  {{end}}
+  </section>
+{{end}}
