@@ -22,6 +22,7 @@ type MirrorEntry struct {
 	Name string `json:"name"`
 	Url string `json:"url"`
 	Checksum  Checksum `json:"checksum"`
+	Filesize string `json:"filesize"`
 }
 
 type Release struct {

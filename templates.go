@@ -16,6 +16,7 @@ type FileDetails struct {
 type FileInfo struct {
 	Name      string     `json:"name"`
 	Filename  string     `json:"filename"`
+	Filesize string 	`json:"filesize"`
 	Checksum  Checksum   `json:"checksum"`
 	URL       string     `json:"url"`
 	Timestamp string     `json:"timestamp"`
@@ -98,6 +99,7 @@ func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
 		Name:     fileInfo.Name,
 		Url:      fileInfo.URL,
 		Checksum: fileInfo.Checksum,
+		Filesize: fileInfo.Filesize,
 	}
 	mirrorList.Mirrors = append(mirrorList.Mirrors, baseOrMonoEntry)
 
@@ -108,6 +110,7 @@ func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
 				Name:     mirror.Name,
 				Url:      mirror.URL,
 				Checksum: mirror.Checksum,
+				Filesize: mirror.Filesize,
 			}
 			mirrorList.Mirrors = append(mirrorList.Mirrors, mirrorEntry)
 		}
