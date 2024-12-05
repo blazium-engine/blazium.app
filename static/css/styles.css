@@ -912,16 +912,22 @@ footer {
 
 /* Download section */
 #release-info {
-  display: none;
-  font: var(--h4);
+  /* display: none; */
+  pointer-events: all;
+  font: var(--h3);
   background-color: rgb(80, 18, 32);
   border: 2px solid rgb(163, 21, 28);
   border-radius: 4px;
   padding: var(--margin-xs);
-  justify-self: flex-start;
+  a {
+    font: inherit;
+    color: var(--accent-color);
+    text-decoration: underline;
+  }
 }
 
 #download {
+  pointer-events: none;
   padding-top: var(--margin-xxl);
   max-width: 1000px;
   margin-inline: auto;

@@ -24,11 +24,11 @@
 
 {{define "content-download"}}
   <h1>Download Blazium the way you want.</h1>
-  <section id="release-info">
-    <i class="fa-solid fa-exclamation"></i>
-    Release is pending, visit our <a href="https://chat.blazium.app">Discord</a> for more information.
-  </section>
   <section id="download">
+    <section id="release-info">
+      <i class="fa-solid fa-exclamation"></i>
+      Release is pending, visit our <a href="https://chat.blazium.app">Discord</a> for more information.
+    </section>
     <span id="download-type">
       <a {{if eq .DownloadTab "prebuilt-binaries" }}class="select" {{end}} href="/download/prebuilt-binaries">
         Prebuilt Binaries</a>
