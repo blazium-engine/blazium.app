@@ -28,6 +28,7 @@ COPY --from=builder /app/server .
 # Copy the static and data folders into the container
 COPY ./static ./static
 COPY ./data ./data
+COPY ./templates ./templates
 
 # Expose the port that the app will run on
 EXPOSE 8080
