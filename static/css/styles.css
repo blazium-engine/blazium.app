@@ -158,6 +158,12 @@ header {
   }
 }
 
+iframe {
+  height: 50vh;
+  border-radius: 8px;
+  margin-top: var(--margin-s);
+}
+
 #hamburger-nav {
   position: fixed;
   top: 0;
@@ -224,7 +230,9 @@ header.sticky {
 
 footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin-top: 12em;
   padding: 4em 0;
   background-color: var(--primary-color);
@@ -232,6 +240,7 @@ footer {
   nav {
     width: var(--page-width);
     max-width: 90%;
+    margin-bottom: var(--margin-xxl);
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24ch, auto));
@@ -240,15 +249,19 @@ footer {
     ul {
       display: flex;
       flex-direction: column;
-    }
 
-    a i {
-      min-width: 3ch;
-    }
+      li {
+        all: unset;
+      }
 
-    i:before {
-      display: flex;
-      justify-content: center;
+      a i {
+        min-width: 3ch;
+      }
+
+      i:before {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }
@@ -510,6 +523,9 @@ footer {
     font: var(--p-big);
     margin-top: var(--margin-l);
   }
+  h2 {
+    margin-top: var(--margin-l);
+  }
 }
 
 #above-fold {
@@ -535,7 +551,7 @@ footer {
 
     img,
     video {
-      max-height: 48em;
+      max-height: 42em;
       max-width: 75vw;
       margin-left: auto;
       display: block;
@@ -1026,5 +1042,11 @@ footer {
   a {
     color: var(--accent-color);
     text-decoration: underline;
+  }
+}
+
+#roadmaps {
+  .card img {
+    aspect-ratio: 3/2;
   }
 }

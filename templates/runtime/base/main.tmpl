@@ -87,7 +87,7 @@
         <a title="Blazium GitHub" href={{template "link-blazium-git"}}><i
             class="fab fa-github"></i></a>
       </span>
-      <button class="ham-menu-btn" ontouchstart="showHamMenu()"><i class="fa-solid fa-bars"></i></button>
+      <button class="ham-menu-btn" ontouchstart="showHamMenu()" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
     </nav>
     {{/* mobile phones menu */}}
     <nav id="hamburger-nav">
@@ -96,7 +96,7 @@
           <img class="no-drag no-select" src="/static/assets/logo.svg" alt="Blazium Logo">
           <h1>Blazium</h1>
         </a>
-        <button class="ham-menu-btn" ontouchstart="hideHamMenu()"><i class="fa-solid fa-x"></i></button>
+        <button class="ham-menu-btn" ontouchstart="hideHamMenu()" aria-label="Close menu"><i class="fa-solid fa-x"></i></button>
       </div>
       <a title="Download Blazium" href="/download"><i class="fa-solid fa-download"></i>Download</a>
       <!-- <a title="Made with Blazium" href="/showcase"><i class="fa-solid fa-star"></i>Showcase</a> -->
@@ -122,31 +122,58 @@
   <footer class="no-drag">
     <nav>
       <ul>
-        <a title="Home" class="logo" href="/">
-          <img class="no-drag no-select" src="/static/assets/logo.svg" alt="Blazium Logo">
-          <h1>Blazium</h1>
-        </a>
-        <a title="Website source code" href={{template "link-website-git" }}>
-          Website source code
-        </a>
+        <li>
+          <a title="Home" class="logo" href="/">
+            <img class="no-drag no-select" src="/static/assets/logo.svg" alt="Blazium Logo">
+            <h1>Blazium</h1>
+          </a>
+        </li>
+        <li>
+          <a title="Website source code" href={{template "link-website-git" }}>
+            Website source code
+          </a>
+        </li>
       </ul>
       <ul>
-        <a title="Download Blazium" href="/download"><i class="fa-solid fa-download"></i>Download</a>
-        <!-- <a title="Blazium blog" href="/blog"><i class="fa-solid fa-newspaper"></i>Blog</a> -->
-        <!-- <a title="Made with Blazium" href="/showcase"><i class="fa-solid fa-star"></i>Showcase</a> -->
-        <a title="Documentation" href={{template "link-docs" }}><i class="fa-solid fa-book"></i>Documentation</a>
+        <li>
+          <a title="Download Blazium" href="/download"><i class="fa-solid fa-download"></i>Download</a>
+        </li>
+        <!-- <li>
+          <a title="Blazium blog" href="/blog"><i class="fa-solid fa-newspaper"></i>Blog</a>
+        </li> -->
+        <!-- <li>
+          <a title="Made with Blazium" href="/showcase"><i class="fa-solid fa-star"></i>Showcase</a>
+        </li> -->
+        <li>
+          <a title="Documentation" href={{template "link-docs" }}><i class="fa-solid fa-book"></i>Documentation</a>
+        </li>
       </ul>
       <ul>
-        <a title="Road maps" href="/road-maps"><i class="fa-solid fa-map-location-dot"></i>Road Maps</a>
-        <!-- <a title="Community snippets" href="/snippets"><i class="fa-solid fa-code"></i>Snippets</a> -->
-        <a title="Developer tools" href="/dev-tools"><i class="fa-solid fa-screwdriver-wrench"></i>Developer Tools</a>
+        <li>
+          <a title="Road maps" href="/road-maps"><i class="fa-solid fa-map-location-dot"></i>Road Maps</a>
+        </li>
+        <!-- <li>
+          <a title="Community snippets" href="/snippets"><i class="fa-solid fa-code"></i>Snippets</a>
+        </li> -->
+        <li>
+          <a title="Developer tools" href="/dev-tools"><i class="fa-solid fa-screwdriver-wrench"></i>Developer Tools</a>
+        </li>
       </ul>
       <ul>
-        <!-- <a title="Blazium Arcade" href={{template "link-arcade" }}><i class="fa-solid fa-gamepad"></i>Arcade</a> -->
-        <a title="Discord / Community" href={{template "link-discord" }}><i class="fab fa-discord"></i>Discord</a>
-        <a title="Twitter / X" href={{template "link-twitter" }}><i class="fab fa-x-twitter"></i>Twitter</a>
-        <a title="Blazium GitHub" href={{template "link-blazium-git" }}><i class="fab fa-github"></i>GitHub</a>
+        <!-- <li>
+          <a title="Blazium Arcade" href={{template "link-arcade" }}><i class="fa-solid fa-gamepad"></i>Arcade</a>
+        </li> -->
+        <li>
+          <a title="Discord / Community" href={{template "link-discord" }}><i class="fab fa-discord"></i>Discord</a>
+        </li>
+        <li>
+          <a title="Twitter / X" href={{template "link-twitter" }}><i class="fab fa-x-twitter"></i>Twitter</a>
+        </li>
+        <li>
+          <a title="Blazium GitHub" href={{template "link-blazium-git" }}><i class="fab fa-github"></i>GitHub</a>
+        </li>
       </ul>
     </nav>
+    <p>© 2024-present Blazium Engine contributors.</p>
   </footer>
 {{end}}
