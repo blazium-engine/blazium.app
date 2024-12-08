@@ -1,11 +1,5 @@
 [
     {
-        "name": "Miro Board",
-        "description": "Roadmap for projects and initiatives, offering a high-level overview of our plans and priorities.",
-        "link": "https://miro.com/app/board/uXjVLEUcd18=",
-        "image": "miro_board.webp"
-    },
-    {
         "name": "Community Roadmap",
         "description": "Roadmap for Community related tools, services, templates, projects, and more.",
         "link": "https://github.com/orgs/blazium-engine/projects/1",

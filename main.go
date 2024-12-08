@@ -165,6 +165,11 @@ func main() {
 		serveTemplate(w, "not_found", nil)
 	})
 
+	// Serve robots.txt on the root path "/robots.txt"
+	r.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join("static", "robots.txt"))
+	}).Methods("GET")
+
 	// Serve main.tmpl on the root path "/"
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "home", nil)

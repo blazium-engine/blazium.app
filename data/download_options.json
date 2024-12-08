@@ -6,9 +6,10 @@
             "0.2.0",
             "0.1.0"
         ],
-        "branch": [
-            "stable",
-            "nigthly"
+        "status": [
+            "nightly",
+            "pre-release",
+            "release"
         ],
         "os": [
             "Windows",

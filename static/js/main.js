@@ -17,7 +17,7 @@ window.addEventListener("scroll", () => {
   } else { // The user is at the top of the page, remove class
     header.classList.remove("sticky")
   }
-})
+}, {passive: true})
 
 htmx.onLoad((content) => {
   // Always call hideHamMenu
