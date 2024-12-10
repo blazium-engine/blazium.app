@@ -10,6 +10,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 	"github.com/gorilla/mux"
 )
 
@@ -40,6 +43,20 @@ type Version struct {
 type Versions []Version
 
 var templates *template.Template
+
+func mdToHTML(md []byte) []byte {
+	// create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	doc := p.Parse(md)
+
+	// create HTML renderer with extensions
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank | html.LazyLoadImages
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	return markdown.Render(doc, renderer)
+}
 
 // LoadMirrors reads the mirrors from a JSON file and returns them as a slice of strings.
 func LoadMirrors() ([]string, error) {
@@ -87,6 +104,10 @@ func loadTemplates(basePath string) error {
 				numbers[i] = i + 1
 			}
 			return numbers
+		},
+		// Used to treat strings as HTML
+		"toHTML": func(s string) template.HTML {
+			return template.HTML(s)
 		},
 		"add": func(x, y int) int { return x + y },
 		"sub": func(x, y int) int { return x - y },
@@ -212,6 +233,19 @@ func main() {
 	// Serve road_maps.tmpl on the path "/road-maps"
 	r.HandleFunc("/road-maps", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "road_maps", nil)
+	}).Methods("GET")
+
+	// Serve privacy_policy.tmpl on the path "/privacy-policy"
+	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
+		filePath := filepath.Join("data", "privacy_policy.md")
+		file, err := os.ReadFile(filePath)
+		if err != nil {
+			log.Printf("Error reading file '%s': %v", filePath, err)
+			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+			return
+		}
+		html := string(mdToHTML(file))
+		serveTemplate(w, "privacy_policy", html)
 	}).Methods("GET")
 
 	// Serve dev_tools.tmpl on the path "/dev-tools"

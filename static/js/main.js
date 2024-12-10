@@ -18,7 +18,7 @@ window.addEventListener("scroll", () => {
   } else { // The user is at the top of the page, remove class
     header.classList.remove("sticky")
   }
-}, {passive: true})
+}, { passive: true })
 
 htmx.onLoad((content) => {
   // Always call hideHamMenu
@@ -33,6 +33,15 @@ htmx.onLoad((content) => {
   if (window.location.pathname.includes("/download")) {
     handleDropdowns(content);
   }
+
+  // Check if the current page URL contains "/road-maps" and load embeds
+  if (window.location.pathname.includes("/road-maps")) {
+    const embeds = ["miro", "timeGraphics"];
+
+    embeds.forEach(embed => {
+      loadEmbed(embed)
+    });
+  }
 });
 
 function showHamMenu() {
@@ -43,6 +52,39 @@ function showHamMenu() {
 function hideHamMenu() {
   const menu = document.querySelector("#hamburger-nav")
   menu.style.display = "none"
+}
+
+function allowEmbed(embedName) {
+  setConsentCookie(embedName)
+  loadEmbed(embedName);
+}
+
+function setConsentCookie(embedName) {
+  const expiryDate = new Date();
+  expiryDate.setFullYear(expiryDate.getFullYear() + 1); // Cookie expires in 1 year
+  document.cookie = `${embedName}Consent=true; expires=${expiryDate.toUTCString()}; path=/`;
+}
+
+function checkConsent(embedName) {
+  const consent = document.cookie.split('; ').find(row => row.startsWith(`${embedName}Consent=`));
+  return consent ? consent.split('=')[1] === 'true' : false;
+}
+
+function loadEmbed(embedName) {
+  if (checkConsent(embedName)) {
+    document.getElementById(`${embedName}-placeholder`).style.display = 'none';
+    document.getElementById(`${embedName}-embed`).style.display = 'block';
+  }
+}
+
+function deleteConsentCookies() {
+  const consentCookies = ["miro", "timeGraphics"];
+
+  consentCookies.forEach(cookie => {
+    document.cookie = `${cookie}Consent=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+  });
+
+  alert("Consent cookies have been deleted!");
 }
 
 function handleDropdowns(content) {
