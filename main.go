@@ -215,9 +215,9 @@ func main() {
 	}).Methods("GET")
 
 	// Serve dev_tools.tmpl on the path "/dev-tools"
-	r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "dev_tools", nil)
-	}).Methods("GET")
+	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "dev_tools", nil)
+	// }).Methods("GET")
 
 	// // Serve snippets.tmpl on the path "/snippets"
 	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
