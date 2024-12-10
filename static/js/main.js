@@ -11,6 +11,7 @@ Prism.plugins.NormalizeWhitespace.setDefaults({
 // Make the header sticky on scroll
 window.addEventListener("scroll", () => {
   const header = document.querySelector("header")
+  if (header === null) return
   // If the user scrolls down, add "sticky" class
   if (window.scrollY > 0) {
     header.classList.add("sticky")
