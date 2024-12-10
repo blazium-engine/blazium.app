@@ -8,11 +8,16 @@ import (
 	"path/filepath"
 )
 
-// Helper function to ensure directories exist
+// Helper function to create a clean directory for the generated templates
 func ensureDirExists(path string) error {
+	if err := os.RemoveAll(path); err != nil {
+		return fmt.Errorf("error removing contents of directory '%s': %w", path, err)
+	}
+
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return fmt.Errorf("error creating directory '%s': %w", path, err)
 	}
+
 	return nil
 }
 
@@ -61,17 +66,28 @@ type Card struct {
 // Generate templates for dev tools cards
 func GenerateRoadMaps() error {
 	filePath := filepath.Join("data", "road_maps.json")
-	templatePath := filepath.Join("templates", "generators", "road_maps_cards.tmpl")
-	outputPath := filepath.Join("templates", "runtime", "generated", "road_maps_cards.tmpl")
+	templatePath := filepath.Join("templates", "generators", "road_maps.tmpl")
+	outputPath := filepath.Join("templates", "runtime", "generated", "road_maps.tmpl")
 
-	var roadMaps []Card
+	type Embed struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		EmbedLink   string `json:"embed_link"`
+		Link        string `json:"link"`
+		Id          string `json:"id"`
+	}
+
+	var roadMaps struct {
+		Cards  []Card
+		Embeds []Embed
+	}
 
 	if err := readJSONFile(filePath, &roadMaps); err != nil {
 		return fmt.Errorf("error loading road maps data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "road-maps-cards", outputPath, roadMaps); err != nil {
-		return fmt.Errorf("error generating road maps cards: %w", err)
+	if err := executeTemplate(templatePath, "road-maps", outputPath, roadMaps); err != nil {
+		return fmt.Errorf("error generating road maps: %w", err)
 	}
 	return nil
 }

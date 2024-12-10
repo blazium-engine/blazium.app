@@ -1,0 +1,44 @@
+{{define "road-maps"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "road-maps-cards"{{"}}"}}
+{{- range .Cards}}
+  <div class="card">
+    <img src="/static/assets/road_maps/{{.Image}}" alt="{{.Name}} image">
+    <section>
+      <h3>{{.Name}}</h3>
+      <p>{{.Description}}</p>
+      <a class="secondary-btn" href={{.Link}} target="_blank">
+        <i class="fa-solid fa-arrow-right"></i> Have a look</a>
+    </section>
+  </div>
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{"{{"}}define "road-maps-embeds"{{"}}"}}
+{{- range .Embeds}}
+  <section class="head-section">
+    <h2>{{.Title}}</h2>
+    <p>{{.Description}}</p>
+  </section>
+  <iframe width="100%" loading="lazy" title={{.Title}} id="{{.Id}}-embed"
+    src={{.EmbedLink}}
+    frameborder="0" scrolling="no"
+    allow="fullscreen; clipboard-read; clipboard-write"
+    sandbox="allow-scripts allow-same-origin allow-presentation">
+  </iframe>
+  <section class="embed-alt" id="{{.Id}}-placeholder">
+    <p>
+      To view this {{.Title}}, we need your consent to load cookies for this embed.<br>
+      By clicking <strong>"Allow Cookies & View Embed"</strong>, you enable cookies for this content only.<br>
+      Learn more in our <a href="/privacy-policy">Privacy Policy</a>.
+    </p>
+    <button class="secondary-btn" onclick="allowEmbed('{{.Id}}')" type="button">
+    Allow Cookies & View Embed
+    </button>
+    <p>or</p>
+    <a class="secondary-btn" href={{.Link}} target="_blank">
+      <i class="fa-solid fa-arrow-right"></i> Open {{.Title}} in a new tab
+    </a>
+  </section>
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{- end}}

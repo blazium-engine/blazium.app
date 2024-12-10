@@ -1,0 +1,13 @@
+{{/* Template for the showcase page */}}
+
+{{define "privacy_policy"}}
+  {{template "main-head" .}}
+  {{template "content-privacy-policy" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-privacy-policy"}}
+  <section class="head-section">
+    {{toHTML .}}
+  </section>
+{{end}}
