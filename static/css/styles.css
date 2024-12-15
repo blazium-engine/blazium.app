@@ -108,6 +108,11 @@ h4 {
 p {
   font: var(--p);
   color: var(--gray-70);
+  a {
+    text-decoration: underline;
+    font: inherit;
+    color: var(--accent-color);
+  }
 }
 
 a {
@@ -156,6 +161,13 @@ header {
     display: flex;
     justify-content: center;
   }
+}
+
+iframe {
+  display: none;
+  height: 50vh;
+  border-radius: 8px;
+  margin-top: var(--margin-s);
 }
 
 #hamburger-nav {
@@ -224,7 +236,9 @@ header.sticky {
 
 footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin-top: 12em;
   padding: 4em 0;
   background-color: var(--primary-color);
@@ -232,23 +246,30 @@ footer {
   nav {
     width: var(--page-width);
     max-width: 90%;
+    margin-bottom: var(--margin-xxl);
 
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24ch, auto));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     row-gap: var(--margin-m);
+    column-gap: var(--margin-xxl);
 
     ul {
       display: flex;
       flex-direction: column;
-    }
 
-    a i {
-      min-width: 3ch;
-    }
+      li {
+        all: unset;
+      }
 
-    i:before {
-      display: flex;
-      justify-content: center;
+      a i {
+        min-width: 3ch;
+      }
+
+      i:before {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }
@@ -425,6 +446,22 @@ footer {
   }
 }
 
+.embed-alt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  max-width: 90vw;
+  height: 50vh;
+  padding: var(--margin-l);
+  background: var(--t-primary-color);
+
+  button {
+    margin-top: var(--margin-l);
+  }
+}
+
 .card {
   all: unset;
   cursor: pointer;
@@ -450,7 +487,7 @@ footer {
     width: 100%;
     height: 100%;
     padding: var(--margin-m);
-    background: linear-gradient(transparent 45%, var(--t-primary-color) 65%);
+    background: linear-gradient(transparent 35%, var(--t-primary-color) 65%);
     box-sizing: border-box;
 
     display: flex;
@@ -483,18 +520,6 @@ footer {
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: var(--margin-s);
   margin-top: var(--margin-l);
-
-  .card {
-    h4 {
-      line-height: 1.25lh;
-    }
-
-    div {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-    }
-  }
 }
 
 .flex-between-center {
@@ -508,6 +533,9 @@ footer {
 .head-section {
   p {
     font: var(--p-big);
+    margin-top: var(--margin-l);
+  }
+  h2 {
     margin-top: var(--margin-l);
   }
 }
@@ -535,7 +563,7 @@ footer {
 
     img,
     video {
-      max-height: 48em;
+      max-height: 42em;
       max-width: 75vw;
       margin-left: auto;
       display: block;
