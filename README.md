@@ -1,7 +1,5 @@
-https://blazium.app/
+# [blazium.app](https://blazium.app)
 
-This is how it was always meant to be, fuck you Redot <3
+The primary source code for the Blazium website.
 
-Made by Randolph William Aarseth II
-
-Hyper-reality happened...
+Uses [discord-inviter](https://github.com/blazium-engine/discord-inviter) to redirect [chat.blazium.app](https://chat.blazium.app) to a Blazium Discord server invite.
