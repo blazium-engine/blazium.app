@@ -1,27 +1,23 @@
 {
     "options": {
         "version": [
-            "0.3.7",
-            "0.2.4",
-            "0.2.0",
-            "0.1.0"
+            "0.2.98"
         ],
         "status": [
-            "nightly",
-            "pre-release",
-            "release"
+            "nightly"
         ],
         "os": [
             "Windows",
             "Linux",
             "Mac OS",
-            "Android"
+            "Android",
+            "Horizon OS"
         ],
         "arch": [
             "x86_64",
             "x86_32",
-            "ARM64",
-            "ARM32"
+            "arm64",
+            "arm32"
         ],
         "pkgmngr": [
             "Pacman",

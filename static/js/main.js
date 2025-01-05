@@ -118,13 +118,43 @@ function handleDropdowns(content) {
       options[dropdown.id] = selectedItem.textContent;
     });
 
+    // Hide arch dropdown when macOS
+    const archDropdown = content.querySelector(".dropdown#arch");
+    if (options.os === "Mac OS") {
+      if (archDropdown) {
+        archDropdown.style.display = "none";
+      }
+    } else if (archDropdown.style.display === "none") {
+      archDropdown.style.display = "inline-block";
+    }
+
+    // Hide arch and mono dropdown when andoid
+    const dropdownsToHide = content.querySelector("#no-android");
+    if (options.os === "Android" || options.os === "Horizon OS") {
+      if (archDropdown) {
+        dropdownsToHide.style.display = "none";
+      }
+    } else if (dropdownsToHide.style.display === "none") {
+      dropdownsToHide.style.display = "block";
+    }
+
     // Update the download button or command dynamically
     const downloadButton = content.querySelector("#download-btn");
     const downloadCmd = content.querySelector("#download-cmd");
 
     if (downloadButton) {
       const version = options.version;
-      downloadButton.href = `/${version}`;
+      const status = options.status;
+      const os = options.os.toLowerCase().replace(/\s+/g, '');
+      let arch = options.arch;
+      if (os === "windows" && arch.includes("x86")) {
+        arch = arch === "x86_64" ? "64bit" : "32bit"
+      }
+
+      const isMono =  options.csharp === "with" ? ".mono" : ""
+
+      downloadButton.href = `https://cdn.blazium.app/${status}/${version}/BlaziumEditor_v${version}_${os}${isMono}.${arch}.zip`;
+
       const buttonLabel = downloadButton.querySelector("span");
       if (buttonLabel) {
         buttonLabel.textContent = version;

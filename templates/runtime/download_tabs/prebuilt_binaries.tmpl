@@ -13,10 +13,12 @@
     release of Blazium for
     {{template "dropdown" (dict "Name" "os")}}
     <br>
-    running
-    {{template "dropdown" (dict "Name" "arch")}}
-    {{template "dropdown" (dict "Name" "csharp")}}
-    C# support.
+    <div id="no-android">
+      running
+      {{template "dropdown" (dict "Name" "arch")}}
+      {{template "dropdown" (dict "Name" "csharp")}}
+      C# support.
+    </div>
   </div>
   <a id="download-btn" class="primary-btn"><i class="fa-solid fa-download"></i> Download Blazium <span></span></a>
   <a class="secondary-btn"><i class="fa-solid fa-arrow-right"></i> Read the blog post for this version</a>

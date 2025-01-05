@@ -31,13 +31,17 @@
     </section>
     <span id="download-type">
       <a {{if eq .DownloadTab "prebuilt-binaries" }}class="select" {{end}} href="/download/prebuilt-binaries">
-        Prebuilt Binaries</a>
-      <a {{if eq .DownloadTab "digital-store" }}class="select" {{end}} href="/download/digital-store">
-        Digital Store</a>
-      <a {{if eq .DownloadTab "package-manager" }}class="select" {{end}} href="/download/package-manager">
-        Package Manager</a>
-      <a {{if eq .DownloadTab "torrent" }}class="select" {{end}} href="/download/torrent">
-        Torrent</a>
+        <i class="fa-solid fa-file-zipper"></i>Prebuilt Binaries</a>
+      <div id="not-ready">
+        <a {{if eq .DownloadTab "digital-store" }}class="select" {{end}} href="/download/digital-store">
+          <i class="fa-solid fa-shop"></i>Digital Store</a>
+        <a {{if eq .DownloadTab "package-manager" }}class="select" {{end}} href="/download/package-manager">
+          <i class="fa-solid fa-boxes-packing"></i>Package Manager</a>
+        <a {{if eq .DownloadTab "torrent" }}class="select" {{end}} href="/download/torrent">
+          <i class="fa-solid fa-download"></i>Torrent</a>
+      </div>
+      <a href={{template "link-web-editor"}}>
+        <i class="fa-brands fa-html5"></i>Web Editor</a>
     </span>
     <section id="download-options">
       {{if eq .DownloadTab "prebuilt-binaries"}}

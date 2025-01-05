@@ -955,7 +955,6 @@ footer {
 }
 
 #download {
-  pointer-events: none;
   padding-top: var(--margin-xxl);
   max-width: 1000px;
   margin-inline: auto;
@@ -975,6 +974,20 @@ footer {
     a.select {
       color: var(--accent-color);
       border-bottom: 2px solid var(--accent-color);
+    }
+
+    a i {
+      min-width: 1.5ch;
+      margin-right: 0.5ch;
+    }
+
+    i:before {
+      display: flex;
+      justify-content: center;
+    }
+
+    #not-ready {
+      display: none;
     }
   }
 
