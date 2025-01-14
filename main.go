@@ -268,6 +268,11 @@ func main() {
 	// Note: only for nightly,prerelease,release
 	r.HandleFunc("/api/versions-{type}.json", VersionsHandler).Methods("GET")
 
+
+	r.HandleFunc("/api/versions/data/{buildType}", VersionDataHandler).Methods("GET")
+
+
+
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)
 
@@ -334,24 +339,21 @@ func VersionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(versions)
 }
 
-func LoadVersions() (Versions, error) {
-	// Construct the file path for versions.json
-	filePath := filepath.Join("data", "versions.json")
+func VersionDataHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	buildType := vars["buildType"]
 
-	// Read the JSON file
-	data, err := os.ReadFile(filePath)
+	versions, err := fetchCerebroVersionData(buildType)
 	if err != nil {
-		log.Printf("Error reading versions file %s: %v", filePath, err)
-		return nil, fmt.Errorf("failed to read versions file: %v", err)
+		log.Printf("Error loading versions: %v", err)	
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode([]VersionPayload{})
+		return
 	}
 
-	// Parse the JSON file into the Versions struct
-	var versions Versions
-	err = json.Unmarshal(data, &versions)
-	if err != nil {
-		log.Printf("Error parsing versions JSON file: %v", err)
-		return nil, fmt.Errorf("failed to parse versions JSON: %v", err)
-	}
-
-	return versions, nil
+	// Set content-type to application/json and write the response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(versions)
 }
