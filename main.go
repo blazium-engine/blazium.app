@@ -3,105 +3,30 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
 	"github.com/gorilla/mux"
 )
-
-// MirrorListResponse represents the structure of the JSON response for the mirrorlist API.
-
-type Versions []Version
-
-var templates *template.Template
-
-func mdToHTML(md []byte) []byte {
-	// create markdown parser with extensions
-	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
-	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse(md)
-
-	// create HTML renderer with extensions
-	htmlFlags := html.CommonFlags | html.HrefTargetBlank | html.LazyLoadImages
-	opts := html.RendererOptions{Flags: htmlFlags}
-	renderer := html.NewRenderer(opts)
-
-	return markdown.Render(doc, renderer)
-}
 
 // LoadMirrors reads the mirrors from a JSON file and returns them as a slice of strings.
 func LoadMirrors() ([]string, error) {
 	// Construct the file path for mirrors.json
 	filePath := filepath.Join("data", "mirrors.json")
 
-	// Read the JSON file
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Printf("Error reading mirrors file %s: %v", filePath, err)
-		return nil, fmt.Errorf("failed to read mirrors file: %v", err)
-	}
-
 	// Create a struct to unmarshal the JSON data
 	var mirrorsData struct {
 		Mirrors []string `json:"mirrors"`
 	}
 
-	// Parse the JSON file
-	err = json.Unmarshal(data, &mirrorsData)
-	if err != nil {
-		log.Printf("Error parsing mirrors JSON file: %v", err)
-		return nil, fmt.Errorf("failed to parse mirrors JSON: %v", err)
+	if err := readJSONFile(filePath, &mirrorsData); err != nil {
+		return nil, fmt.Errorf("error loading mirrors data: %w", err)
 	}
 
 	return mirrorsData.Mirrors, nil
-}
-
-// loadTemplates parses all templates in the basePath folder, including subfolders.
-func loadTemplates(basePath string) error {
-	// Define functions to be used in templates
-	funcMap := template.FuncMap{
-		// Creates a key:value pair from the arguments
-		"dict": func(values ...any) map[string]any {
-			dict := make(map[string]any)
-			for i := 0; i < len(values); i += 2 {
-				dict[values[i].(string)] = values[i+1]
-			}
-			return dict
-		},
-		// Creates a sequence of numbers, needed for loops in templates
-		"seq": func(n int) []int {
-			numbers := make([]int, n)
-			for i := 0; i < n; i++ {
-				numbers[i] = i + 1
-			}
-			return numbers
-		},
-		// Used to treat strings as HTML
-		"toHTML": func(s string) template.HTML {
-			return template.HTML(s)
-		},
-		"add": func(x, y int) int { return x + y },
-		"sub": func(x, y int) int { return x - y },
-	}
-
-	// Create a new template and associate the function map
-	templates = template.New("").Funcs(funcMap)
-
-	// Use ParseGlob to parse all .tmpl files in the basePath directories
-	pattern := filepath.Join(basePath, "*/*.tmpl")
-	_, err := templates.ParseGlob(pattern)
-	if err != nil {
-		return fmt.Errorf("error parsing templates: %w", err)
-	}
-
-	return nil
 }
 
 // serveTemplate renders an HTML template with the given data and writes it to the HTTP response.
@@ -113,172 +38,25 @@ func serveTemplate(w http.ResponseWriter, name string, data any) {
 	}
 }
 
-func main() {
-	// Generate templates from configs
-	if err := GenerateTemplates(); err != nil {
-		log.Fatalf("Error generating templates: %v", err)
+// serve the data in JSON format
+func serveJSON(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Printf("Error serving JSON : %v", err)
+		http.Error(w, "Internal Server Error: Unable to serve the requested JSON.", http.StatusInternalServerError)
 	}
+}
 
-	// Load runtime templates
-	err := loadTemplates("./templates/runtime")
+// Helper function to read and parse JSON file into a slice of structs
+func readJSONFile[T any](filePath string, out *T) error {
+	data, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatalf("Error loading runtime templates: %v", err)
+		return fmt.Errorf("error reading file '%s': %w", filePath, err)
 	}
-
-	// Create a new router using Gorilla Mux
-	r := mux.NewRouter()
-
-	// Serve download_options.json for the dropdowns
-	r.HandleFunc("/download-options", func(w http.ResponseWriter, r *http.Request) {
-		// Construct the file path for download_options.json
-		filePath := filepath.Join("data", "download_options.json")
-
-		// Read the JSON file
-		data, err := os.ReadFile(filePath)
-		if err != nil {
-			log.Printf("Error reading download options file %s: %v", filePath, err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		var downloadOptions struct {
-			Options  map[string]any `json:"options"`
-			Commands map[string]any `json:"commands"`
-		}
-
-		err = json.Unmarshal(data, &downloadOptions)
-		if err != nil {
-			log.Printf("Error parsing download options JSON file: %v", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		// Set content-type to application/json and write the response
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(downloadOptions)
-	}).Methods("GET")
-
-	// Handle 404
-	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "not_found", nil)
-	})
-
-	// Serve robots.txt on the root path "/robots.txt"
-	r.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filepath.Join("static", "robots.txt"))
-	}).Methods("GET")
-
-	// Serve main.tmpl on the root path "/"
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "home", nil)
-	}).Methods("GET")
-
-	// Redirect "/download" to "/download/prebuilt-binaries"
-	r.HandleFunc("/download", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Location", "/download/prebuilt-binaries")
-		w.WriteHeader(http.StatusTemporaryRedirect)
-	}).Methods("GET")
-
-	// Serve the download page handling the different tabs
-	r.HandleFunc("/download/{tab}", func(w http.ResponseWriter, r *http.Request) {
-		// Get the template name from the URL
-		vars := mux.Vars(r)
-		page := vars["tab"]
-		serveTemplate(w, page, nil)
-	}).Methods("GET")
-
-	// Serve showcase.tmpl on the path "/showcase"
-	// r.HandleFunc("/showcase", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "showcase", nil)
-	// }).Methods("GET")
-
-	// Serve showcase_article.tmpl on the path "/showcase/article"
-	// r.HandleFunc("/showcase/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "showcase_article", nil)
-	// }).Methods("GET")
-
-	// Serve blog.tmpl on the path "/blog"
-	// r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "blog", nil)
-	// }).Methods("GET")
-
-	// // Serve blog_article.tmpl on the path "/blog/article"
-	// r.HandleFunc("/blog/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "blog_article", nil)
-	// }).Methods("GET")
-
-	// Serve road_maps.tmpl on the path "/road-maps"
-	r.HandleFunc("/road-maps", func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "road_maps", nil)
-	}).Methods("GET")
-
-	// Serve privacy_policy.tmpl on the path "/privacy-policy"
-	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("data", "privacy_policy.md")
-		file, err := os.ReadFile(filePath)
-		if err != nil {
-			log.Printf("Error reading file '%s': %v", filePath, err)
-			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
-			return
-		}
-		html := string(mdToHTML(file))
-		serveTemplate(w, "privacy_policy", html)
-	}).Methods("GET")
-
-	// Serve dev_tools.tmpl on the path "/dev-tools"
-	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "dev_tools", nil)
-	// }).Methods("GET")
-
-	// // Serve snippets.tmpl on the path "/snippets"
-	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "snippets", nil)
-	// }).Methods("GET")
-
-	// // Serve snippet_article.tmpl on the path "/snippets/article"
-	// r.HandleFunc("/snippets/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "snippet_article", nil)
-	// }).Methods("GET")
-
-	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		// Set the content type to application/json
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		// Define a health check response structure
-		response := map[string]string{"status": "healthy"}
-
-		// Encode the response as JSON and send it
-		json.NewEncoder(w).Encode(response)
-	})
-
-	// Serve all static files from the "static" directory
-	staticFileDirectory := http.Dir("./static")
-	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
-	r.PathPrefix("/static/").Handler(staticFileHandler)
-
-	// API endpoint for /api/mirrorlist/{version}.json
-	// Format: 0.1.0.nightly.mono
-	// Note: .mono is only on the mono-build of the Game Engine
-	// URL: https://cdn.blazium.app/nightly/0.2.4/details.json
-	r.HandleFunc("/api/mirrorlist/{version}.json", MirrorListHandler).Methods("GET")
-
-	// Format: versions-nightly.json
-	// Note: only for nightly,prerelease,release
-	r.HandleFunc("/api/versions-{type}.json", VersionsHandler).Methods("GET")
-
-
-	r.HandleFunc("/api/versions/data/{buildType}", VersionDataHandler).Methods("GET")
-
-
-
-	embedHandler := embedMiddleware(r)
-	corsHandler := enableCORS(embedHandler)
-
-	// Start the server
-	fmt.Println("Starting server on :8080")
-	log.Fatal(http.ListenAndServe(":8080", corsHandler))
+	if err := json.Unmarshal(data, out); err != nil {
+		return fmt.Errorf("error decoding JSON from file '%s': %w", filePath, err)
+	}
+	return nil
 }
 
 func enableCORS(next http.Handler) http.Handler {
@@ -326,34 +104,183 @@ func VersionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	versions, err := fetchCerebroVersions(buildType)
 	if err != nil {
-		log.Printf("Error loading versions: %v", err)	
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode([]VersionData{})
+		log.Printf("Error loading versions: %v", err)
+		serveJSON(w, []VersionData{})
 		return
 	}
-
-	// Set content-type to application/json and write the response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(versions)
+	serveJSON(w, versions)
 }
 
+// VersionsHandler handles the /api/versions.json endpoint
 func VersionDataHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	buildType := vars["buildType"]
 
 	versions, err := fetchCerebroVersionData(buildType)
 	if err != nil {
-		log.Printf("Error loading versions: %v", err)	
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode([]VersionPayload{})
+		log.Printf("Error loading versions: %v", err)
+		serveJSON(w, []VersionPayload{})
 		return
 	}
+	serveJSON(w, versions)
+}
 
-	// Set content-type to application/json and write the response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(versions)
+// DownloadOptionsHandler serves the cached download options.
+func DownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	cacheMutex.RLock()
+	defer cacheMutex.RUnlock()
+
+	if downloadOptionsCache == nil {
+		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
+		serveJSON(w, DownloadOptions{})
+		return
+	}
+	serveJSON(w, downloadOptionsCache)
+}
+
+func main() {
+	// Generate templates from configs
+	if err := GenerateTemplates(); err != nil {
+		log.Fatalf("Error generating templates: %v", err)
+	}
+
+	// Load runtime templates
+	err := loadTemplates("./templates/runtime")
+	if err != nil {
+		log.Fatalf("Error loading runtime templates: %v", err)
+	}
+
+	// Create a new router using Gorilla Mux
+	r := mux.NewRouter()
+
+	// Handle 404
+	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "not_found", nil)
+	})
+
+	// Serve robots.txt on the root path "/robots.txt"
+	r.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join("static", "robots.txt"))
+	}).Methods("GET")
+
+	// Serve main.tmpl on the root path "/"
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "home", nil)
+	}).Methods("GET")
+
+	// Redirect "/download" to "/download/prebuilt-binaries"
+	r.HandleFunc("/download", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Location", "/download/prebuilt-binaries")
+		w.WriteHeader(http.StatusTemporaryRedirect)
+	}).Methods("GET")
+
+	// Serve the download page handling the different tabs
+	r.HandleFunc("/download/{tab}", func(w http.ResponseWriter, r *http.Request) {
+		// Get the template name from the URL
+		vars := mux.Vars(r)
+		page := vars["tab"]
+		serveTemplate(w, page, nil)
+	}).Methods("GET")
+
+	// Serve road_maps.tmpl on the path "/road-maps"
+	r.HandleFunc("/road-maps", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "road_maps", nil)
+	}).Methods("GET")
+
+	// Serve privacy_policy.tmpl on the path "/privacy-policy"
+	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
+		filePath := filepath.Join("data", "markdown", "privacy_policy.md")
+		file, err := os.ReadFile(filePath)
+		if err != nil {
+			log.Printf("Error reading file '%s': %v", filePath, err)
+			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+			return
+		}
+		html := string(mdToHTML(file))
+		serveTemplate(w, "privacy_policy", html)
+	}).Methods("GET")
+
+	// Serve terms_of_service.tmpl on the path "/terms-of-service"
+	// r.HandleFunc("/terms-of-service", func(w http.ResponseWriter, r *http.Request) {
+	// 	filePath := filepath.Join("data", "markdown", "terms_of_service.md")
+	// 	file, err := os.ReadFile(filePath)
+	// 	if err != nil {
+	// 		log.Printf("Error reading file '%s': %v", filePath, err)
+	// 		http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	html := string(mdToHTML(file))
+	// 	serveTemplate(w, "terms_of_service", html)
+	// }).Methods("GET")
+
+	// Serve blog.tmpl on the path "/blog"
+	// r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "blog", nil)
+	// }).Methods("GET")
+
+	// // Serve blog_article.tmpl on the path "/blog/article"
+	// r.HandleFunc("/blog/article", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "blog_article", nil)
+	// }).Methods("GET")
+
+	// // Serve snippets.tmpl on the path "/snippets"
+	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "snippets", nil)
+	// }).Methods("GET")
+
+	// // Serve snippet_article.tmpl on the path "/snippets/article"
+	// r.HandleFunc("/snippets/article", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "snippet_article", nil)
+	// }).Methods("GET")
+
+	// Serve showcase.tmpl on the path "/showcase"
+	// r.HandleFunc("/showcase", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "showcase", nil)
+	// }).Methods("GET")
+
+	// Serve showcase_article.tmpl on the path "/showcase/article"
+	// r.HandleFunc("/showcase/article", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "showcase_article", nil)
+	// }).Methods("GET")
+
+	// Serve dev_tools.tmpl on the path "/dev-tools"
+	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "dev_tools", nil)
+	// }).Methods("GET")
+
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		// Define a health check response structure
+		response := map[string]string{"status": "healthy"}
+		serveJSON(w, response)
+	})
+
+	// Serve all static files from the "static" directory
+	staticFileDirectory := http.Dir("./static")
+	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
+	r.PathPrefix("/static/").Handler(staticFileHandler)
+
+	// API endpoint for /api/mirrorlist/{version}.json
+	// Format: 0.1.0.nightly.mono
+	// Note: .mono is only on the mono-build of the Game Engine
+	// URL: https://cdn.blazium.app/nightly/0.2.4/details.json
+	r.HandleFunc("/api/mirrorlist/{version}.json", MirrorListHandler).Methods("GET")
+
+	// Format: versions-nightly.json
+	// Note: only for nightly, prerelease, release
+	r.HandleFunc("/api/versions-{type}.json", VersionsHandler).Methods("GET")
+
+	r.HandleFunc("/api/versions/data/{buildType}", VersionDataHandler).Methods("GET")
+
+	// Serve download options for the dropdowns
+	r.HandleFunc("/api/download-options", DownloadOptionsHandler).Methods("GET")
+
+	embedHandler := embedMiddleware(r)
+	corsHandler := enableCORS(embedHandler)
+
+	// Start the background cache updater
+	go startCacheUpdater()
+
+	// Start the server
+	fmt.Println("Starting server on :8080")
+	log.Fatal(http.ListenAndServe(":8080", corsHandler))
 }

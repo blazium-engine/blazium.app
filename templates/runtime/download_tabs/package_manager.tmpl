@@ -9,7 +9,7 @@
   <div>
     Install Blazium
     {{template "dropdown" (dict "Name" "version")}}
-    {{template "dropdown" (dict "Name" "status")}}
+    {{template "dropdown" (dict "Name" "buildType")}}
     on
     {{template "dropdown" (dict "Name" "os")}}
     <br>
@@ -18,6 +18,6 @@
     {{template "dropdown" (dict "Name" "pkgmngr")}}.
   </div>
   <pre id="download-cmd" class="lang-none command-line" data-prompt="$"><code></code></pre>
-  <a class="secondary-btn"><i class="fa-solid fa-arrow-right"></i> Read the blog post for this version</a>
+  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog on GitHUb</a>
 </section>
 {{end}}

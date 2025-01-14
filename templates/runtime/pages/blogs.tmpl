@@ -1,3 +1,27 @@
+{{/* Template for the blog articles */}}
+
+{{define "blog-articles"}}
+  {{if eq .Articles.Pages 0}}
+    <p>
+      No results found.
+    </p>
+  {{else}}
+    <section id="blogs" class="card-grid-container">
+    {{range $blog := .Articles.Blogs}}
+      <div class="card" hx-get="/blog/article/{{$blog.id}}" hx-target="body" hx-push-url="true">
+        <img src={{$blog.image}}>
+        <section>
+          <p><i class="fa-solid fa-user"></i> {{$blog.author}} - {{$blog.date}}</p>
+          <h4>{{$blog.title}}</h4>
+        </section>
+      </div>
+    {{end}}
+    </section>
+    {{template "page-selector" (dict "Page" .CurrentPage "Max" .Articles.Pages "Url" "/blog")}}
+  {{end}}
+{{end}}
+
+
 {{/* Template for the blog page */}}
 
 {{define "blog"}}
@@ -40,23 +64,5 @@
       </label>
     </fieldset>
   </section>
-  <section id="blogs" class="card-grid-container">
-    {{range (seq 9)}}
-      <div class="card" hx-get="/blog/article" hx-target="body" hx-push-url="true">
-        <img src="/static/assets/embed_img.webp">
-        <section>
-          <p><i class="fa-solid fa-user"></i> John Smith - 1 January 1970</p>
-          <h4>Long Long Long Long Long Long Long Long Long Long Long</h4>
-        </section>
-      </div>
-      <div class="card" hx-get="/blog/article" hx-target="body" hx-push-url="true">
-        <img src="/static/assets/embed_img.webp">
-        <section>
-          <p><i class="fa-solid fa-user"></i> John Smith - 1 January 1970</p>
-          <h4>0.1.0 Nigthly Released</h4>
-        </section>
-      </div>
-    {{end}}
-  </section>
-  {{template "page-selector" (dict "Page" 1 "Max" 8 "Url" "/blog")}}
+  {{template "blog-articles" .}}
 {{end}}

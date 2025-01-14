@@ -1,21 +1,11 @@
 {
     "options": {
-        "version": [
-            "0.3.7",
-            "0.2.4",
-            "0.2.0",
-            "0.1.0"
-        ],
-        "status": [
-            "nightly",
-            "pre-release",
-            "release"
-        ],
         "os": [
             "Windows",
             "Linux",
             "Mac OS",
-            "Android"
+            "Android",
+            "Horizon OS"
         ],
         "arch": [
             "x86_64",

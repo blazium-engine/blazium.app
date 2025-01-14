@@ -151,15 +151,12 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
 
-  a i {
-    min-width: 3ch;
-  }
-
-  i:before {
-    display: flex;
-    justify-content: center;
+    span {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+    }
   }
 }
 
@@ -261,15 +258,6 @@ footer {
       li {
         all: unset;
       }
-
-      a i {
-        min-width: 3ch;
-      }
-
-      i:before {
-        display: flex;
-        justify-content: center;
-      }
     }
   }
 }
@@ -281,6 +269,15 @@ footer {
 
 .no-drag {
   -webkit-user-drag: none;
+}
+
+i.align {
+  min-width: 2ch;
+  margin-right: 0.5ch;
+}
+i.align:before {
+  display: flex;
+  justify-content: center;
 }
 
 .primary-btn,
@@ -344,16 +341,16 @@ footer {
 .logo {
   display: flex;
   flex-direction: row;
-  gap: 4px;
+  gap: 2px;
   color: white;
 
   h1 {
-    font-size: 1.4em;
+    font-size: 1.5em;
     line-height: 1.1em;
   }
 
   img {
-    height: 1.4em;
+    height: 1.5em;
   }
 }
 
@@ -694,6 +691,7 @@ footer {
 
 /* Blog section */
 #blogs {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   .card {
     aspect-ratio: 3/2;
   }
@@ -712,19 +710,9 @@ footer {
     padding-inline: var(--margin-s);
   }
 
-  p,
-  a {
-    font: var(--p-big);
-    color: var(--gray-90);
-  }
-
-  p {
-    margin-top: var(--margin-xxs);
-    margin-bottom: var(--margin-xxl);
-  }
-
   a {
     text-decoration: underline;
+    font: var(--p-big);
     color: var(--accent-color);
     transition: filter 0.3s;
   }
@@ -733,8 +721,19 @@ footer {
     filter: brightness(1.5);
   }
 
+  p {
+    font: var(--p-big);
+    color: var(--gray-90);
+    margin-top: var(--margin-xxs);
+    margin-bottom: var(--margin-xxl);
+  }
+
   img {
     width: 100%;
+    max-height: 640px;
+    object-fit: contain;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
   }
 }
 
@@ -742,6 +741,10 @@ footer {
   position: relative;
   border-radius: 8px 8px 0 0;
   overflow: hidden;
+
+  p {
+    font: var(--p-big);
+  }
 
   img {
     width: 100%;
@@ -939,23 +942,7 @@ footer {
 }
 
 /* Download section */
-#release-info {
-  /* display: none; */
-  pointer-events: all;
-  font: var(--h3);
-  background-color: rgb(80, 18, 32);
-  border: 2px solid rgb(163, 21, 28);
-  border-radius: 4px;
-  padding: var(--margin-xs);
-  a {
-    font: inherit;
-    color: var(--accent-color);
-    text-decoration: underline;
-  }
-}
-
 #download {
-  pointer-events: none;
   padding-top: var(--margin-xxl);
   max-width: 1000px;
   margin-inline: auto;
@@ -976,21 +963,36 @@ footer {
       color: var(--accent-color);
       border-bottom: 2px solid var(--accent-color);
     }
+
+    
+    a i {
+      min-width: 1.5ch;
+      margin-right: 0.5ch;
+    }
+
+    i:before {
+      display: flex;
+      justify-content: center;
+    }
   }
 
   #download-options {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: var(--margin-l);
     font: var(--p-big);
-    min-height: 16em;
+    min-height: 24em;
 
     background-color: var(--primary-color);
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px;
     padding: var(--margin-m);
 
+    #no-android,
+    #no-macos {
+      display: inline-block;
+    }
+
     #release-selection {
+      flex-grow: 1;
       line-height: 2em;
       display: flex;
       flex-direction: column;
@@ -1002,27 +1004,23 @@ footer {
         max-width: var(--min);
       }
     }
-  }
 
-  #export-templates {
-    background-color: var(--primary-color);
-    border-radius: 0 0 8px 8px;
-    padding: var(--margin-m);
+    #export-templates {
+      div {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--margin-xs);
+      }
 
-    div {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--margin-xs);
-    }
+      p,
+      a {
+        font: var(--p-big);
+      }
 
-    p,
-    a {
-      font: var(--p-big);
-    }
-
-    p {
-      margin-bottom: var(--margin-xs);
+      p {
+        margin-bottom: var(--margin-xs);
+      }
     }
   }
 
@@ -1045,14 +1043,5 @@ footer {
 
   a.selected {
     border-color: var(--accent-color);
-  }
-}
-
-#not-found {
-  margin-top: var(--margin-xxl);
-  font: var(--p-big);
-  a {
-    color: var(--accent-color);
-    text-decoration: underline;
   }
 }

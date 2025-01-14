@@ -32,10 +32,56 @@ htmx.onLoad((content) => {
   // Check if the current page URL contains "/download" and call handleDropdowns
   if (window.location.pathname.includes("/download")) {
     handleDropdowns(content);
+
+    const handleLink = (elementId) => {
+      const element = content.querySelector(`#${elementId}`);
+      if (element) {
+        element.addEventListener("click", async (event) => {
+          event.preventDefault();
+
+          const href = element.getAttribute("href");
+          try {
+            const response = await fetch(href, { method: "HEAD"});
+            if (response.status === 404) {
+              alert("The file does not exist (404).");
+            } else {
+              window.location.href = href;
+            }
+          } catch (error) {
+            alert("An error occurred while checking the file.");
+          }
+        })
+      }
+    }
+    handleLink("download-btn");
+    handleLink("templates");
+    handleLink("templates-mono");
+
+    // handle changelog button
+    const changelogButton = content.querySelector("#changelog-btn");
+    if (changelogButton) {
+      changelogButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const href = changelogButton.getAttribute("href");
+        try {
+          var link = `https://api.github.com/repos/blazium-engine/blazium/releases/tags/${href}`
+          const response = await fetch(link, { method: "HEAD"});
+          if (response.status === 404) {
+            alert("No changelog is present for this version.");
+          } else {
+            link = `https://github.com/blazium-engine/blazium/releases/tag/${href}`
+            window.location.href = link;
+          }
+        } catch (error) {
+          alert("An error occurred while checking the link.");
+        }
+      })
+    }
   }
 
   // Check if the current page URL contains "/road-maps" and load embeds
-  if (window.location.pathname.includes("/road-maps")) {
+  if (window.location.pathname === "/road-maps") {
     const embeds = ["miro", "timeGraphics"];
 
     embeds.forEach(embed => {
@@ -88,10 +134,14 @@ function deleteConsentCookies() {
 }
 
 function handleDropdowns(content) {
+  var versions;
+  var options;
+  var commands;
+
   // Helper function to fetch options
   const fetchOptions = async () => {
     try {
-      const response = await fetch("/download-options", {
+      const response = await fetch("/api/download-options", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -105,26 +155,83 @@ function handleDropdowns(content) {
     }
   };
 
-
   // Helper function to set links and text after selecting an option
-  var commands
   const setLinks = () => {
-    const dropdowns = content.querySelectorAll(".dropdown");
-    const options = {};
-
     // Collect selected options from dropdowns
+    const dropdowns = content.querySelectorAll(".dropdown");
+    const selectedOptions = {};
     dropdowns.forEach(dropdown => {
       const selectedItem = dropdown.querySelector(".selected");
-      options[dropdown.id] = selectedItem.textContent;
+      selectedOptions[dropdown.id] = selectedItem.textContent;
     });
 
-    // Update the download button or command dynamically
+    // Hide arch dropdown when macOS
+    const macosToHide = content.querySelector("#no-macos");
+    if (macosToHide) {
+      if (selectedOptions.os === "Mac OS") {
+        macosToHide.style.display = "none";
+      } else if (macosToHide.style.display === "none") {
+        macosToHide.style.display = "inline-block";
+      }
+    }
+
+    // Hide arch and mono dropdown when andoid
+    const androidToHide = content.querySelector("#no-android");
+    if (androidToHide) {
+      if (selectedOptions.os === "Android" || selectedOptions.os === "Horizon OS") {
+        androidToHide.style.display = "none";
+      } else if (androidToHide.style.display === "none") {
+        androidToHide.style.display = "inline-block";
+      }
+    }
+
+    // Update the links dynamically
+    const changelogButton = content.querySelector("#changelog-btn");
+    const templatesContainer = content.querySelector("#export-templates");
     const downloadButton = content.querySelector("#download-btn");
     const downloadCmd = content.querySelector("#download-cmd");
 
+    if (changelogButton) {
+      const version = selectedOptions.version;
+      const buildType = selectedOptions.buildType;
+      changelogButton.href = `v${version}-${buildType}`
+    }
+
+    if (templatesContainer) {
+      const templates = templatesContainer.querySelector("#templates");
+      const templatesMono = templatesContainer.querySelector("#templates-mono");
+
+      const version = selectedOptions.version;
+      const buildType = selectedOptions.buildType;
+
+      const textContent = `${version} ${buildType}`
+
+      templates.href = `https://cdn.blazium.app/${buildType}/${version}/Blazium_v${version}_export_templates.tpz`
+      const templatesLabel = templates.querySelector("span");
+      if (templatesLabel) {
+        templatesLabel.textContent = textContent;
+      }
+      templatesMono.href = `https://cdn.blazium.app/${buildType}/${version}/Blazium_v${version}_mono_export_templates.tpz`
+      const templatesMonoLabel = templatesMono.querySelector("span");
+      if (templatesMonoLabel) {
+        templatesMonoLabel.textContent = `${textContent} - .NET/C#`;
+      }
+    }
+
     if (downloadButton) {
-      const version = options.version;
-      downloadButton.href = `/${version}`;
+      const version = selectedOptions.version;
+      const buildType = selectedOptions.buildType;
+      const os = selectedOptions.os.toLowerCase().replace(/\s+/g, '');
+      let arch = selectedOptions.arch.toLowerCase();
+      if (os === "windows" && arch.includes("x86")) {
+        arch = arch === "x86_64" ? "64bit" : "32bit"
+      }
+
+      const isMono =  selectedOptions.csharp === "with" ? ".mono" : ""
+
+      const link = `https://cdn.blazium.app/${buildType}/${version}/BlaziumEditor_v${version}_${os}${isMono}.${arch}.zip`
+      downloadButton.href = link;
+
       const buttonLabel = downloadButton.querySelector("span");
       if (buttonLabel) {
         buttonLabel.textContent = version;
@@ -133,8 +240,8 @@ function handleDropdowns(content) {
 
     if (downloadCmd) {
       // Choose the correct command based on the selected package manager and version from JSON
-      const version = options.version;
-      const pkgmngr = options.pkgmngr;
+      const version = selectedOptions.version;
+      const pkgmngr = selectedOptions.pkgmngr;
       const commandTemplate = commands[pkgmngr];
       const cmd = commandTemplate ? commandTemplate.replace("{version}", version) : "";
 
@@ -152,6 +259,35 @@ function handleDropdowns(content) {
       button.style.minWidth = `${menu.offsetWidth}px`
 
       const itemElement = document.createElement('li');
+      itemElement.id = item;
+      itemElement.textContent = item;
+      menu.appendChild(itemElement);
+
+      // Add item click event
+      itemElement.addEventListener("click", () => {
+        selectItem(itemElement, button, menu);
+      });
+    });
+
+    // Set initial selection
+    if (options.length > 0) {
+      const firstItem = menu.querySelector("li");
+      firstItem.classList.add("selected");
+      button.querySelector(".text").textContent = firstItem.textContent;
+    }
+  };
+
+  // Helper function to repopulate dropdown menu items
+  const repopulateMenuItems = (menu, options, button) => {
+    menu.textContent = "";
+    options.forEach(item => {
+      // Set button text to item text to find the minimum width to fit the content
+      button.querySelector(".text").textContent = item
+      menu.style.minWidth = `${button.offsetWidth}px`
+      button.style.minWidth = `${menu.offsetWidth}px`
+
+      const itemElement = document.createElement('li');
+      itemElement.id = item;
       itemElement.textContent = item;
       menu.appendChild(itemElement);
 
@@ -181,15 +317,38 @@ function handleDropdowns(content) {
     // Close dropdown
     menu.classList.remove("active");
 
+    if (menu.parentElement.id === "buildType") {
+      const versionsDropdown = document.querySelector(".dropdown#version");
+      const versionsButton = versionsDropdown.querySelector(".dropdown-button");
+      const versionsMenu = versionsDropdown.querySelector(".dropdown-menu");
+      repopulateMenuItems(versionsMenu, versions[item.textContent], versionsButton);
+    }
+
     // Update links
     setLinks()
   };
+
+  const getAvailableBuilds = () => {
+    let buildTypes = ["release", "prerelease","nightly"];
+    for (let i = 0; i < buildTypes.length; i++) {
+      const type = buildTypes[i];
+      if (type in versions) {
+        if (versions[type].length !== 0) {
+          return buildTypes.slice(i)
+        }
+      }
+    }
+  }
 
   // Fetch and populate dropdowns
   fetchOptions().then(data => {
     if (!data) return; // Exit if fetch failed
 
-    commands = data.commands
+    versions = data.versions;
+    // need to reverse to get latest as first element if appended in api
+    for (type in versions) versions[type].reverse();
+    options = data.options;
+    commands = data.commands;
 
     const dropdowns = content.querySelectorAll(".dropdown");
     dropdowns.forEach(dropdown => {
@@ -200,7 +359,15 @@ function handleDropdowns(content) {
       button.addEventListener("click", () => menu.classList.toggle("active"));
 
       // Populate menu items
-      const optionList = data.options[dropdown.id] || [];
+      let optionList;
+      const availableBuilds = getAvailableBuilds();
+      if (dropdown.id === "version") {
+        optionList = versions[availableBuilds[0]];
+      } else if (dropdown.id === "buildType") {
+        optionList = availableBuilds;
+      } else {
+        optionList = options[dropdown.id];
+      }
       createMenuItems(menu, optionList, button);
     });
 

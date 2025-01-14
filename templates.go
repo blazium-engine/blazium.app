@@ -20,6 +20,7 @@ type MirrorListResponse struct {
 	Timestamp string        `json:"timestamp"`
 	Mirrors   []MirrorEntry `json:"mirrors"`
 }
+
 type MirrorEntry struct {
 	Name     string   `json:"name"`
 	Url      string   `json:"url"`
@@ -33,15 +34,10 @@ type Release struct {
 	ReleaseNotes string `json:"release_notes"`
 }
 
-type Version struct {
-	Name     string    `json:"name"`
-	Releases []Release `json:"releases"`
-}
-
 type FileInfo struct {
 	Name      string     `json:"name"`
 	Filename  string     `json:"filename"`
-	Filesize string 	`json:"filesize"`
+	Filesize  string     `json:"filesize"`
 	Checksum  Checksum   `json:"checksum"`
 	URL       string     `json:"url"`
 	Timestamp string     `json:"timestamp"`
@@ -58,7 +54,7 @@ type Checksum struct {
 func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the version from the URL
 	vars := mux.Vars(r)
-	version  := vars["version"]
+	version := vars["version"]
 
 	// Split the version string
 	versionParts := strings.Split(version, ".")
