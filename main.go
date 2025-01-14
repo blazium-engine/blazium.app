@@ -17,28 +17,6 @@ import (
 )
 
 // MirrorListResponse represents the structure of the JSON response for the mirrorlist API.
-type MirrorListResponse struct {
-	Version   string        `json:"version"`
-	Timestamp string        `json:"timestamp"`
-	Mirrors   []MirrorEntry `json:"mirrors"`
-}
-type MirrorEntry struct {
-	Name     string   `json:"name"`
-	Url      string   `json:"url"`
-	Checksum Checksum `json:"checksum"`
-	Filesize string   `json:"filesize"`
-}
-
-type Release struct {
-	Name         string `json:"name"`
-	ReleaseDate  string `json:"release_date"`
-	ReleaseNotes string `json:"release_notes"`
-}
-
-type Version struct {
-	Name     string    `json:"name"`
-	Releases []Release `json:"releases"`
-}
 
 type Versions []Version
 
@@ -338,11 +316,15 @@ func embedMiddleware(next http.Handler) http.Handler {
 
 // VersionsHandler handles the /api/versions.json endpoint
 func VersionsHandler(w http.ResponseWriter, r *http.Request) {
-	// Load versions from the JSON file
-	versions, err := LoadVersions()
+	vars := mux.Vars(r)
+	buildType := vars["type"]
+
+	versions, err := fetchCerebroVersions(buildType)
 	if err != nil {
-		log.Printf("Error loading versions: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("Error loading versions: %v", err)	
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode([]VersionData{})
 		return
 	}
 

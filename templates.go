@@ -6,11 +6,36 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 type FileDetails struct {
 	Base FileInfo `json:"base"`
 	Mono FileInfo `json:"mono"`
+}
+
+type MirrorListResponse struct {
+	Version   string        `json:"version"`
+	Timestamp string        `json:"timestamp"`
+	Mirrors   []MirrorEntry `json:"mirrors"`
+}
+type MirrorEntry struct {
+	Name     string   `json:"name"`
+	Url      string   `json:"url"`
+	Checksum Checksum `json:"checksum"`
+	Filesize string   `json:"filesize"`
+}
+
+type Release struct {
+	Name         string `json:"name"`
+	ReleaseDate  string `json:"release_date"`
+	ReleaseNotes string `json:"release_notes"`
+}
+
+type Version struct {
+	Name     string    `json:"name"`
+	Releases []Release `json:"releases"`
 }
 
 type FileInfo struct {
@@ -28,12 +53,12 @@ type Checksum struct {
 	SHA256 string `json:"256"`
 }
 
-// https://cdn.blazium.app/nightly/0.2.4/details.json
+// https://cdn.blazium.app/nightly/0.2.4/templates.json
 
 func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the version from the URL
-	version := strings.TrimPrefix(r.URL.Path, "/api/mirrorlist/")
-	version = strings.TrimSuffix(version, ".json")
+	vars := mux.Vars(r)
+	version  := vars["version"]
 
 	// Split the version string
 	versionParts := strings.Split(version, ".")
@@ -47,7 +72,7 @@ func MirrorListHandler(w http.ResponseWriter, r *http.Request) {
 	versionType := versionParts[3]
 
 	// Construct the details.json URL
-	url := fmt.Sprintf("https://cdn.blazium.app/%s/%s/details.json", versionType, baseVersion)
+	url := fmt.Sprintf("https://cdn.blazium.app/%s/%s/templates.json", versionType, baseVersion)
 
 	// Make a HEAD request to check if details.json exists
 	resp, err := http.Head(url)
