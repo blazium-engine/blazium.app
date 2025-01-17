@@ -48,4 +48,4 @@ details on how long they retain your data.
 
 If you have any questions or concerns about our use of third-party embeds and how
 your data is handled, please contact us at
-<a href="mailto:blazium@gmail.com">blazium@gmail.com</a>.
+<a href="mailto:business@divine.games">business@divine.games</a>.
