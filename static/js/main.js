@@ -222,14 +222,16 @@ function handleDropdowns(content) {
       const version = selectedOptions.version;
       const buildType = selectedOptions.buildType;
       const os = selectedOptions.os.toLowerCase().replace(/\s+/g, '');
-      let arch = selectedOptions.arch.toLowerCase();
+      let arch = "." + selectedOptions.arch.toLowerCase();
       if (os === "windows" && arch.includes("x86")) {
-        arch = arch === "x86_64" ? "64bit" : "32bit"
+        arch = arch === ".x86_64" ? ".64bit" : ".32bit"
+      } else if (os === "macos") {
+        arch = ""
       }
 
       const isMono =  selectedOptions.csharp === "with" ? ".mono" : ""
 
-      const link = `https://cdn.blazium.app/${buildType}/${version}/BlaziumEditor_v${version}_${os}${isMono}.${arch}.zip`
+      const link = `https://cdn.blazium.app/${buildType}/${version}/BlaziumEditor_v${version}_${os}${isMono}${arch}.zip`
       downloadButton.href = link;
 
       const buttonLabel = downloadButton.querySelector("span");
