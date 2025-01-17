@@ -1,0 +1,13 @@
+{{/* Template for the terms of service page */}}
+
+{{define "terms_of_service"}}
+  {{template "main-head" .}}
+  {{template "content-tos" .}}
+  {{template "main-foot" .}}
+{{end}}
+
+{{define "content-tos"}}
+  <section class="head-section">
+    {{toHTML .}}
+  </section>
+{{end}}

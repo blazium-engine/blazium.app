@@ -1,15 +1,82 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
+
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 )
 
+type Card struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Image       string `json:"image"`
+}
+
+var templates *template.Template
+
+func mdToHTML(md []byte) []byte {
+	// create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	doc := p.Parse(md)
+
+	// create HTML renderer with extensions
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank | html.LazyLoadImages
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	return markdown.Render(doc, renderer)
+}
+
+// loadTemplates parses all templates in the basePath folder, including subfolders.
+func loadTemplates(basePath string) error {
+	// Define functions to be used in templates
+	funcMap := template.FuncMap{
+		// Creates a key:value pair from the arguments
+		"dict": func(values ...any) map[string]any {
+			dict := make(map[string]any)
+			for i := 0; i < len(values); i += 2 {
+				dict[values[i].(string)] = values[i+1]
+			}
+			return dict
+		},
+		// Creates a sequence of numbers, needed for loops in templates
+		"seq": func(n int) []int {
+			numbers := make([]int, n)
+			for i := 0; i < n; i++ {
+				numbers[i] = i + 1
+			}
+			return numbers
+		},
+		// Used to treat strings as HTML
+		"toHTML": func(s string) template.HTML {
+			return template.HTML(s)
+		},
+		"add": func(x, y int) int { return x + y },
+		"sub": func(x, y int) int { return x - y },
+	}
+
+	// Create a new template and associate the function map
+	templates = template.New("").Funcs(funcMap)
+
+	// Use ParseGlob to parse all .tmpl files in the basePath directories
+	pattern := filepath.Join(basePath, "*/*.tmpl")
+	_, err := templates.ParseGlob(pattern)
+	if err != nil {
+		return fmt.Errorf("error parsing templates: %w", err)
+	}
+
+	return nil
+}
+
 // Helper function to create a clean directory for the generated templates
-func ensureDirExists(path string) error {
+func prepareDirectory(path string) error {
 	if err := os.RemoveAll(path); err != nil {
 		return fmt.Errorf("error removing contents of directory '%s': %w", path, err)
 	}
@@ -18,18 +85,6 @@ func ensureDirExists(path string) error {
 		return fmt.Errorf("error creating directory '%s': %w", path, err)
 	}
 
-	return nil
-}
-
-// Helper function to read and parse JSON file into a slice of structs
-func readJSONFile[T any](filePath string, out *T) error {
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return fmt.Errorf("error reading file '%s': %w", filePath, err)
-	}
-	if err := json.Unmarshal(data, out); err != nil {
-		return fmt.Errorf("error decoding JSON from file '%s': %w", filePath, err)
-	}
 	return nil
 }
 
@@ -54,13 +109,6 @@ func executeTemplate(templatePath string, templateName string, outputPath string
 	}
 
 	return nil
-}
-
-type Card struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Link        string `json:"link"`
-	Image       string `json:"image"`
 }
 
 // Generate templates for dev tools cards
@@ -153,8 +201,8 @@ func GenerateLinks() error {
 // Generate all templates
 func GenerateTemplates() error {
 	dir := filepath.Join("templates", "runtime", "generated")
-	if err := ensureDirExists(dir); err != nil {
-		return fmt.Errorf("error ensuring generated templates directory: %w", err)
+	if err := prepareDirectory(dir); err != nil {
+		return fmt.Errorf("error preparing generated templates directory: %w", err)
 	}
 
 	if err := GenerateRoadMaps(); err != nil {

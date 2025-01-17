@@ -2,4 +2,4 @@ TestResults-*
 .env
 *.env
 *.env.*
-templates/runtime/generated/*
+templates/runtime/generated

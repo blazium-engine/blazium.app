@@ -4,9 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"sync"
+	"time"
 )
 
 type VersionData struct {
@@ -20,7 +24,7 @@ type VersionResponse struct {
 }
 
 type ResponsePayload struct {
-	Success bool          `json:"success"`
+	Success bool             `json:"success"`
 	Data    []VersionPayload `json:"data"`
 }
 
@@ -30,6 +34,17 @@ type VersionPayload struct {
 	ChangelogURL string `json:"changelog_url"`
 	VersionURL   string `json:"version_url"`
 }
+
+type DownloadOptions struct {
+	Versions map[string][]string `json:"versions"`
+	Options  map[string][]string `json:"options"`
+	Commands map[string]string   `json:"commands"`
+}
+
+var (
+	downloadOptionsCache *DownloadOptions
+	cacheMutex           sync.RWMutex
+)
 
 func fetchCerebroVersions(buildType string) ([]VersionData, error) {
 	cerebroURL := os.Getenv("CEREBRO_URL")
@@ -59,7 +74,7 @@ func fetchCerebroVersions(buildType string) ([]VersionData, error) {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
@@ -104,7 +119,7 @@ func fetchCerebroVersionData(buildType string) ([]VersionPayload, error) {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
@@ -119,4 +134,67 @@ func fetchCerebroVersionData(buildType string) ([]VersionPayload, error) {
 	}
 
 	return apiResponse.Data, nil
+}
+
+// updateCache reads the options the JSON file
+// and adds the available versions.
+func updateCache() {
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+
+	var fileOptions struct {
+		Options  map[string][]string `json:"options"`
+		Commands map[string]string   `json:"commands"`
+	}
+
+	filePath := filepath.Join("data", "download_options.json")
+
+	if err := readJSONFile(filePath, &fileOptions); err != nil {
+		log.Printf("Error reading download_options.json: %v", err)
+		return
+	}
+
+	versionsJson, err := getVersions()
+	if err != nil {
+		log.Printf("Error fetching versions: %v", err)
+		return
+	}
+
+	downloadOptionsCache = &DownloadOptions{
+		Versions: versionsJson,
+		Options:  fileOptions.Options,
+		Commands: fileOptions.Commands,
+	}
+}
+
+// startCacheUpdater starts a ticker to update the cache every 30 minutes
+func startCacheUpdater() {
+	ticker := time.NewTicker(24 * time.Hour)
+	defer ticker.Stop()
+
+	// Update the cache initially
+	updateCache()
+
+	for range ticker.C {
+		updateCache()
+	}
+}
+
+// getVersions fetches the version data for all build types
+// and returns them in more managable format.
+func getVersions() (map[string][]string, error) {
+	versions := make(map[string][]string)
+	buildTypes := []string{"nightly", "pre-release", "release"}
+
+	for _, buildType := range buildTypes {
+		versionsData, err := fetchCerebroVersionData(buildType)
+		if err != nil {
+			log.Printf("Error loading versions: %v", err)
+			return map[string][]string{}, nil
+		}
+		for _, version := range versionsData {
+			versions[buildType] = append(versions[buildType], version.Version)
+		}
+	}
+	return versions, nil
 }
