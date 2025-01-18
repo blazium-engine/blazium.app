@@ -201,17 +201,17 @@ func main() {
 	}).Methods("GET")
 
 	// Serve terms_of_service.tmpl on the path "/terms-of-service"
-	// r.HandleFunc("/terms-of-service", func(w http.ResponseWriter, r *http.Request) {
-	// 	filePath := filepath.Join("data", "markdown", "terms_of_service.md")
-	// 	file, err := os.ReadFile(filePath)
-	// 	if err != nil {
-	// 		log.Printf("Error reading file '%s': %v", filePath, err)
-	// 		http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	html := string(mdToHTML(file))
-	// 	serveTemplate(w, "terms_of_service", html)
-	// }).Methods("GET")
+	r.HandleFunc("/terms-of-service", func(w http.ResponseWriter, r *http.Request) {
+		filePath := filepath.Join("data", "markdown", "terms_of_service.md")
+		file, err := os.ReadFile(filePath)
+		if err != nil {
+			log.Printf("Error reading file '%s': %v", filePath, err)
+			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+			return
+		}
+		html := string(mdToHTML(file))
+		serveTemplate(w, "terms_of_service", html)
+	}).Methods("GET")
 
 	// Serve blog.tmpl on the path "/blog"
 	// r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {

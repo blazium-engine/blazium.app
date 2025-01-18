@@ -3,9 +3,9 @@
         "os": [
             "Windows",
             "Linux",
-            "Mac OS",
+            "MacOS",
             "Android",
-            "Horizon OS"
+            "HorizonOS"
         ],
         "arch": [
             "x86_64",

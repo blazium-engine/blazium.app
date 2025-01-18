@@ -155,8 +155,59 @@ function handleDropdowns(content) {
     }
   };
 
+  const getSystemInfo = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    let os = undefined;
+    if (/windows/.test(userAgent)) {
+      os = "Windows";
+    } else if (/mac/.test(userAgent)) {
+      os = "MacOS";
+    } else if (/linux/.test(userAgent)) {
+      os = "Linux";
+    } else if (/android/.test(userAgent)) {
+      os = "Android";
+    // } else if (/iPhone|iPad|iPod/.test(userAgent)) {
+    //   os = "ios";
+    }
+
+    let arch = undefined
+    if (/arm64|aarch64/.test(userAgent)) {
+      arch = "ARM64";
+    } else if (/arm|aarch32/.test(userAgent)) {
+      arch = "ARM32";
+    } else if (/x86_64|win64|wow64/.test(userAgent)) {
+      arch = "x86_64";
+    } else if (/x86|win32/.test(userAgent)) {
+      arch = "x86_32";
+    }
+
+    return {"os": os, "arch": arch};
+  }
+
   // Helper function to set links and text after selecting an option
   const setLinks = () => {
+    const {os, arch} = getSystemInfo();
+
+    if (os) {
+      const osDropdown = content.querySelector("#os");
+      const osDropdownButton = osDropdown.querySelector(".dropdown-button");
+      const osDropdownMenu = osDropdown.querySelector(".dropdown-menu");
+      const itemToSelect = osDropdownMenu.querySelector("#"+os);
+      console.log(os);
+      
+
+      selectItem(itemToSelect, osDropdownButton, osDropdownMenu, false);
+    }
+    if (arch) {
+      const archDropdown = content.querySelector("#arch");
+      const archDropdownButton = archDropdown.querySelector(".dropdown-button");
+      const archDropdownMenu = archDropdown.querySelector(".dropdown-menu");
+      const itemToSelect = archDropdownMenu.querySelector("#"+arch);
+
+      selectItem(itemToSelect, archDropdownButton, archDropdownMenu, false);
+    }
+
     // Collect selected options from dropdowns
     const dropdowns = content.querySelectorAll(".dropdown");
     const selectedOptions = {};
@@ -168,7 +219,7 @@ function handleDropdowns(content) {
     // Hide arch dropdown when macOS
     const macosToHide = content.querySelector("#no-macos");
     if (macosToHide) {
-      if (selectedOptions.os === "Mac OS") {
+      if (selectedOptions.os === "MacOS") {
         macosToHide.style.display = "none";
       } else if (macosToHide.style.display === "none") {
         macosToHide.style.display = "inline-block";
@@ -178,7 +229,7 @@ function handleDropdowns(content) {
     // Hide arch and mono dropdown when andoid
     const androidToHide = content.querySelector("#no-android");
     if (androidToHide) {
-      if (selectedOptions.os === "Android" || selectedOptions.os === "Horizon OS") {
+      if (selectedOptions.os === "Android" || selectedOptions.os === "HorizonOS") {
         androidToHide.style.display = "none";
       } else if (androidToHide.style.display === "none") {
         androidToHide.style.display = "inline-block";
@@ -308,7 +359,7 @@ function handleDropdowns(content) {
   };
 
   // Helper function to handle item selection
-  const selectItem = (item, button, menu) => {
+  const selectItem = (item, button, menu, shouldUpdate=true) => {
     // Deselect all items
     menu.querySelectorAll("li").forEach(i => i.classList.remove("selected"));
 
@@ -327,7 +378,9 @@ function handleDropdowns(content) {
     }
 
     // Update links
-    setLinks()
+    if (shouldUpdate) {
+      setLinks()
+    }
   };
 
   const getAvailableBuilds = () => {
