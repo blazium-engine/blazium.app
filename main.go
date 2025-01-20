@@ -271,6 +271,9 @@ func main() {
 
 	r.HandleFunc("/api/versions/data/{buildType}", VersionDataHandler).Methods("GET")
 
+	r.HandleFunc("/api/tools/{toolType}/{osType}", handleFetchCerebroTools).Methods("GET")
+	r.HandleFunc("/api/tools/{toolType}/{osType}/{toolVersion}", handleFetchCerebroToolData).Methods("GET")
+
 	// Serve download options for the dropdowns
 	r.HandleFunc("/api/download-options", DownloadOptionsHandler).Methods("GET")
 

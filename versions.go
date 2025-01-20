@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type VersionData struct {
@@ -26,6 +28,15 @@ type VersionResponse struct {
 type ResponsePayload struct {
 	Success bool             `json:"success"`
 	Data    []VersionPayload `json:"data"`
+}
+
+type ToolData struct {
+	Name       string
+	Type       string
+	Version    string
+	OS         string
+	File       string
+	Sig        string
 }
 
 type VersionPayload struct {
@@ -45,6 +56,67 @@ var (
 	downloadOptionsCache *DownloadOptions
 	cacheMutex           sync.RWMutex
 )
+
+func fetchCerebroTools(toolType string, osType string) ([]ToolData, error) {
+	cerebroURL := os.Getenv("CEREBRO_URL")
+	blaziumAuth := os.Getenv("BLAZIUM_AUTH")
+
+	if cerebroURL == "" || blaziumAuth == "" {
+		return nil, errors.New("CEREBRO_URL or BLAZIUM_AUTH environment variable is not set")
+	}
+
+	url := fmt.Sprintf("%s/api/v1/tools/%s/%s", cerebroURL, toolType, osType)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("BLAZIUM_AUTH", blaziumAuth)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	var apiResponse []ToolData
+	if err := json.Unmarshal(body, &apiResponse); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
+	}
+
+	return apiResponse, nil
+}
+
+func handleFetchCerebroTools(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolType := vars["toolType"]
+	osType := vars["osType"]
+
+	if toolType == "" || osType == "" {
+		http.Error(w, "Tool type, OS type are required", http.StatusBadRequest)
+		return
+	}
+
+	versionData, err := fetchCerebroTools(toolType, osType)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(versionData)
+}
 
 func fetchCerebroVersions(buildType string) ([]VersionData, error) {
 	cerebroURL := os.Getenv("CEREBRO_URL")
@@ -89,6 +161,68 @@ func fetchCerebroVersions(buildType string) ([]VersionData, error) {
 	}
 
 	return apiResponse.Data, nil
+}
+
+func handleFetchCerebroToolData(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolType := vars["toolType"]
+	osType := vars["osType"]
+	toolVersion := vars["toolVersion"]
+
+	if toolType == "" || osType == "" || toolVersion == "" {
+		http.Error(w, "Tool type, OS type, and tool version are required", http.StatusBadRequest)
+		return
+	}
+
+	versionData, err := fetchCerebroToolData(toolType, osType, toolVersion)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(versionData)
+}
+
+func fetchCerebroToolData(toolType string, osType string, toolVersion string) (*ToolData, error) {
+	cerebroURL := os.Getenv("CEREBRO_URL")
+	blaziumAuth := os.Getenv("BLAZIUM_AUTH")
+
+	if cerebroURL == "" || blaziumAuth == "" {
+		return nil, errors.New("CEREBRO_URL or BLAZIUM_AUTH environment variable is not set")
+	}
+
+	url := fmt.Sprintf("%s/api/v1/tools/%s/%s/%s", toolType, osType, toolVersion)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("BLAZIUM_AUTH", blaziumAuth)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	var apiResponse ToolData
+	if err := json.Unmarshal(body, &apiResponse); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
+	}
+
+	return &apiResponse, nil
 }
 
 func fetchCerebroVersionData(buildType string) ([]VersionPayload, error) {
