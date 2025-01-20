@@ -31,12 +31,12 @@ type ResponsePayload struct {
 }
 
 type ToolData struct {
-	Name       string `json:"name"`
-	Type       string `json:"type"`
-	Version    string `json:"version"`
-	OS         string `json:"os"`
-	File       string `json:"file"`
-	Sig        string `json:"sig"`
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	Version string `json:"version"`
+	OS      string `json:"os"`
+	File    string `json:"file"`
+	Sig     string `json:"sig"`
 }
 
 type VersionPayload struct {
@@ -192,7 +192,7 @@ func fetchCerebroToolData(toolType string, osType string, toolVersion string) (*
 		return nil, errors.New("CEREBRO_URL or BLAZIUM_AUTH environment variable is not set")
 	}
 
-	url := fmt.Sprintf("%s/api/v1/tools/%s/%s/%s", toolType, osType, toolVersion)
+	url := fmt.Sprintf("%s/api/v1/tools/%s/%s/%s", cerebroURL, toolType, osType, toolVersion)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

@@ -155,7 +155,7 @@ header {
     span {
       display: flex;
       align-items: center;
-      gap: 1em;
+      gap: 4px;
     }
   }
 }
@@ -273,7 +273,7 @@ footer {
 
 i.align {
   min-width: 2ch;
-  margin-right: 0.5ch;
+  margin-right: 4px;
 }
 i.align:before {
   display: flex;
