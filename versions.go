@@ -31,12 +31,12 @@ type ResponsePayload struct {
 }
 
 type ToolData struct {
-	Name       string
-	Type       string
-	Version    string
-	OS         string
-	File       string
-	Sig        string
+	Name       string `json:"name"`
+	Type       string `json:"type"`
+	Version    string `json:"version"`
+	OS         string `json:"os"`
+	File       string `json:"file"`
+	Sig        string `json:"sig"`
 }
 
 type VersionPayload struct {
