@@ -87,8 +87,17 @@ func embedMiddleware(next http.Handler) http.Handler {
 			// Set appropriate headers for caching
 			w.Header().Set("Cache-Control", "max-age=3600") // Cache the response for 1 hour
 
-			// Serve the embed template
-			serveTemplate(w, "embed", nil)
+			requestPath := strings.ToLower(r.URL.Path)
+
+			if requestPath == "/static/assets/embed_img.webp" {
+				// Serve the embed image
+				w.Header().Set("Content-Type", "image/webp")
+				http.ServeFile(w, r, "static/assets/embed_img.webp")
+			} else {
+				// Serve the embed template
+				serveTemplate(w, "embed", nil)
+			}
+
 			return
 		}
 
@@ -213,6 +222,16 @@ func main() {
 		serveTemplate(w, "terms_of_service", html)
 	}).Methods("GET")
 
+	// Serve dev_tools.tmpl on the path "/dev-tools"
+	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "dev_tools", nil)
+	// }).Methods("GET")
+
+	// Serve games.tmpl on the path "/games"
+	// r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
+	// 	serveTemplate(w, "games", nil)
+	// }).Methods("GET")
+
 	// Serve blog.tmpl on the path "/blog"
 	// r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
 	// 	serveTemplate(w, "blog", nil)
@@ -241,11 +260,6 @@ func main() {
 	// Serve showcase_article.tmpl on the path "/showcase/article"
 	// r.HandleFunc("/showcase/article", func(w http.ResponseWriter, r *http.Request) {
 	// 	serveTemplate(w, "showcase_article", nil)
-	// }).Methods("GET")
-
-	// Serve dev_tools.tmpl on the path "/dev-tools"
-	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "dev_tools", nil)
 	// }).Methods("GET")
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
