@@ -186,26 +186,26 @@ function handleDropdowns(content) {
   }
 
   // Helper function to set links and text after selecting an option
-  const setLinks = () => {
-    const {os, arch} = getSystemInfo();
+  const setLinks = (firstLoad=false) => {
+    if (firstLoad) {
+      const {os, arch} = getSystemInfo();
 
-    if (os) {
-      const osDropdown = content.querySelector("#os");
-      const osDropdownButton = osDropdown.querySelector(".dropdown-button");
-      const osDropdownMenu = osDropdown.querySelector(".dropdown-menu");
-      const itemToSelect = osDropdownMenu.querySelector("#"+os);
-      console.log(os);
-      
+      if (os) {
+        const osDropdown = content.querySelector("#os");
+        const osDropdownButton = osDropdown.querySelector(".dropdown-button");
+        const osDropdownMenu = osDropdown.querySelector(".dropdown-menu");
+        const itemToSelect = osDropdownMenu.querySelector("#"+os);
 
-      selectItem(itemToSelect, osDropdownButton, osDropdownMenu, false);
-    }
-    if (arch) {
-      const archDropdown = content.querySelector("#arch");
-      const archDropdownButton = archDropdown.querySelector(".dropdown-button");
-      const archDropdownMenu = archDropdown.querySelector(".dropdown-menu");
-      const itemToSelect = archDropdownMenu.querySelector("#"+arch);
+        selectItem(itemToSelect, osDropdownButton, osDropdownMenu, false);
+      }
+      if (arch) {
+        const archDropdown = content.querySelector("#arch");
+        const archDropdownButton = archDropdown.querySelector(".dropdown-button");
+        const archDropdownMenu = archDropdown.querySelector(".dropdown-menu");
+        const itemToSelect = archDropdownMenu.querySelector("#"+arch);
 
-      selectItem(itemToSelect, archDropdownButton, archDropdownMenu, false);
+        selectItem(itemToSelect, archDropdownButton, archDropdownMenu, false);
+      }
     }
 
     // Collect selected options from dropdowns
@@ -437,6 +437,6 @@ function handleDropdowns(content) {
     });
 
     // Inital setup
-    setLinks()
+    setLinks(firstLoad=true)
   });
 }
