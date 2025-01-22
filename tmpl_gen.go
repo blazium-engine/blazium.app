@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
@@ -16,6 +17,7 @@ type Card struct {
 	Description string `json:"description"`
 	Link        string `json:"link"`
 	Image       string `json:"image"`
+	ButtonText  string `json:"buttonText"`
 }
 
 var templates *template.Template
@@ -57,6 +59,12 @@ func loadTemplates(basePath string) error {
 		// Used to treat strings as HTML
 		"toHTML": func(s string) template.HTML {
 			return template.HTML(s)
+		},
+		// Used to get the blog id from the indieDB link
+		"getBlogId": func(s string) string {
+			parts := strings.Split(s, "/")
+			parts = parts[len(parts)-2:]
+			return strings.Join(parts, "/")
 		},
 		"add": func(x, y int) int { return x + y },
 		"sub": func(x, y int) int { return x - y },
@@ -141,6 +149,24 @@ func GenerateRoadMaps() error {
 }
 
 // Generate templates for dev tools cards
+func GenerateGames() error {
+	filePath := filepath.Join("data", "games.json")
+	templatePath := filepath.Join("templates", "generators", "games_cards.tmpl")
+	outputPath := filepath.Join("templates", "runtime", "generated", "games_cards.tmpl")
+
+	var games []Card
+
+	if err := readJSONFile(filePath, &games); err != nil {
+		return fmt.Errorf("error loading games data: %w", err)
+	}
+
+	if err := executeTemplate(templatePath, "games-cards", outputPath, games); err != nil {
+		return fmt.Errorf("error generating games cards: %w", err)
+	}
+	return nil
+}
+
+// Generate templates for dev tools cards
 func GenerateDevTools() error {
 	filePath := filepath.Join("data", "dev_tools.json")
 	templatePath := filepath.Join("templates", "generators", "dev_tools_cards.tmpl")
@@ -206,6 +232,9 @@ func GenerateTemplates() error {
 	}
 
 	if err := GenerateRoadMaps(); err != nil {
+		return err
+	}
+	if err := GenerateGames(); err != nil {
 		return err
 	}
 	if err := GenerateDevTools(); err != nil {

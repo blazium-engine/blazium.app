@@ -4,30 +4,31 @@
             "name": "Community Roadmap",
             "description": "Roadmap for Community related tools, services, templates, projects, and more.",
             "link": "https://github.com/orgs/blazium-engine/projects/1",
-            "image": "github_community.webp"
+            "image": "github_community.webp",
+            "buttonText": "Have a look"
         },
         {
             "name": "Engine Roadmap",
             "description": "Roadmap for Engine features, fixes, enhancements, and general topics related to Blazium as a whole.",
             "link": "https://github.com/orgs/blazium-engine/projects/2",
-            "image": "github_engine.webp"
+            "image": "github_engine.webp",
+            "buttonText": "Have a look"
         }
     ],
-    "embeds":
-        [
-            {
-                "title": "Miro board",
-                "description": "Roadmap for projects and initiatives, offering a high-level overview of our plans and priorities..",
-                "embed_link": "https://miro.com/app/live-embed/uXjVLEUcd18=/?moveToViewport=-1590,-372,1874,897&embedId=961354307452",
-                "link": "https://miro.com/app/board/uXjVLEUcd18=",
-                "id": "miro"
-            },
-            {
-                "title": "TimeGraphics timeline",
-                "description": "This timeline provides a comprehensive overview of key milestones, breakthroughs, and events in the development of the Blazium Engine.",
-                "embed_link": "https://time.graphics/embed?v=1&id=955884",
-                "link": "https://time.graphics/line/955884",
-                "id": "timeGraphics"
-            }
-        ]
+    "embeds": [
+        {
+            "title": "Miro board",
+            "description": "Roadmap for projects and initiatives, offering a high-level overview of our plans and priorities..",
+            "embed_link": "https://miro.com/app/live-embed/uXjVLEUcd18=/?moveToViewport=-1590,-372,1874,897&embedId=961354307452",
+            "link": "https://miro.com/app/board/uXjVLEUcd18=",
+            "id": "miro"
+        },
+        {
+            "title": "TimeGraphics timeline",
+            "description": "This timeline provides a comprehensive overview of key milestones, breakthroughs, and events in the development of the Blazium Engine.",
+            "embed_link": "https://time.graphics/embed?v=1&id=955884",
+            "link": "https://time.graphics/line/955884",
+            "id": "timeGraphics"
+        }
+    ]
 }

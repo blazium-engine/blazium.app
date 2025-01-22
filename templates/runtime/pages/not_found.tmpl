@@ -1,14 +1,13 @@
 {{/* Template for the 404 not found page */}}
 
 {{define "not_found"}}
-  {{template "main-head" .}}
-  {{template "content-404" .}}
-  {{template "main-foot" .}}
-{{end}}
-
-{{define "content-404"}}
+  {{template "main-head" (dict
+    "Title" "Page not found"
+    "Description" "This page does not exist or may not be working"
+  )}}
   <section class="head-section">
-    <h1>Page not found</h1>
-    <p>If there is a problem with the website, <a href={{template "link-website-git"}}>open an issue on GitHub</a>.</p>
+    <h1>Page not found.</h1>
+    <p>If you think that there is a problem with the website, <a href={{template "link-website-git"}}>open an issue on GitHub</a>.</p>
   </section>
+  {{template "main-foot"}}
 {{end}}

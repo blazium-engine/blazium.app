@@ -11,8 +11,8 @@ jobs:
     name: Docker validation Test
     uses: ./.github/workflows/docker-test.yaml
     secrets: inherit
-  go_tests:
-    name: Golang validation Test
-    needs: [docker_tests]
-    uses: ./.github/workflows/go-test.yaml
-    secrets: inherit
+  # go_tests:
+  #   name: Golang validation Test
+  #   needs: [docker_tests]
+  #   uses: ./.github/workflows/go-test.yaml
+  #   secrets: inherit

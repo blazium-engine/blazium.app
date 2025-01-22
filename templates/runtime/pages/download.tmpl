@@ -1,39 +1,13 @@
-{{/* Template for the dropdown menus */}}
-
-{{define "dropdown"}}
-  {{$name := .Name}}
-  <div class="dropdown" id={{$name}}>
-    <button class="dropdown-button" type="menu" aria-haspopup="true">
-      <span class="text"></span>
-      <i class="fa-solid fa-chevron-down"></i>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      {{/* <li class="selected" value=>Text</li> */}}
-    </ul>
-  </div>
-{{end}}
-
-
-{{/* Template for the export templates */}}
-
-{{define "export-templates"}}
-  <section id="export-templates">
-    <h3>Export templates</h3>
-    <p>Used to export your games to all supported platforms.</p>
-    <div>
-      <a id="templates" class="secondary-btn"><i class="align fa-solid fa-download"></i>Download for <span></span></a>
-      <a id="templates-mono" class="secondary-btn"><i class="align fa-solid fa-download"></i>Download for <span></span></a>
-    </div>
-  </section>
-{{end}}
-
-
 {{/* Template for the download page */}}
 
 {{define "download"}}
-  {{template "main-head" .}}
+  {{template "main-head" (dict
+    "Title" "Download Blazium the way you want"
+    "Description" "Get the version you need the way you want"
+    "Url" "/download"
+  )}}
   {{template "content-download" .}}
-  {{template "main-foot" .}}
+  {{template "main-foot"}}
 {{end}}
 
 {{define "content-download"}}
@@ -65,5 +39,19 @@
         {{template "export-templates"}}
       {{end}}
     </section>
+  </section>
+{{end}}
+
+
+{{/* Template for the export templates */}}
+
+{{define "export-templates"}}
+  <section id="export-templates">
+    <h3>Export templates</h3>
+    <p>Used to export your games to all supported platforms.</p>
+    <div>
+      <a id="templates" class="secondary-btn"><i class="align fa-solid fa-download"></i>Download for <span></span></a>
+      <a id="templates-mono" class="secondary-btn"><i class="align fa-solid fa-download"></i>Download for <span></span></a>
+    </div>
   </section>
 {{end}}

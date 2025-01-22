@@ -1,0 +1,62 @@
+/* Roboto
+Licence Endpoint: /static/assets/fonts/Roboto/OFL.txt
+*/
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/static/assets/fonts/Roboto/Roboto-Regular.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url("/static/assets/fonts/Roboto/Roboto-Bold.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/static/assets/fonts/Roboto/Roboto-Italic.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: bold;
+  font-display: swap;
+  src: url("/static/assets/fonts/Roboto/Roboto-BoldItalic.ttf") format('truetype');
+}
+/* Poppins
+Licence Endpoint: /static/assets/fonts/Poppins/OFL.txt
+*/
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/static/assets/fonts/Poppins/Poppins-Regular.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url("/static/assets/fonts/Poppins/Poppins-Bold.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: italic;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/static/assets/fonts/Poppins/Poppins-Italic.ttf") format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: italic;
+  font-weight: bold;
+  font-display: swap;
+  src: url("/static/assets/fonts/Poppins/Poppins-BoldItalic.ttf") format('truetype');
+}

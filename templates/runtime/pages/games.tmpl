@@ -1,0 +1,17 @@
+{{/* Template for the games page */}}
+
+{{define "games"}}
+  {{template "main-head" (dict
+    "Title" "Divine Games"
+    "Description" "Games made by the Blazium Team"
+    "Url" "/games"
+  )}}
+  <section class="head-section">
+    <h1>Divine Games</h1>
+    <p>Games made by the Blazium Team.</p>
+  </section>
+  <section id="games" class="card-grid-container fill">
+    {{template "games-cards"}}
+  </section>
+  {{template "main-foot"}}
+{{end}}
