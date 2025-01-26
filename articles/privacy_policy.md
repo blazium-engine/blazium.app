@@ -73,5 +73,5 @@ We will notify you of any changes by posting the new Privacy Policy on this page
 Please review this Privacy Policy periodically for any updates.
 
 ### Contact Us
-If you have questions or concerns about our use of third-party embeds or how your data is handled, feel free to reach out at [business@divine.games]
-(mailto:business@divine.games).
+If you have questions or concerns about our use of third-party embeds or how your data is handled,
+feel free to reach out at [business@divine.games](mailto:business@divine.games).
