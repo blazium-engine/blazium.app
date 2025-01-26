@@ -23,9 +23,8 @@ htmx.onLoad((content) => {
 
   checkNotice();
 
-  if (window.location.pathname === "/showcase/article") {
-    Prism.highlightAll();
-  }
+  // Trigger Prism
+  Prism.highlightAll();
 
   if (window.location.pathname.includes("/dev-tools/download")) {
     handleToolsDownload(content);

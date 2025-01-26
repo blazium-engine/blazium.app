@@ -1,25 +1,20 @@
 {{/* Template for the blog article page */}}
 
 {{define "blog_article"}}
-  {{template "main-head" (dict
-    "Title" .Title
-    "Description" .Description
-    "Url" .Url
-    "Image" .Image
-  )}}
+  {{template "main-head" .MetaTags}}
   <section id="blog-intro">
-    <img src={{.Image}} alt="Cover image">
+    <img src={{.MetaTags.Image}} alt="Cover image">
     <section>
-      <h1>{{.Title}}</h1>
-      {{if .Published}}
-        <p>{{.Published}}</p>
+      <h1>{{.ArticleData.Title}}</h1>
+      {{if .ArticleData.Published}}
+        <p>{{.ArticleData.Published}}</p>
       {{end}}
     </section>
   </section>
   <section id="blog-article">
-  {{toHTML .Content}}
-  {{if .Link}}
-    <a class="secondary-btn indiedb" href={{.Link}} title="Indie Games Database" target="_blank">
+  {{toHTML .ArticleData.Image}}
+  {{if .ArticleData.Link}}
+    <a class="secondary-btn indiedb" href={{.ArticleData.Link}} title="Indie Games Database" target="_blank">
       Article hosted on IndieDB
       <img src="https://media.indiedb.com/images/global/indiedb.png" class="indiedb" alt="Indie DB" style="height: 0.9em;">
     </a>

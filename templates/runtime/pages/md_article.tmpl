@@ -1,0 +1,9 @@
+{{/* Template for markdown articles */}}
+
+{{define "md_article"}}
+  {{template "main-head" .MetaTags}}
+  <section id="blog-article" class="md">
+    {{toHTML .Content}}
+  </section>
+  {{template "main-foot"}}
+{{end}}
