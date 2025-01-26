@@ -11,8 +11,6 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type VersionData struct {
@@ -46,15 +44,22 @@ type VersionPayload struct {
 	VersionURL   string `json:"version_url"`
 }
 
-type DownloadOptions struct {
+type EditorDownloadOptions struct {
 	Versions map[string][]string `json:"versions"`
 	Options  map[string][]string `json:"options"`
 	Commands map[string]string   `json:"commands"`
 }
 
+type ToolsDownloadOptions struct {
+	Versions map[string][]string `json:"versions"`
+	Names    map[string]string   `json:"names"`
+	Os       []string            `json:"os"`
+}
+
 var (
-	downloadOptionsCache *DownloadOptions
-	cacheMutex           sync.RWMutex
+	editorDownloadOptionsCache *EditorDownloadOptions
+	toolsDownloadOptionsCache  *ToolsDownloadOptions
+	cacheMutex                 sync.RWMutex
 )
 
 func fetchCerebroTools(toolType string, osType string) ([]ToolData, error) {
@@ -96,26 +101,6 @@ func fetchCerebroTools(toolType string, osType string) ([]ToolData, error) {
 	}
 
 	return apiResponse, nil
-}
-
-func handleFetchCerebroTools(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	toolType := vars["toolType"]
-	osType := vars["osType"]
-
-	if toolType == "" || osType == "" {
-		http.Error(w, "Tool type, OS type are required", http.StatusBadRequest)
-		return
-	}
-
-	versionData, err := fetchCerebroTools(toolType, osType)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(versionData)
 }
 
 func fetchCerebroVersions(buildType string) ([]VersionData, error) {
@@ -161,27 +146,6 @@ func fetchCerebroVersions(buildType string) ([]VersionData, error) {
 	}
 
 	return apiResponse.Data, nil
-}
-
-func handleFetchCerebroToolData(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	toolType := vars["toolType"]
-	osType := vars["osType"]
-	toolVersion := vars["toolVersion"]
-
-	if toolType == "" || osType == "" || toolVersion == "" {
-		http.Error(w, "Tool type, OS type, and tool version are required", http.StatusBadRequest)
-		return
-	}
-
-	versionData, err := fetchCerebroToolData(toolType, osType, toolVersion)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(versionData)
 }
 
 func fetchCerebroToolData(toolType string, osType string, toolVersion string) (*ToolData, error) {
@@ -276,28 +240,59 @@ func updateCache() {
 	cacheMutex.Lock()
 	defer cacheMutex.Unlock()
 
-	var fileOptions struct {
+	// Update editor download options cache
+	var fileEditorOptions struct {
 		Options  map[string][]string `json:"options"`
 		Commands map[string]string   `json:"commands"`
 	}
 
-	filePath := filepath.Join("data", "download_options.json")
+	filePath := filepath.Join("data", "editor_download_options.json")
 
-	if err := readJSONFile(filePath, &fileOptions); err != nil {
-		log.Printf("Error reading download_options.json: %v", err)
+	if err := readJSONFile(filePath, &fileEditorOptions); err != nil {
+		log.Printf("Error reading %s: %v", filePath, err)
 		return
 	}
 
-	versionsJson, err := getVersions()
+	versionsJson, err := getEditorVersions()
 	if err != nil {
 		log.Printf("Error fetching versions: %v", err)
 		return
 	}
 
-	downloadOptionsCache = &DownloadOptions{
+	editorDownloadOptionsCache = &EditorDownloadOptions{
 		Versions: versionsJson,
-		Options:  fileOptions.Options,
-		Commands: fileOptions.Commands,
+		Options:  fileEditorOptions.Options,
+		Commands: fileEditorOptions.Commands,
+	}
+
+	// Update tools download options cache
+	var fileToolsOptions struct {
+		Names map[string]string `json:"names"`
+		Os    []string          `json:"os"`
+	}
+
+	filePath = filepath.Join("data", "tools_download_options.json")
+
+	if err := readJSONFile(filePath, &fileToolsOptions); err != nil {
+		log.Printf("Error reading %s: %v", filePath, err)
+		return
+	}
+
+	tools := make([]string, 0, len(fileToolsOptions.Names))
+	for _, value := range fileToolsOptions.Names {
+		tools = append(tools, value)
+	}
+
+	versionsJson, err = getToolsVersions(tools)
+	if err != nil {
+		log.Printf("Error fetching versions: %v", err)
+		return
+	}
+
+	toolsDownloadOptionsCache = &ToolsDownloadOptions{
+		Versions: versionsJson,
+		Names:    fileToolsOptions.Names,
+		Os:       fileToolsOptions.Os,
 	}
 }
 
@@ -314,16 +309,17 @@ func startCacheUpdater() {
 	}
 }
 
-// getVersions fetches the version data for all build types
-// and returns them in more managable format.
-func getVersions() (map[string][]string, error) {
+// getEditorVersions fetches the version data for all build types
+// and returns them in more manageable format.
+func getEditorVersions() (map[string][]string, error) {
 	versions := make(map[string][]string)
 	buildTypes := []string{"nightly", "pre-release", "release"}
 
 	for _, buildType := range buildTypes {
-		versionsData, err := fetchCerebroVersionData(buildType)
+		versionsData, err := localEditorVersions(buildType)
+		// versionsData, err := fetchCerebroVersionData(buildType)
 		if err != nil {
-			log.Printf("Error loading versions: %v", err)
+			log.Printf("Error loading editor versions: %v", err)
 			return map[string][]string{}, nil
 		}
 		for _, version := range versionsData {
@@ -331,4 +327,71 @@ func getVersions() (map[string][]string, error) {
 		}
 	}
 	return versions, nil
+}
+
+// getToolsVersions fetches the version data for all build types
+// and returns them in more manageable format.
+func getToolsVersions(tools []string) (map[string][]string, error) {
+	versions := make(map[string][]string)
+
+	for _, tool := range tools {
+		versionsData, err := localToolsVersions(tool, "windows")
+		// versionsData, err := fetchCerebroTools(tool, "windows")
+		if err != nil {
+			log.Printf("Error loading tool versions: %v", err)
+			return map[string][]string{}, nil
+		}
+		for _, version := range versionsData {
+			versions[tool] = append(versions[tool], version.Version)
+		}
+	}
+	return versions, nil
+}
+
+func localEditorVersions(buildType string) ([]VersionPayload, error) {
+	url := fmt.Sprintf("https://blazium.app/api/versions/data/%s", buildType)
+	resp, err := http.Get(url)
+	if err != nil {
+		return []VersionPayload{}, fmt.Errorf("failed to fetch versions for %s: %w", buildType, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return []VersionPayload{}, fmt.Errorf("received non-OK HTTP status for %s: %d", buildType, resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []VersionPayload{}, fmt.Errorf("failed to read response body for %s: %w", buildType, err)
+	}
+
+	var versionsData []VersionPayload
+	if err := json.Unmarshal(body, &versionsData); err != nil {
+		return []VersionPayload{}, fmt.Errorf("failed to parse versions JSON for %s: %w", buildType, err)
+	}
+	return versionsData, nil
+}
+
+func localToolsVersions(tool string, os string) ([]ToolData, error) {
+	url := fmt.Sprintf("https://blazium.app/api/tools/%s/%s", tool, os)
+	resp, err := http.Get(url)
+	if err != nil {
+		return []ToolData{}, fmt.Errorf("failed to fetch versions for %s: %w", tool, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return []ToolData{}, fmt.Errorf("received non-OK HTTP status for %s: %d", tool, resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []ToolData{}, fmt.Errorf("failed to read response body for %s: %w", tool, err)
+	}
+
+	var versionsData []ToolData
+	if err := json.Unmarshal(body, &versionsData); err != nil {
+		return []ToolData{}, fmt.Errorf("failed to parse versions JSON for %s: %w", tool, err)
+	}
+	return versionsData, nil
 }

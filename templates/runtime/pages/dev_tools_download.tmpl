@@ -1,0 +1,26 @@
+{{/* Template for the tools download page */}}
+
+{{define "dev_tools_download"}}
+  {{template "main-head" (dict
+    "Title" "Download the tools you need"
+    "Description" "Utilities, services, and tools created by the Blazium Team to support developers on their journey"
+    "Url" "/dev-tools/download"
+  )}}
+  <h1>Download the tools you need.</h1>
+  <section id="download">
+    <section id="download-options">
+      <section id="release-selection">
+        <div>
+          I want
+          {{template "dropdown" (dict "Name" "tool")}}
+          {{template "dropdown" (dict "Name" "version")}}
+          for
+          {{template "dropdown" (dict "Name" "os")}}
+          .
+        </div>
+        <a id="download-btn" class="primary-btn"><i class="align fa-solid fa-download"></i>Download <span></span></a>
+      </section>
+    </section>
+  </section>
+  {{template "main-foot"}}
+{{end}}

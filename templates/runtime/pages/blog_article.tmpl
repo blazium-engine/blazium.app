@@ -1,20 +1,29 @@
-{{/* Template for the showcase page */}}
+{{/* Template for the blog article page */}}
 
 {{define "blog_article"}}
-  {{template "main-head" .}}
-  {{template "content-blog-article" .}}
-  {{template "main-foot" .}}
-{{end}}
-
-{{define "content-blog-article"}}
+  {{template "main-head" (dict
+    "Title" .Title
+    "Description" .Description
+    "Url" .Url
+    "Image" .Image
+  )}}
   <section id="blog-intro">
-    <img src={{.Image}} alt="Blog cover image">
+    <img src={{.Image}} alt="Cover image">
     <section>
       <h1>{{.Title}}</h1>
-      <p><i class="fa-solid fa-user"></i> {{.Author}} - {{.Date}} - {{.Category}}</p>
+      {{if .Published}}
+        <p>{{.Published}}</p>
+      {{end}}
     </section>
   </section>
   <section id="blog-article">
   {{toHTML .Content}}
+  {{if .Link}}
+    <a class="secondary-btn indiedb" href={{.Link}} title="Indie Games Database" target="_blank">
+      Article hosted on IndieDB
+      <img src="https://media.indiedb.com/images/global/indiedb.png" class="indiedb" alt="Indie DB" style="height: 0.9em;">
+    </a>
+  {{end}}
   </section>
+  {{template "main-foot"}}
 {{end}}

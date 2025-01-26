@@ -7,8 +7,7 @@
     <section>
       <h3>{{.Name}}</h3>
       <p>{{.Description}}</p>
-      <a class="secondary-btn" href={{.Link}} target="_blank">
-        <i class="fa-solid fa-arrow-right"></i> Have a look</a>
+      <a class="secondary-btn" href={{.Link}}><i class="align fa-solid fa-arrow-right"></i>{{.ButtonText}}</a>
     </section>
   </div>
 {{- end}}
@@ -19,26 +18,22 @@
     <h2>{{.Title}}</h2>
     <p>{{.Description}}</p>
   </section>
-  <iframe width="100%" loading="lazy" title={{.Title}} id="{{.Id}}-embed"
-    src={{.EmbedLink}}
-    frameborder="0" scrolling="no"
-    allow="fullscreen; clipboard-read; clipboard-write"
-    sandbox="allow-scripts allow-same-origin allow-presentation">
-  </iframe>
-  <section class="embed-alt" id="{{.Id}}-placeholder">
-    <p>
-      To view this {{.Title}}, we need your consent to load cookies for this embed.<br>
-      By clicking <strong>"Allow Cookies & View Embed"</strong>, you enable cookies for this content only.<br>
-      Learn more in our <a href="/privacy-policy">Privacy Policy</a>.
-    </p>
-    <button class="secondary-btn" onclick="allowEmbed('{{.Id}}')" type="button">
-    Allow Cookies & View Embed
-    </button>
-    <p>or</p>
-    <a class="secondary-btn" href={{.Link}} target="_blank">
-      <i class="fa-solid fa-arrow-right"></i> Open {{.Title}} in a new tab
-    </a>
-  </section>
+  <div class="iframe-placeholder">
+    <section>
+      <p>
+        We need your consent to show this embed, by clicking <strong>"Accept"</strong>, you agree to the use of cookies.
+        This will activate <strong>all</strong> embeds.
+        For more information, please review our <a href="/privacy-policy">Privacy Policy</a>.
+      </p>
+      <button type="button" class="secondary-btn" onclick="acceptCookies()">Accept</button>
+    </section>
+    <iframe width="100%" loading="lazy" title={{.Title}} id="{{.Id}}-embed"
+      src={{.EmbedLink}}
+      frameborder="0" scrolling="no"
+      allow="fullscreen; clipboard-read; clipboard-write"
+      sandbox="allow-scripts allow-same-origin allow-presentation allow-top-navigation-by-user-activation">
+    </iframe>
+  </div>
 {{- end}}
 {{"{{"}}end{{"}}"}}
 {{- end}}

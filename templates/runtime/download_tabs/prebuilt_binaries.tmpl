@@ -10,19 +10,18 @@
     I want the
     {{template "dropdown" (dict "Name" "version")}}
     {{template "dropdown" (dict "Name" "buildType")}}
-    release of Blazium for
+    release of Blazium<br>for
     {{template "dropdown" (dict "Name" "os")}}
-    <br>
     <div id="no-android">
       <div id="no-macos">
-        running
         {{template "dropdown" (dict "Name" "arch")}}
       </div>
       {{template "dropdown" (dict "Name" "csharp")}}
-      C# support.
+      C# support
     </div>
+    .
   </div>
   <a id="download-btn" class="primary-btn"><i class="align fa-solid fa-download"></i>Download Blazium <span></span></a>
-  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog on GitHUb</a>
+  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog on GitHub</a>
 </section>
 {{end}}

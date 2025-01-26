@@ -1,0 +1,6 @@
+{
+    "os": ["Windows", "Linux", "MacOS"],
+    "names": {
+        "Blazium CLI": "cli"
+    }
+}

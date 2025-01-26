@@ -1,68 +1,126 @@
-{{/* Template for the blog articles */}}
+{{/* Template for the blog page */}}
 
-{{define "blog-articles"}}
-  {{if eq .Articles.Pages 0}}
-    <p>
-      No results found.
-    </p>
+{{define "blog"}}
+  {{template "main-head" (dict
+    "Title" "Blazium blog"
+    "Description" "Stay up-to-date with news about Blazium"
+    "Url" "/blog"
+  )}}
+  {{template "content-blog" .}}
+  {{template "main-foot"}}
+{{end}}
+
+{{define "content-blog"}}
+  <section class="head-section">
+    <div id="blog-head-section">
+      <h1>Blazium blog</h1>
+      <div class="filters">
+        <a class="secondary-btn" href="https://www.indiedb.com/engines/blazium-engine/articles" title="Indie Games Database" target="_blank">
+          Articles hosted on IndieDB
+          <img src="https://media.indiedb.com/images/global/indiedb.png" alt="Indie DB" style="height: 0.9em;">
+        </a>
+        <a class="secondary-btn" href={{template "link-feed" }}><i class="align fa-solid fa-square-rss"></i>RSS feed</a>
+      </div>
+    </div>
+    <form id="blog-filter"
+        action="/blog" method="get"
+        hx-target="#blogs-articles"
+        hx-push-url="true"
+        hx-trigger="click from:#search-submit, input from:fieldset.filters.no-select"
+        hx-indicator="#loading-indicator"
+        hx-swap="innerHTML show:window:top">
+      <search>
+        <input type="search" name="s" id="blog-search"
+            placeholder="Search articles" class="secondary-btn"
+            value="{{.KeyWord}}">
+        <button type="submit" class="secondary-btn" id="search-submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </search>
+      <i id="loading-indicator" class="htmx-indicator">Loading...</i>
+      <fieldset class="filters no-select">
+        <label class="secondary-btn">
+          <input type="radio" name="t" value="articles"
+            {{if eq .ArticleType "articles" }}
+              checked
+            {{end}}>All</label>
+        <label class="secondary-btn">
+          <input type="radio" name="t" value="news"
+            {{if eq .ArticleType "news" }}
+              checked
+            {{end}}>News</label>
+        <label class="secondary-btn">
+          <input type="radio" name="t" value="features"
+            {{if eq .ArticleType "features" }}
+              checked
+            {{end}}>Features</label>
+        <label class="secondary-btn">
+          <input type="radio" name="t" value="tutorials"
+            {{if eq .ArticleType "tutorials" }}
+              checked
+            {{end}}>Tutorials</label>
+      </fieldset>
+    </form>
+  </section>
+  <section id="blogs-articles">
+    <div hx-get="/blog"
+        hx-trigger="load"
+        hx-target="#blogs-articles"
+        hx-include="#blog-filter, find input"
+        hx-indicator="#loading-indicator"
+        name="p" value="{{.Page}}">
+  </section>
+{{end}}
+
+{{define "blogs-articles"}}
+  {{if eq (len .Articles) 0}}
+    <p>No articles found.</p>
   {{else}}
-    <section id="blogs" class="card-grid-container">
-    {{range $blog := .Articles.Blogs}}
-      <div class="card" hx-get="/blog/article/{{$blog.id}}" hx-target="body" hx-push-url="true">
-        <img src={{$blog.image}}>
+    <section class="card-grid-container fill">
+    {{range $item := .Articles}}
+      <div class="card" hx-get="/blog/article/{{getBlogId $item.Link}}" hx-target="body" hx-swap="innerHTML show:window:top" hx-push-url="true">
+        <img src={{$item.Image}}>
         <section>
-          <p><i class="fa-solid fa-user"></i> {{$blog.author}} - {{$blog.date}}</p>
-          <h4>{{$blog.title}}</h4>
+          <p>{{$item.Published}}</p>
+          <h4>{{$item.Title}}</h4>
         </section>
       </div>
     {{end}}
     </section>
-    {{template "page-selector" (dict "Page" .CurrentPage "Max" .Articles.Pages "Url" "/blog")}}
+    {{template "page-selector" (dict "Page" .Pagination.CurrentPage "Max" .Pagination.PagesAmount "Url" "/blog")}}
   {{end}}
 {{end}}
 
 
-{{/* Template for the blog page */}}
+{{/* Template for the page selector */}}
 
-{{define "blog"}}
-  {{template "main-head" .}}
-  {{template "content-blog" .}}
-  {{template "main-foot" .}}
-{{end}}
+{{define "page-selector"}}
+  {{$max := .Max}}
+  {{if gt $max 1}}
+    {{$page := .Page}}
+    {{$url := .Url}}
 
-{{define "content-blog"}}
-  <section id="blog-head" class="flex-between-center head-section">
-    <h1>Blazium blog</h1>
-    <a class="secondary-btn"><i class="fa-solid fa-square-rss"></i> RSS feed</a>
-  </section>
-  <section class="flex-between-center">
-    <input type="search" id="blog-search" placeholder="Search articles" class="secondary-btn">
-    <fieldset class="filters">
-      <label>
-        <input type="radio" name="blog-category" value="all" checked>
-        All
-      </label>
-      <label>
-        <input type="radio" name="blog-category" value="news">
-        News
-      </label>
-      <label>
-        <input type="radio" name="blog-category" value="release">
-        Release
-      </label>
-      <label>
-        <input type="radio" name="blog-category" value="pre-release">
-        Pre-Release
-      </label>
-      <label>
-        <input type="radio" name="blog-category" value="events">
-        Events
-      </label>
-      <label>
-        <input type="radio" name="blog-category" value="devlog">
-        Devlog
-      </label>
-    </fieldset>
-  </section>
-  {{template "blog-articles" .}}
+    <section id="page-selector" class="no-select"
+        hx-target="#blogs-articles"
+        hx-include="#blog-filter, #blog-search"
+        hx-swap="innerHTML show:window:top"
+        hx-push-url="true">
+    {{if ne $page 1}}
+      <a class="secondary-btn" hx-get="{{$url}}?p={{sub $page 1}}"><i class="fa-solid fa-angle-left"></i></a>
+    {{end}}
+
+    {{range $value := (seq $max)}}
+      {{$back := (sub $page 2)}}
+      {{$front := (add $page 2)}}
+
+      {{if (or (and (eq $value $back) (ne $back 1)) (and (eq $value $front) (ne $front $max)))}}
+        <i class="fa-solid fa-ellipsis"></i>
+      {{else if (or (eq $value 1) (and (gt $value $back) (lt $value $front)) (eq $value $max))}}
+        <a class="secondary-btn{{if eq $value $page}} selected{{end}}" hx-get="{{$url}}?p={{$value}}">{{$value}}</a>
+      {{end}}
+    {{end}}
+
+    {{if ne $page $max}}
+      <a class="secondary-btn" hx-get="{{$url}}?p={{add $page 1}}"><i class="fa-solid fa-angle-right"></i></a>
+    {{end}}
+    </section>
+  {{end}}
 {{end}}

@@ -1,0 +1,18 @@
+{{define "games-cards"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "games-cards"{{"}}"}}
+{{- range .}}
+{{if .Name}}
+  <div class="card-two" hx-get="/games/{{.Link}}" hx-target="body" hx-push-url="true">
+    <img src="/static/assets/games/{{.Link}}/{{.Image}}" alt="{{.Name}} image">
+    <section>
+      <h4>{{.Name}}</h4>
+    </section>
+  </div>
+{{else}}
+  <div class="card not-visible">
+  </div>
+{{end}}
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{- end}}

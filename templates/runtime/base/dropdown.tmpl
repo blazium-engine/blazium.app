@@ -1,0 +1,14 @@
+{{/* Template for the dropdown menus */}}
+
+{{define "dropdown"}}
+  {{$name := .Name}}
+  <div class="dropdown" id={{$name}}>
+    <button class="dropdown-button" type="menu" aria-haspopup="true">
+      <span class="text"></span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      {{/* <li class="selected" value=>Text</li> */}}
+    </ul>
+  </div>
+{{end}}

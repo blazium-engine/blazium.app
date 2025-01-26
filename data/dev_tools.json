@@ -1,20 +1,16 @@
 [
     {
-        "name": "Package Manager",
-        "description": "Blazium's Package Manager simplifies managing Engine modules and addons by enabling easy discovery, download, and integration. It ensures compatibility, handles dependencies, and extends Blazium's capabilities efficiently.",
-        "link": "pkgmng_link",
-        "image": "code.webp"
+        "name": "Blazium CLI",
+        "description": "Download Blazium and templates from your terminal.",
+        "link": "/dev-tools/download?tool=cli",
+        "image": "discordtemplate.webp",
+        "buttonText": "Download Blazium CLI"
     },
     {
-        "name": "Blazium Services",
-        "description": "Blazium's Package Manager simplifies managing Engine modules and addons by enabling easy discovery, download, and integration. It ensures compatibility, handles dependencies, and extends Blazium's capabilities efficiently.",
-        "link": "tool_link",
-        "image": "code.webp"
-    },
-    {
-        "name": "Other tool",
-        "description": "Descrition for the other tools",
-        "link": "tool_link",
-        "image": "code.webp"
+        "name": "Docker web build template",
+        "description": "Deploy web-exported game builds of the Blazium Game Engine as Discord Embedded Applications.",
+        "link": "https://github.com/blazium-engine/docker-webbuild-template",
+        "image": "discordtemplate.webp",
+        "buttonText": "See on GitHub"
     }
 ]

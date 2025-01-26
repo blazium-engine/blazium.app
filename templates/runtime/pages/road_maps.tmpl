@@ -1,23 +1,23 @@
 {{/* Template for the road maps page */}}
 
 {{define "road_maps"}}
-  {{template "main-head" .}}
-  {{template "content-roadmaps" .}}
-  {{template "main-foot" .}}
-{{end}}
-
-{{define "content-roadmaps"}}
+  {{template "main-head" (dict
+    "Title" "Road Maps"
+    "Description" "Our goal is to provide a clear vision for the future of Blazium for the community to debate, decide, and shape"
+    "Url" "/road-maps"
+  )}}
   <section class="head-section">
     <h1>Road Maps</h1>
     <p>
-      The goal is simple: provide a clear vision for the future of Blazium for the community to debate, decide, and
-      shape.<br>
-      We value transparency—if you know what we're doing, we'll understand what you want.<br>
-      That's what being a community is all about.
+      Our goal is to provide a clear vision for the future of Blazium
+      for the community to debate, decide, and shape.
     </p>
   </section>
   <section id="roadmaps" class="card-grid-container">
     {{template "road-maps-cards"}}
   </section>
-  {{template "road-maps-embeds"}}
+  <section id="road-maps-embeds">
+    {{template "road-maps-embeds"}}
+  </section>
+  {{template "main-foot"}}
 {{end}}

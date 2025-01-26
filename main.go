@@ -7,9 +7,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
+	"github.com/quic-go/quic-go/http3"
 )
 
 // LoadMirrors reads the mirrors from a JSON file and returns them as a slice of strings.
@@ -63,7 +66,7 @@ func enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins, you can restrict this to a specific domain
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Methods", "HEAD, GETST, OPTIONS, PUT, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 		// Handle preflight OPTIONS requests
@@ -79,29 +82,11 @@ func enableCORS(next http.Handler) http.Handler {
 
 func embedMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the User-Agent header and convert it to lowercase for case-insensitive comparison
 		userAgent := strings.ToLower(r.Header.Get("User-Agent"))
-
-		// Check if the User-Agent contains "discordbot" or "twitterbot" (case-insensitive)
-		if strings.Contains(userAgent, "discordbot") || strings.Contains(userAgent, "twitterbot") {
+		if strings.Contains(userAgent, "bot") {
 			// Set appropriate headers for caching
 			w.Header().Set("Cache-Control", "max-age=3600") // Cache the response for 1 hour
-
-			requestPath := strings.ToLower(r.URL.Path)
-
-			if requestPath == "/static/assets/embed_img.webp" {
-				// Serve the embed image
-				w.Header().Set("Content-Type", "image/webp")
-				http.ServeFile(w, r, "static/assets/embed_img.webp")
-			} else {
-				// Serve the embed template
-				serveTemplate(w, "embed", nil)
-			}
-
-			return
 		}
-
-		// If the User-Agent is not from a bot, pass the request to the next handler
 		next.ServeHTTP(w, r)
 	})
 }
@@ -134,17 +119,263 @@ func VersionDataHandler(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, versions)
 }
 
-// DownloadOptionsHandler serves the cached download options.
-func DownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
+// EditorDownloadOptionsHandler serves the cached editor download options.
+func EditorDownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
 	cacheMutex.RLock()
 	defer cacheMutex.RUnlock()
 
-	if downloadOptionsCache == nil {
+	if editorDownloadOptionsCache == nil {
 		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
-		serveJSON(w, DownloadOptions{})
 		return
 	}
-	serveJSON(w, downloadOptionsCache)
+	serveJSON(w, editorDownloadOptionsCache)
+}
+
+// ToolsDownloadOptionsHandler serves the cached tools download options.
+func ToolsDownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	cacheMutex.RLock()
+	defer cacheMutex.RUnlock()
+
+	if toolsDownloadOptionsCache == nil {
+		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
+		return
+	}
+	serveJSON(w, toolsDownloadOptionsCache)
+}
+
+func handleFetchCerebroTools(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolType := vars["toolType"]
+	osType := vars["osType"]
+
+	if toolType == "" || osType == "" {
+		http.Error(w, "Tool type, OS type are required", http.StatusBadRequest)
+		return
+	}
+
+	versionData, err := fetchCerebroTools(toolType, osType)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	serveJSON(w, versionData)
+}
+
+func handleFetchCerebroToolData(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolType := vars["toolType"]
+	osType := vars["osType"]
+	toolVersion := vars["toolVersion"]
+
+	if toolType == "" || osType == "" || toolVersion == "" {
+		http.Error(w, "Tool type, OS type, and tool version are required", http.StatusBadRequest)
+		return
+	}
+
+	versionData, err := fetchCerebroToolData(toolType, osType, toolVersion)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to fetch version data: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	serveJSON(w, versionData)
+}
+
+// BlogHandler handles the /blog endpoint
+func BlogHandler(w http.ResponseWriter, r *http.Request) {
+	// if not htmx request or blog button pressed, serve base page
+	if r.Header.Get("hx-request") != "true" || r.Header.Get("hx-trigger-name") == "blog-btn" {
+		articleType := "articles"
+		keyWord := ""
+		page := ""
+		if r.URL.Query().Has("t") {
+			articleType = r.URL.Query().Get("t")
+		}
+		if r.URL.Query().Has("s") {
+			keyWord = r.URL.Query().Get("s")
+		}
+		if r.URL.Query().Has("p") {
+			page = r.URL.Query().Get("p")
+		}
+
+		var data struct {
+			ArticleType string
+			KeyWord     string
+			Page        string
+		}
+		data.ArticleType = articleType
+		data.KeyWord = keyWord
+		data.Page = page
+
+		serveTemplate(w, "blog", data)
+		return
+	}
+
+	// if htmx request, serve blog articles
+	url := "https://www.indiedb.com/engines/blazium-engine"
+
+	if r.URL.Query().Has("t") {
+		articleType := r.URL.Query().Get("t")
+		url += "/" + articleType
+	} else {
+		url += "/articles"
+	}
+	if r.URL.Query().Has("p") {
+		if page := r.URL.Query().Get("p"); page != "" {
+			url += "/page/" + page
+		}
+	}
+	if r.URL.Query().Has("s") {
+		keyWord := r.URL.Query().Get("s")
+		url += "?filter=t&kw=" + keyWord
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalf("failed to create request: %v", err)
+	}
+	client := &http.Client{
+		Transport: &http3.Transport{},
+	} // the fucing idiesdb requires http/3 request
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalf("failed to make request: %v", err)
+	}
+
+	// Load the HTML document
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp.Body.Close()
+
+	type Article struct {
+		Image     string
+		Title     string
+		Published string
+		Link      string
+	}
+
+	var articles []Article
+
+	doc.Find("div.table div.row.rowcontent").Each(func(i int, s *goquery.Selection) {
+		image, _ := s.Find("img").Attr("src")
+		image = strings.ReplaceAll(image, "/cache", "")
+		image = strings.ReplaceAll(image, "/crop_120x90", "")
+
+		title := s.Find("h4").Text()
+
+		published := s.Find("span.date time").Text()
+
+		link, _ := s.Find("a.image").Attr("href")
+
+		article := Article{
+			Image:     image,
+			Title:     title,
+			Published: published,
+			Link:      link,
+		}
+		articles = append(articles, article)
+	})
+
+	pagination := doc.Find("div.pagination div.pages")
+	currentPage, _ := strconv.Atoi(pagination.Find("span.current").Text())
+	pagesAmount, _ := strconv.Atoi(pagination.Children().Last().Text())
+
+	var data struct {
+		Articles   []Article
+		Pagination map[string]int
+	}
+	data.Articles = articles
+	data.Pagination = map[string]int{"CurrentPage": currentPage, "PagesAmount": pagesAmount}
+
+	serveTemplate(w, "blogs-articles", data)
+
+}
+
+// BlogArticleHandler handles the /blog/article endpoint
+func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	articleType := vars["type"]
+	id := vars["id"]
+
+	url := fmt.Sprintf("https://www.indiedb.com/groups/indiedb/%s/%s", articleType, id)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalf("failed to create request: %v", err)
+	}
+	client := &http.Client{
+		Transport: &http3.Transport{},
+	} // the fucing idiesdb requires http/3 request
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalf("failed to make request: %v", err)
+	}
+
+	// Load the HTML document
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp.Body.Close()
+
+	article := doc.Find("article #readarticle")
+
+	image, exists := doc.Find("article meta[itemprop=image]").Attr("content")
+	if !exists {
+		log.Fatal("diocmeta")
+	}
+
+	link, exists := doc.Find("article meta[itemprop=mainEntityOfPage]").Attr("itemid")
+	if !exists {
+		log.Fatal("diocmeta")
+	}
+
+	title := article.Find("div.title span.heading").Text()
+	published := article.Find("p.introduction").Text()
+	description := article.Find("p.introductiontext").Text()
+
+	// Process each iframe
+	article.Find("iframe").Each(func(i int, iframe *goquery.Selection) {
+		// Create the wrapping div
+		iframe.WrapHtml("<div class='iframe-placeholder'></div>")
+		// Add the section sibling
+		iframe.AfterHtml(`<section><p>
+				We need your consent to show this embed, by clicking <strong>"Accept"</strong>, you agree to the use of cookies.
+				This will activate <strong>all</strong> embeds.
+				For more information, please review our <a href="/privacy-policy">Privacy Policy</a>.</p>
+				<button type="button" class="secondary-btn" onclick="acceptCookies()">Accept</button>
+			</section>
+		`)
+	})
+
+	articleContent := article.Find("#articlecontent")
+	articleContent.Find("p:has(img:only-child):first-of-type").Remove()
+
+	content, err := articleContent.Html()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var data struct {
+		Image       string
+		Link        string
+		Title       string
+		Published   string
+		Content     string
+		Url         string
+		Description string
+	}
+	data.Image = image
+	data.Link = link
+	data.Title = title
+	data.Published = published
+	data.Content = content
+	data.Url = fmt.Sprintf("/blog/article/%s/%s", articleType, id)
+	data.Description = description
+
+	serveTemplate(w, "blog_article", data)
 }
 
 func main() {
@@ -198,7 +429,7 @@ func main() {
 
 	// Serve privacy_policy.tmpl on the path "/privacy-policy"
 	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("data", "markdown", "privacy_policy.md")
+		filePath := filepath.Join("articles", "privacy_policy.md")
 		file, err := os.ReadFile(filePath)
 		if err != nil {
 			log.Printf("Error reading file '%s': %v", filePath, err)
@@ -211,7 +442,7 @@ func main() {
 
 	// Serve terms_of_service.tmpl on the path "/terms-of-service"
 	r.HandleFunc("/terms-of-service", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("data", "markdown", "terms_of_service.md")
+		filePath := filepath.Join("articles", "terms_of_service.md")
 		file, err := os.ReadFile(filePath)
 		if err != nil {
 			log.Printf("Error reading file '%s': %v", filePath, err)
@@ -223,24 +454,61 @@ func main() {
 	}).Methods("GET")
 
 	// Serve dev_tools.tmpl on the path "/dev-tools"
-	// r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "dev_tools", nil)
-	// }).Methods("GET")
+	r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "dev_tools", nil)
+	}).Methods("GET")
+
+	// Serve dev_tools.tmpl on the path "/dev-tools/download"
+	r.HandleFunc("/dev-tools/download", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "dev_tools_download", nil)
+	}).Methods("GET")
 
 	// Serve games.tmpl on the path "/games"
-	// r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "games", nil)
-	// }).Methods("GET")
+	r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "games", nil)
+	}).Methods("GET")
+
+	// Serve a game page on the path "/games/{gameName}"
+	r.HandleFunc("/games/{gameName}", func(w http.ResponseWriter, r *http.Request) {
+		// Get the game name from the URL
+		vars := mux.Vars(r)
+		gameName := vars["gameName"]
+
+		filePath := filepath.Join("articles", "games", gameName+".md")
+		file, err := os.ReadFile(filePath)
+		if err != nil {
+			log.Printf("Error reading file '%s': %v", filePath, err)
+			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+			return
+		}
+		content := string(mdToHTML(file))
+
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Get metadata
+		img, _ := doc.Find("meta[name='cover-image']").Attr("content")
+		description, _ := doc.Find("meta[name='short-description']").Attr("content")
+		title, _ := doc.Find("meta[name='game-name']").Attr("content")
+
+		data := map[string]string{
+			"Image":       img,
+			"Title":       title,
+			"Content":     content,
+			"Url":         "/games/" + gameName,
+			"Description": description,
+		}
+
+		serveTemplate(w, "blog_article", data)
+	}).Methods("GET")
 
 	// Serve blog.tmpl on the path "/blog"
-	// r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "blog", nil)
-	// }).Methods("GET")
+	r.HandleFunc("/blog", BlogHandler).Methods("GET")
 
-	// // Serve blog_article.tmpl on the path "/blog/article"
-	// r.HandleFunc("/blog/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "blog_article", nil)
-	// }).Methods("GET")
+	// Serve blog_article.tmpl on the path "/blog/article"
+	r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
 
 	// // Serve snippets.tmpl on the path "/snippets"
 	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
@@ -282,14 +550,15 @@ func main() {
 	// Format: versions-nightly.json
 	// Note: only for nightly, prerelease, release
 	r.HandleFunc("/api/versions-{type}.json", VersionsHandler).Methods("GET")
-
 	r.HandleFunc("/api/versions/data/{buildType}", VersionDataHandler).Methods("GET")
 
 	r.HandleFunc("/api/tools/{toolType}/{osType}", handleFetchCerebroTools).Methods("GET")
 	r.HandleFunc("/api/tools/{toolType}/{osType}/{toolVersion}", handleFetchCerebroToolData).Methods("GET")
 
-	// Serve download options for the dropdowns
-	r.HandleFunc("/api/download-options", DownloadOptionsHandler).Methods("GET")
+	// Serve download options for the editor download dropdowns
+	r.HandleFunc("/api/download-options/editor", EditorDownloadOptionsHandler).Methods("GET")
+	// Serve download options for the tools download dropdowns
+	r.HandleFunc("/api/download-options/tools", ToolsDownloadOptionsHandler).Methods("GET")
 
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)
