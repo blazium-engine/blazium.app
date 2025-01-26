@@ -316,8 +316,8 @@ func getEditorVersions() (map[string][]string, error) {
 	buildTypes := []string{"nightly", "pre-release", "release"}
 
 	for _, buildType := range buildTypes {
-		versionsData, err := localEditorVersions(buildType)
-		// versionsData, err := fetchCerebroVersionData(buildType)
+		// versionsData, err := localEditorVersions(buildType)
+		versionsData, err := fetchCerebroVersionData(buildType)
 		if err != nil {
 			log.Printf("Error loading editor versions: %v", err)
 			return map[string][]string{}, nil
@@ -335,8 +335,8 @@ func getToolsVersions(tools []string) (map[string][]string, error) {
 	versions := make(map[string][]string)
 
 	for _, tool := range tools {
-		versionsData, err := localToolsVersions(tool, "windows")
-		// versionsData, err := fetchCerebroTools(tool, "windows")
+		// versionsData, err := localToolsVersions(tool, "windows")
+		versionsData, err := fetchCerebroTools(tool, "windows")
 		if err != nil {
 			log.Printf("Error loading tool versions: %v", err)
 			return map[string][]string{}, nil
@@ -348,6 +348,7 @@ func getToolsVersions(tools []string) (map[string][]string, error) {
 	return versions, nil
 }
 
+// Used for local editor versions fetch
 func localEditorVersions(buildType string) ([]VersionPayload, error) {
 	url := fmt.Sprintf("https://blazium.app/api/versions/data/%s", buildType)
 	resp, err := http.Get(url)
@@ -372,6 +373,7 @@ func localEditorVersions(buildType string) ([]VersionPayload, error) {
 	return versionsData, nil
 }
 
+// Used for local tools versions fetch
 func localToolsVersions(tool string, os string) ([]ToolData, error) {
 	url := fmt.Sprintf("https://blazium.app/api/tools/%s/%s", tool, os)
 	resp, err := http.Get(url)
