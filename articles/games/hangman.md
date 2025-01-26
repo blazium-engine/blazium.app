@@ -11,5 +11,5 @@ ensure.
 
 - [Play on the browser](https://hangman.blazium.app)
 - [Play on Itch.io](https://blaziumengine.itch.io/hangman-auth)
-- [Get it on Steam]()
+<!-- - [Get it on Steam]() -->
 - [Add it to Discord](https://discord.com/oauth2/authorize?client_id=1328040585579335781)

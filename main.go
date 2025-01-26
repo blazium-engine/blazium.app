@@ -386,7 +386,14 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	articleContent := article.Find("#articlecontent")
-	articleContent.Find("p:has(img:only-child):first-of-type").Remove()
+
+	// Remove preview image in article content, only useful in IndeDB
+	selector := `p:has(img:only-child):first-of-type,
+		h1:has(img:only-child):first-of-type,
+		h2:has(img:only-child):first-of-type,
+		h3:has(img:only-child):first-of-type,
+		h3:has(img:only-child):first-of-type`
+	articleContent.Find(selector).Remove()
 
 	content, err := articleContent.Html()
 	if err != nil {
@@ -456,8 +463,8 @@ func main() {
 	}).Methods("GET")
 
 	// Serve road_maps.tmpl on the path "/road-maps"
-	r.HandleFunc("/road-maps", func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "road_maps", nil)
+	r.HandleFunc("/roadmaps", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "roadmaps", nil)
 	}).Methods("GET")
 
 	// Serve privacy_policy.md on the path "/privacy-policy"
@@ -489,6 +496,17 @@ func main() {
 			Title:       "Blazium Engine - Licenses",
 			Description: "Blazium Engine and website licenses",
 			Url:         "/licenses",
+		}
+		serveMarkdown(w, filePath, metaTags)
+	}).Methods("GET")
+
+	// Serve what_is_blazium.tmpl on the path "/what-is-blazium"
+	r.HandleFunc("/what-is-blazium", func(w http.ResponseWriter, r *http.Request) {
+		filePath := filepath.Join("articles", "what_is_blazium.md")
+		metaTags := MetaTags{
+			Title:       "Blazium Engine - What is Blazium?",
+			Description: "A game engine for 2D and 3D, Free and Open-Source, easy to use, there is more but not enough space here",
+			Url:         "/what-is-blazium",
 		}
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")

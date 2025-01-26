@@ -19,94 +19,71 @@
     </div>
   </section>
 
-  {{- /* Features Section */}}
-  <section id="features-section">
-    <h2>Features</h2>
-    <section class="card-grid-container">
-      <div id="feature-2d3d" class="card">
-        <img src="/static/assets/features/2d3d.webp" alt="Dedicated 3D and 2D engines">
-        <section>
-          <h3>Dedicated 3D and 2D engines</h3>
-          <p>Create crisp 2D games with Blazium’s pixel-perfect 2D engine, or build, animate, and render
-            immersive 3D worlds with powerful 3D nodes.</p>
-          <a class="secondary-btn" href="https://docs.blazium.app/about/list_of_features.html#rendering" target="_blank">
-            <i class="fa-solid fa-arrow-right"></i> List of features</a>
-        </section>
-      </div>
-      <div id="feature-build" class="card">
-        <img src="/static/assets/features/blocks.webp" alt="Build with blocks">
-        <section>
-          <h3>Build with blocks</h3>
-          <p>Blazium's Node and Scene system gives you both power and flexibility
-            to create anything.</p>
-          <a class="secondary-btn" href="https://docs.blazium.app/about/list_of_features.html" target="_blank">
-            <i class="fa-solid fa-arrow-right"></i> List of features</a>
-        </section>
-      </div>
-      <div id="feature-export" class="card">
-        <img src="/static/assets/features/export.webp" alt="Export to everything">
-        <section>
-          <h3>Export to everything</h3>
-          <p>Deploy your game seamlessly across desktop, mobile and web.</p>
-          <a class="secondary-btn" href="https://docs.blazium.app/about/list_of_features.html#platforms" target="_blank">
-            <i class="fa-solid fa-arrow-right"></i> List of features</a>
-        </section>
-      </div>
-      <div id="feature-lang" class="card">
-        <img src="/static/assets/features/code.webp" alt="With your favorite language">
-        <section>
-          <h3>With your favorite language</h3>
-          <p>Keep your code modular with an object-oriented API using Blazium's own
-            GDScript, C#, C++, or bring your own using GDExtension.</p>
-          <a class="secondary-btn" href="https://docs.blazium.app/about/list_of_features.html#scripting" target="_blank">
-            <i class="fa-solid fa-arrow-right"></i> List of features</a>
-        </section>
-      </div>
-    </section>
+  <section id="features-section" class="card-grid-container">
+    {{template "release-card"}}
+    <div id="second" class="card">
+      <img src="/static/assets/homepage/pattern.webp" alt="What is blazium image">
+      <section>
+        <h3>What is Blazium?</h3>
+        <p>
+          A game engine for 2D and 3D, Free and Open-Source, easy to use, there is more but not enough space here.
+        </p>
+        <a class="secondary-btn" href="/what-is-blazium">
+          <i class="align fa-solid fa-arrow-right"></i>Know more about Blazium</a>
+      </section>
+    </div>
+    <div id="third" class="card">
+      <img src="/static/assets/homepage/2d3d.webp" alt="Blazium Games image">
+      <section>
+        <h3>Games made with Blazium</h3>
+        <p>
+          Both the Blazium Team and the community love making games, so we have made a list to highlight them all.
+        </p>
+        <a class="secondary-btn" href="/games">
+          <i class="align fa-solid fa-arrow-right"></i>List of games</a>
+      </section>
+    </div>
+    <div id="fourth" class="card">
+      <img src="/static/assets/homepage/code.webp" alt="Dev tools image">
+      <section>
+        <h3>Tools, Templates and Services</h3>
+        <p>
+          We have created various tools, templates and services to support developers on their journey
+        </p>
+        <a class="secondary-btn" href="/dev-tools">
+          <i class="align fa-solid fa-arrow-right"></i>See the Developer Tools</a>
+      </section>
+    </div>
   </section>
 
-  {{- /* Contribute Section */}}
   <section id="contribute">
     <h2>Get Involved</h2>
-    <section class="card-grid-container">
+    <section class="card-grid-container fill">
       <div class="card">
-        <img src="/static/assets/contribute/blazia.webp" alt="Code">
+        <img src="/static/assets/homepage/help.webp" alt="Document">
         <section>
-          <h3>Code</h3>
-          <p>Help by fixing bugs and working with engine contributors towards the
-            implementation of new features.</p>
-          <a class="secondary-btn"
-            href="https://docs.blazium.app/contributing/how_to_contribute.html" target="_blank"><i
-              class="fa-solid fa-arrow-right"></i> More on how to contribute</a>
+          <h3>Help Blazium</h3>
+          <p>Report Bugs, contribute Code or improve the documentation.</p>
+          <a class="secondary-btn" href="https://docs.blazium.app/contributing/how_to_contribute.html">
+            <i class="align fa-solid fa-arrow-right"></i>More on how to contribute</a>
         </section>
       </div>
       <div class="card">
-        <img src="/static/assets/contribute/blazia.webp" alt="Document">
+        <img src="/static/assets/homepage/blocks.webp" alt="Report">
         <section>
-          <h3>Document</h3>
-          <p>Improve documentation by updating the API reference, writing guides, or submitting corrections.</p>
-          <a class="secondary-btn" href="https://docs.blazium.app/contributing/how_to_contribute.html"
-            target="_blank"><i class="fa-solid fa-arrow-right"></i> More on how to contribute</a>
+          <h3>Resources</h3>
+          <p>Development Resources, Tutorials and other things to help you learn.</p>
+          <a class="secondary-btn" href="https://docs.blazium.app/community/tutorials.html">
+            <i class="align fa-solid fa-arrow-right"></i>Go to Resources page</a>
         </section>
       </div>
       <div class="card">
-        <img src="/static/assets/contribute/blazia.webp" alt="Report">
+        <img src="/static/assets/homepage/discord.webp" alt="Discord">
         <section>
-          <h3>Report</h3>
-          <p>Report engine issues to help developers improve Blazium for everyone.</p>
-          <a class="secondary-btn"
-            href="https://docs.blazium.app/contributing/how_to_contribute.html" target="_blank"><i
-              class="fa-solid fa-arrow-right"></i> More on how to contribute</a>
-        </section>
-      </div>
-      <div class="card">
-        <img src="/static/assets/contribute/blazia.webp" alt="Discord">
-        <section>
-          <h3>Discord</h3>
-          <p>A place for the Blazium community to meet, ask questions, share their work, and provide help to other
-            users.</p>
-          <a class="secondary-btn" href="https://chat.blazium.app" target="_blank">
-            <i class="fa-solid fa-arrow-right"></i> Join</a>
+          <h3>Join the Community</h3>
+          <p>A place for the Blazium community to meet, ask questions, share their work, and provide help to other users.</p>
+          <a class="secondary-btn" href="https://chat.blazium.app">
+            <i class="align fa-solid fa-arrow-right"></i>Join the Discord server</a>
         </section>
       </div>
     </section>

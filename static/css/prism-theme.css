@@ -1,5 +1,6 @@
 pre[class*="language-"] {
-  border: 1px solid var(--accent-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 8px;
 }
 pre[class*="language-"],
 code[class*="language-"] {
@@ -109,4 +110,12 @@ pre[class*="language-"] {
 }
 .token.entity {
   cursor: help;
+}
+.token.cr:before,
+.token.lf:before,
+.token.crlf:before {
+	content: '';
+}
+.token.space:before {
+	content: ' ';
 }

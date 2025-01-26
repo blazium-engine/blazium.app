@@ -1,0 +1,13 @@
+{{define "release-card"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "release-card"{{"}}"}}
+  <div id="first" class="card">
+    <img src={{.Image}} alt="Release image">
+    <section>
+      <h3>{{.Name}}</h3>
+      <p>{{.Description}}</p>
+      <a class="secondary-btn" href={{.Link}}><i class="align fa-solid fa-arrow-right"></i>{{.ButtonText}}</a>
+    </section>
+  </div>
+{{"{{"}}end{{"}}"}}
+{{- end}}

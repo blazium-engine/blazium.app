@@ -1,16 +1,16 @@
 [
     {
         "name": "Blazium CLI",
-        "description": "Download Blazium and templates from your terminal.",
+        "description": "Download Blazium and export templates from your terminal.",
         "link": "/dev-tools/download?tool=cli",
-        "image": "discordtemplate.webp",
+        "image": "blazium_cli.webp",
         "buttonText": "Download Blazium CLI"
     },
     {
         "name": "Docker web build template",
         "description": "Deploy web-exported game builds of the Blazium Game Engine as Discord Embedded Applications.",
         "link": "https://github.com/blazium-engine/docker-webbuild-template",
-        "image": "discordtemplate.webp",
+        "image": "discord_template.webp",
         "buttonText": "See on GitHub"
     }
 ]

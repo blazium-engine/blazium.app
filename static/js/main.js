@@ -5,6 +5,18 @@ Prism.plugins.NormalizeWhitespace.setDefaults({
   'right-trim': false,
   'remove-initial-line-feed': true,
 });
+Prism.plugins.showInvisibles = {
+  tab: '→',
+  space: ' ',
+};
+// make prism treat js as gds
+Prism.languages.javascript = Prism.languages.gdscript;
+// Add the hook to ensure line numbers are always applied
+Prism.hooks.add('before-sanity-check', function (env) {
+  if (env.element && env.element.parentNode.tagName === 'PRE') {
+    env.element.parentNode.classList.add('line-numbers');
+  }
+});
 
 // Make the header sticky on scroll
 window.addEventListener("scroll", () => {
@@ -20,10 +32,16 @@ window.addEventListener("scroll", () => {
 
 htmx.onLoad((content) => {
   hideHamMenu();
-
   checkNotice();
 
   // Trigger Prism
+  content.querySelectorAll("pre > code").forEach((block) => {
+    if (block.classList.contains("lang-")) {
+      block.classList.add("language-none");
+    } else {
+      block.classList.add("language-gdscript");
+    }
+  });
   Prism.highlightAll();
 
   if (window.location.pathname.includes("/dev-tools/download")) {

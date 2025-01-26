@@ -1,0 +1,7 @@
+{
+    "name": "Currently only nightly releases",
+    "description": "We are still in the process of testing and polishing for the first release. In the meantime, you can help by testing the latest nightly build available on the download page.",
+    "link": "/download",
+    "image": "/static/assets/homepage/pattern.webp",
+    "buttonText": "Get the latest nightly"
+}

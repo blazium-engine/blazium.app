@@ -1,23 +1,23 @@
 {{/* Template for the road maps page */}}
 
-{{define "road_maps"}}
+{{define "roadmaps"}}
   {{template "main-head" (dict
-    "Title" "Blazium Engine - Road Maps"
+    "Title" "Blazium Engine - Roadmaps"
     "Description" "Our goal is to provide a clear vision for the future of Blazium for the community to debate, decide, and shape"
-    "Url" "/road-maps"
+    "Url" "/roadmaps"
   )}}
   <section class="head-section">
-    <h1>Road Maps</h1>
+    <h1>Roadmaps</h1>
     <p>
       Our goal is to provide a clear vision for the future of Blazium
       for the community to debate, decide, and shape.
     </p>
   </section>
   <section id="roadmaps" class="card-grid-container">
-    {{template "road-maps-cards"}}
+    {{template "roadmaps-cards"}}
   </section>
-  <section id="road-maps-embeds">
-    {{template "road-maps-embeds"}}
+  <section id="roadmaps-embeds">
+    {{template "roadmaps-embeds"}}
   </section>
   {{template "main-foot"}}
 {{end}}

@@ -121,9 +121,9 @@ func executeTemplate(templatePath string, templateName string, outputPath string
 
 // Generate templates for dev tools cards
 func GenerateRoadMaps() error {
-	filePath := filepath.Join("data", "road_maps.json")
-	templatePath := filepath.Join("templates", "generators", "road_maps.tmpl")
-	outputPath := filepath.Join("templates", "runtime", "generated", "road_maps.tmpl")
+	filePath := filepath.Join("data", "roadmaps.json")
+	templatePath := filepath.Join("templates", "generators", "roadmaps.tmpl")
+	outputPath := filepath.Join("templates", "runtime", "generated", "roadmaps.tmpl")
 
 	type Embed struct {
 		Title       string `json:"title"`
@@ -139,11 +139,11 @@ func GenerateRoadMaps() error {
 	}
 
 	if err := readJSONFile(filePath, &roadMaps); err != nil {
-		return fmt.Errorf("error loading road maps data: %w", err)
+		return fmt.Errorf("error loading roadmaps data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "road-maps", outputPath, roadMaps); err != nil {
-		return fmt.Errorf("error generating road maps: %w", err)
+	if err := executeTemplate(templatePath, "roadmaps", outputPath, roadMaps); err != nil {
+		return fmt.Errorf("error generating roadmaps: %w", err)
 	}
 	return nil
 }
@@ -224,6 +224,24 @@ func GenerateLinks() error {
 	return nil
 }
 
+// Generate release card template
+func GenerateReleaseCard() error {
+	filePath := filepath.Join("data", "release_card.json")
+	templatePath := filepath.Join("templates", "generators", "release_card.tmpl")
+	outputPath := filepath.Join("templates", "runtime", "generated", "release_card.tmpl")
+
+	var card Card
+
+	if err := readJSONFile(filePath, &card); err != nil {
+		return fmt.Errorf("error loading release card data: %w", err)
+	}
+
+	if err := executeTemplate(templatePath, "release-card", outputPath, card); err != nil {
+		return fmt.Errorf("error generating release card: %w", err)
+	}
+	return nil
+}
+
 // Generate all templates
 func GenerateTemplates() error {
 	dir := filepath.Join("templates", "runtime", "generated")
@@ -244,6 +262,9 @@ func GenerateTemplates() error {
 		return err
 	}
 	if err := GenerateLinks(); err != nil {
+		return err
+	}
+	if err := GenerateReleaseCard(); err != nil {
 		return err
 	}
 

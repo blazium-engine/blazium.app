@@ -249,7 +249,7 @@ dialog#cookies-notice {
   }
 }
 
-#road-maps-embeds {
+#roadmaps-embeds {
   iframe,
   .iframe-placeholder {
     height: 50vh;
@@ -653,6 +653,7 @@ i.align:before {
 
   #preview {
     max-width: 90vw;
+    margin-bottom: var(--margin-xxl);
 
     img,
     video {
@@ -676,6 +677,7 @@ i.align:before {
 
 #features-section {
   margin-bottom: 4em;
+  grid-auto-flow: column-reverse;
 
   .card img {
     object-position: center;
@@ -684,31 +686,21 @@ i.align:before {
     aspect-ratio: 1;
   }
 
-  #feature-2d3d,
-  #feature-lang {
+  #first,
+  #fourth {
     grid-column: span 2;
   }
 
   @media (max-width: 1024px) {
-    #feature-2d3d,
-    #feature-lang {
+    #first,
+    #fourth {
       grid-column: span 1;
     }
   }
 
-  #feature-build,
-  #feature-export {
+  #second,
+  #third {
     grid-column: span 1;
-  }
-}
-
-#contribute {
-  .card-grid-container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-
-  .card img {
-    aspect-ratio: unset;
   }
 }
 
@@ -911,6 +903,16 @@ i.align:before {
     max-width: 100%;
     border-radius: 8px;
     margin-top: var(--margin-s);
+  }
+
+  iframe[src*="youtube"] {
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+  
+  blockquote {
+    padding-left: var(--margin-m);
+    border-left: 4px solid var(--secondary-color);
   }
 }
 
@@ -1127,6 +1129,7 @@ i.align:before {
   #download-options {
     display: flex;
     flex-direction: column;
+    gap: var(--margin-xxl);
     font: var(--p-big);
     min-height: 24em;
 
