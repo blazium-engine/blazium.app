@@ -15,6 +15,9 @@ The files can be found in the [Brand Kit](https://github.com/blazium-engine/blaz
 
 ### Fonts
 
+All fonts used in the Blazium Engine and their licenses can be found in the [COPYRIGHT.txt](https://github.com/blazium-engine/blazium/blob/blazium-dev/COPYRIGHT.txt)
+file available on Blazium Engine's GitHub repository.
+
 #### Roboto
 Used in the Blazium logo for `"Blazium"` and the website headers.
 [License](https://fonts.google.com/specimen/Roboto/license)
@@ -24,9 +27,5 @@ Used in the Blazium logo for `"Game Engine"` and the website base font.
 [License](https://fonts.google.com/specimen/Poppins/license)
 
 #### Font Awesome
-Used in website for cool icons.
+Used on the website for cool icons.
 [License](https://fontawesome.com/license/free)
-
-#### Inter
-Used in Blazium Engine as the default UI font.
-[License](https://fonts.google.com/specimen/Inter/license)
