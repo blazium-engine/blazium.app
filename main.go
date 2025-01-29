@@ -567,10 +567,10 @@ func main() {
 	}).Methods("GET")
 
 	// Serve blog.tmpl on the path "/blog"
-	r.HandleFunc("/blog", BlogHandler).Methods("GET")
+	// r.HandleFunc("/blog", BlogHandler).Methods("GET")
 
 	// Serve blog_article.tmpl on the path "/blog/article"
-	r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
+	// r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
 
 	// // Serve snippets.tmpl on the path "/snippets"
 	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
