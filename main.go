@@ -359,12 +359,12 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 
 	image, exists := doc.Find("article meta[itemprop=image]").Attr("content")
 	if !exists {
-		log.Fatal("diocmeta")
+		log.Fatal("image not found in article")
 	}
 
 	indieDBLink, exists := doc.Find("article meta[itemprop=mainEntityOfPage]").Attr("itemid")
 	if !exists {
-		log.Fatal("diocmeta")
+		log.Fatal("indiedb link not found in article")
 	}
 
 	title := article.Find("div.title span.heading").Text()
