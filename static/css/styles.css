@@ -535,8 +535,7 @@ i.align:before {
   }
 }
 
-.card,
-.card-two {
+.card {
   all: unset;
   cursor: pointer;
   position: relative;
@@ -576,8 +575,7 @@ i.align:before {
   }
 }
 
-.card:hover,
-.card-two:hover {
+.card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   border-color: var(--accent-color);
@@ -589,17 +587,6 @@ i.align:before {
 
 .card:has(a) {
   cursor: default;
-}
-
-.card-two {
-  position: unset;
-  display: flex;
-  flex-direction: column;
-  background: var(--primary-color);
-  section {
-    all: unset;
-    padding: var(--margin-m);
-  } 
 }
 
 .card-grid-container {
@@ -614,13 +601,6 @@ i.align:before {
   .card {
     aspect-ratio: 4/3;
   }
-}
-
-.not-visible {
-  all: unset;
-  background: transparent;
-  border: none;
-  pointer-events: none;
 }
 
 .head-section {
@@ -921,6 +901,18 @@ i.align:before {
 
   h1 {
     margin-block: var(--margin-m);
+  }
+}
+
+#games.card-grid-container .card {
+  aspect-ratio: 16/9;
+
+  img {
+    object-fit: contain;
+  }
+
+  section {
+    background: linear-gradient(transparent 60%, var(--t-primary-color) 90%);
   }
 }
 
