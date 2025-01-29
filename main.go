@@ -469,7 +469,7 @@ func main() {
 
 	// Serve privacy_policy.md on the path "/privacy-policy"
 	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("articles", "privacy_policy.md")
+		filePath := filepath.Join("data", "articles", "privacy_policy.md")
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - Privacy policy",
 			Description: "Blazium website's privacy policy",
@@ -480,7 +480,7 @@ func main() {
 
 	// Serve terms_of_service.md on the path "/terms-of-service"
 	r.HandleFunc("/terms-of-service", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("articles", "terms_of_service.md")
+		filePath := filepath.Join("data", "articles", "terms_of_service.md")
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - Terms of service",
 			Description: "Blazium website's terms of service",
@@ -491,7 +491,7 @@ func main() {
 
 	// Serve licenses.tmpl on the path "/licenses"
 	r.HandleFunc("/licenses", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("articles", "licenses.md")
+		filePath := filepath.Join("data", "articles", "licenses.md")
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - Licenses",
 			Description: "Blazium Engine and website licenses",
@@ -502,7 +502,7 @@ func main() {
 
 	// Serve what_is_blazium.tmpl on the path "/what-is-blazium"
 	r.HandleFunc("/what-is-blazium", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("articles", "what_is_blazium.md")
+		filePath := filepath.Join("data", "articles", "what_is_blazium.md")
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - What is Blazium?",
 			Description: "A game engine for 2D and 3D, Free and Open-Source, easy to use, there is more but not enough space here",
@@ -532,7 +532,7 @@ func main() {
 		vars := mux.Vars(r)
 		gameName := vars["gameName"]
 
-		filePath := filepath.Join("articles", "games", gameName+".md")
+		filePath := filepath.Join("data", "articles", "games", gameName+".md")
 		file, err := os.ReadFile(filePath)
 		if err != nil {
 			log.Printf("Error reading file '%s': %v", filePath, err)
