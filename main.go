@@ -632,13 +632,5 @@ func main() {
 
 	// Start the server
 	fmt.Println("Starting server on :8080")
-	// log.Fatal(http.ListenAndServe(":8080", corsHandler))
-	srv := &http.Server{
-		Addr:         ":8080",
-		Handler:      corsHandler,
-		ReadTimeout:  0,
-		WriteTimeout: 0,
-		IdleTimeout:  0,
-	}
-	log.Fatal(srv.ListenAndServe())
+	log.Fatal(http.ListenAndServe(":8080", corsHandler))
 }
