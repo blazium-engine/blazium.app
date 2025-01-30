@@ -276,9 +276,10 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("failed to create request: %v", err)
 	}
+	req.Header.Set("User-Agent", "sddf;lkjaa;fjoiwneg;lsaidfgj;oirwaengpuioear;nearoiptiuhdaspf;goin")
+
 	client := &http.Client{
 		Transport: &http3.Transport{},
-		Timeout:   0,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -341,9 +342,10 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("failed to create request: %v", err)
 	}
+	req.Header.Set("User-Agent", "sddf;lkjaa;fjoiwneg;lsaidfgj;oirwaengpuioear;nearoiptiuhdaspf;goin")
+
 	client := &http.Client{
 		Transport: &http3.Transport{},
-		Timeout:   0,
 	}
 	resp, err := client.Do(req)
 	if err != nil {
