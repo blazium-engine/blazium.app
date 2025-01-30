@@ -276,7 +276,6 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("failed to create request: %v", err)
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0")
 
 	client := &http.Client{
 		Transport: &http3.Transport{},
@@ -633,5 +632,13 @@ func main() {
 
 	// Start the server
 	fmt.Println("Starting server on :8080")
-	log.Fatal(http.ListenAndServe(":8080", corsHandler))
+	// log.Fatal(http.ListenAndServe(":8080", corsHandler))
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      corsHandler,
+		ReadTimeout:  0,
+		WriteTimeout: 0,
+		IdleTimeout:  0,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
