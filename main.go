@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
@@ -276,7 +277,6 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("failed to create request: %v", err)
 	}
-	req.Header.Set("User-Agent", "sddf;lkjaa;fjoiwneg;lsaidfgj;oirwaengpuioear;nearoiptiuhdaspf;goin")
 
 	client := &http.Client{
 		Transport: &http3.Transport{},
@@ -342,7 +342,6 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("failed to create request: %v", err)
 	}
-	req.Header.Set("User-Agent", "sddf;lkjaa;fjoiwneg;lsaidfgj;oirwaengpuioear;nearoiptiuhdaspf;goin")
 
 	client := &http.Client{
 		Transport: &http3.Transport{},
@@ -634,5 +633,13 @@ func main() {
 
 	// Start the server
 	fmt.Println("Starting server on :8080")
-	log.Fatal(http.ListenAndServe(":8080", corsHandler))
+	// log.Fatal(http.ListenAndServe(":8080", corsHandler))
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      corsHandler,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
