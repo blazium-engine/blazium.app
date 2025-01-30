@@ -278,7 +278,8 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	client := &http.Client{
 		Transport: &http3.Transport{},
-	} // the fucing idiesdb requires http/3 request
+		Timeout:   0,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalf("failed to make request: %v", err)
@@ -342,7 +343,8 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	client := &http.Client{
 		Transport: &http3.Transport{},
-	} // the fucing idiesdb requires http/3 request
+		Timeout:   0,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalf("failed to make request: %v", err)
@@ -567,10 +569,10 @@ func main() {
 	}).Methods("GET")
 
 	// Serve blog.tmpl on the path "/blog"
-	// r.HandleFunc("/blog", BlogHandler).Methods("GET")
+	r.HandleFunc("/blog", BlogHandler).Methods("GET")
 
 	// Serve blog_article.tmpl on the path "/blog/article"
-	// r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
+	r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
 
 	// // Serve snippets.tmpl on the path "/snippets"
 	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
