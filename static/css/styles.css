@@ -1121,10 +1121,16 @@ i.align:before {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-#logo-horizontal .light-bg,
-#logo-vertical .light-bg,
-#logo-mark .light-bg {
-  background-color: white;
+#logo-horizontal,
+#logo-vertical,
+#logo-mark {
+  .light-bg {
+    background-color: white;
+  }
+
+  div {
+    max-width: 80vw;
+  }
 }
 
 #colors.card-grid-container {
@@ -1139,6 +1145,7 @@ i.align:before {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-width: 75vw;
 
     h4, p {
       color: black;
