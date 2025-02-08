@@ -513,6 +513,11 @@ func main() {
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")
 
+	// Serve brand_kit.tmpl on the path "/brand-kit"
+	r.HandleFunc("/brand-kit", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "brand_kit", nil)
+	}).Methods("GET")
+
 	// Serve dev_tools.tmpl on the path "/dev-tools"
 	r.HandleFunc("/dev-tools", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "dev_tools", nil)
