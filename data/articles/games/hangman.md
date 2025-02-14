@@ -9,7 +9,11 @@ Project Hangman is a multiplayer hangman game made in the Blazium Engine, that u
 lobby system. Create Lobbies, join games, and play with multiple friends in this basic hangman game where hilarity can
 ensure.
 
-- [Play on the browser](https://hangman.blazium.app)
-- [Play on Itch.io](https://blaziumengine.itch.io/hangman-auth)
-<!-- - [Get it on Steam]() -->
-- [Add it to Discord](https://discord.com/oauth2/authorize?client_id=1328040585579335781)
+<div>
+<a href="https://hangman.blazium.app" target="_blank">
+<img src="/static/assets/buttons/web_button.webp" class="indiedb"></a>
+<a href="https://blaziumengine.itch.io/hangman-auth" target="_blank">
+<img src="/static/assets/buttons/itchio_button.webp" class="indiedb"></a>
+<a href="https://discord.com/oauth2/authorize?client_id=1328040585579335781" target="_blank">
+<img src="/static/assets/buttons/discord_button.webp" class="indiedb"></a>
+</div>
