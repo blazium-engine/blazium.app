@@ -23,7 +23,7 @@
       </div>
     </div>
     <form id="blog-filter"
-        action="/blog" method="get"
+        action="/blog-dev" method="get"
         hx-target="#blogs-articles"
         hx-push-url="true"
         hx-trigger="click from:#search-submit, input from:fieldset.filters.no-select"
@@ -61,7 +61,7 @@
     </form>
   </section>
   <section id="blogs-articles">
-    <div hx-get="/blog"
+    <div hx-get="/blog-dev"
         hx-trigger="load"
         hx-target="#blogs-articles"
         hx-include="#blog-filter, find input"
@@ -85,7 +85,7 @@
       </div>
     {{end}}
     </section>
-    {{template "page-selector" (dict "Page" .Pagination.CurrentPage "Max" .Pagination.PagesAmount "Url" "/blog")}}
+    {{template "page-selector" (dict "Page" .Pagination.CurrentPage "Max" .Pagination.PagesAmount "Url" "/blog-dev")}}
   {{end}}
 {{end}}
 

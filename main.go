@@ -574,7 +574,12 @@ func main() {
 	}).Methods("GET")
 
 	// Serve blog.tmpl on the path "/blog"
-	r.HandleFunc("/blog", BlogHandler).Methods("GET")
+	r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Location", "https://www.indiedb.com/engines/blazium-engine/articles")
+		w.WriteHeader(http.StatusTemporaryRedirect)
+	}).Methods("GET")
+
+	r.HandleFunc("/blog-dev", BlogHandler).Methods("GET")
 
 	// Serve blog_article.tmpl on the path "/blog/article"
 	r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
