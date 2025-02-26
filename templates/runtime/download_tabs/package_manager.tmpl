@@ -8,8 +8,8 @@
 <section id="release-selection">
   <div>
     Install Blazium
-    {{template "dropdown" (dict "Name" "version")}}
     {{template "dropdown" (dict "Name" "buildType")}}
+    {{template "dropdown" (dict "Name" "version")}}
     on
     {{template "dropdown" (dict "Name" "os")}}
     <br>
@@ -18,7 +18,7 @@
     {{template "dropdown" (dict "Name" "pkgmngr")}}.
   </div>
   <pre id="download-cmd" class="lang-none command-line" data-prompt="$"><code></code></pre>
-  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog on GitHub</a>
+  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog</a>
   <a class="secondary-btn" href="https://docs.blazium.app/about/system_requirements.html" target="_blank">
     <i class="align fa-solid fa-computer"></i>System requirements
   </a>

@@ -11,7 +11,7 @@ The licenses for third-party libraries and code snippets used in the Blazium Eng
 ### Logo
 
 The Blazium Logo is licensed under the [CC0 1.0 Universal license](https://github.com/blazium-engine/blazium/blob/blazium-dev/LOGO_LICENSE.txt).<br>
-The files can be found in the [Brand Kit](https://github.com/blazium-engine/blazium-assets/tree/main/Blazium%20Engine%20-%20Brand%20Kit).
+The files can be found in the [Brand Kit](/brand-kit).
 
 ### Fonts
 

@@ -7,10 +7,10 @@
 {{define "download-content-torrent"}}
 <section id="release-selection">
   <div>
-    I want the
-    {{template "dropdown" (dict "Name" "version")}}
+    I want Blazium
     {{template "dropdown" (dict "Name" "buildType")}}
-    release of Blazium<br>for
+    {{template "dropdown" (dict "Name" "version")}}
+    <br>for
     {{template "dropdown" (dict "Name" "os")}}
     <div id="no-android">
       <div id="no-macos">
@@ -22,7 +22,7 @@
     .
   </div>
   <a id="download-btn" class="primary-btn"><i class="align fa-solid fa-download"></i>Get Blazium <span></span> Torrent</a>
-  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog on GitHub</a>
+  <a id="changelog-btn" class="secondary-btn"><i class="align fa-solid fa-arrow-right"></i>Read the changelog</a>
   <a class="secondary-btn" href="https://docs.blazium.app/about/system_requirements.html" target="_blank">
     <i class="align fa-solid fa-computer"></i>System requirements
   </a>

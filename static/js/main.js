@@ -184,7 +184,7 @@ function handleEditorDownload(content) {
     // Hide arch and mono dropdown when android
     const androidToHide = content.querySelector("#no-android");
     if (androidToHide) {
-      if (selectedOptions.os === "Android" || selectedOptions.os === "HorizonOS") {
+      if (selectedOptions.os === "Android" || selectedOptions.os === "Horizon OS") {
         androidToHide.style.display = "none";
       } else if (androidToHide.style.display === "none") {
         androidToHide.style.display = "inline-block";
@@ -197,18 +197,16 @@ function handleEditorDownload(content) {
     const downloadButton = content.querySelector("#download-btn");
     const downloadCmd = content.querySelector("#download-cmd");
 
+    const version = selectedOptions.version;
+    const buildType = selectedOptions.buildType;
+
     if (changelogButton) {
-      const version = selectedOptions.version;
-      const buildType = selectedOptions.buildType;
-      changelogButton.href = `v${version}-${buildType}`
+      changelogButton.href = `/changelog?v=${buildType}_${version}`
     }
 
     if (templatesContainer) {
       const templates = templatesContainer.querySelector("#templates");
       const templatesMono = templatesContainer.querySelector("#templates-mono");
-
-      const version = selectedOptions.version;
-      const buildType = selectedOptions.buildType;
 
       const textContent = `${version} ${buildType}`
 
@@ -225,8 +223,6 @@ function handleEditorDownload(content) {
     }
 
     if (downloadButton) {
-      const version = selectedOptions.version;
-      const buildType = selectedOptions.buildType;
       const os = selectedOptions.os.toLowerCase();
       let arch = "." + selectedOptions.arch.toLowerCase();
       if (os === "windows" && arch.includes("x86")) {
@@ -248,7 +244,6 @@ function handleEditorDownload(content) {
 
     if (downloadCmd) {
       // Choose the correct command based on the selected package manager and version from JSON
-      const version = selectedOptions.version;
       const pkgmngr = selectedOptions.pkgmngr;
       const commandTemplate = commands[pkgmngr];
       const cmd = commandTemplate ? commandTemplate.replace("{version}", version) : "";
@@ -355,8 +350,6 @@ function handleEditorDownload(content) {
     if (!data) return; // Exit if fetch failed
 
     versions = data.versions;
-    // need to reverse to get latest as first element if appended in api
-    for (type in versions) versions[type].reverse();
     options = data.options;
     commands = data.commands;
 
@@ -418,28 +411,6 @@ function handleEditorDownload(content) {
   handleLink("download-btn");
   handleLink("templates");
   handleLink("templates-mono");
-
-  // handle changelog button
-  const changelogButton = content.querySelector("#changelog-btn");
-  if (changelogButton) {
-    changelogButton.addEventListener("click", async (event) => {
-      event.preventDefault();
-
-      const href = changelogButton.getAttribute("href");
-      try {
-        var link = `https://api.github.com/repos/blazium-engine/blazium/releases/tags/${href}`
-        const response = await fetch(link, { method: "HEAD"});
-        if (response.status === 404) {
-          alert("No changelog is present for this version.");
-        } else {
-          link = `https://github.com/blazium-engine/blazium/releases/tag/${href}`
-          window.location.href = link;
-        }
-      } catch (error) {
-        alert("An error occurred while checking the link.");
-      }
-    })
-  }
 }
 
 function getSystemInfo () {
@@ -450,10 +421,10 @@ function getSystemInfo () {
     os = "Windows";
   } else if (/mac/.test(userAgent)) {
     os = "MacOS";
-  } else if (/linux/.test(userAgent)) {
-    os = "Linux";
   } else if (/android/.test(userAgent)) {
     os = "Android";
+  } else if (/linux/.test(userAgent)) {
+    os = "Linux";
   // } else if (/iPhone|iPad|iPod/.test(userAgent)) {
   //   os = "ios";
   }
@@ -647,7 +618,6 @@ function handleToolsDownload(content) {
     if (!data) return; // Exit if fetch failed
 
     toolsVersions = data.versions;
-    for (tool in toolsVersions) toolsVersions[tool].reverse();
     toolsNames = data.names;
 
     const dropdowns = content.querySelectorAll(".dropdown");

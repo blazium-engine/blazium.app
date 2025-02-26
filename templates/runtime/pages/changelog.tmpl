@@ -1,0 +1,85 @@
+{{/* Template for the changelog page */}}
+
+{{define "changelog"}}
+  {{template "main-head" (dict
+    "Title" "Blazium Engine - Changelog"
+    "Description" "Changelog for each official build of the engine"
+    "Url" "/changelog"
+  )}}
+  {{template "content-changelog" .}}
+  {{template "main-foot"}}
+{{end}}
+
+{{define "content-changelog"}}
+  {{$selectedType := .SelectedType}}
+  {{$selectedVersion := printf "%s_%s" .SelectedType .SelectedVersion}}
+  <section id="changelog" class="article md">
+    <h1>Blazium changelog</h1>
+    <div id="content">
+      <aside>
+        <i id="loading-indicator" class="htmx-indicator">Loading...</i>
+        <form id="version-filter"
+            action="/changelog" method="get"
+            hx-target="#changelog-article"
+            hx-push-url="true"
+            hx-trigger="click from:#search-submit, input from:fieldset.filters.no-select"
+            hx-indicator="#loading-indicator"
+            hx-swap="innerHTML show:window:top">
+          <fieldset class="filters no-select">
+            <details {{if eq $selectedType "release"}}open{{end}}>
+              <summary>Release</summary>
+              <div>
+              {{range .Release}}{{$value := printf "release_%s" .}}
+                <label class="secondary-btn">
+                  <input type="radio" name="v" value={{$value}}
+                  {{if eq $selectedVersion $value}}
+                    checked
+                  {{end}}
+                >{{.}}</label>
+              {{end}}
+              </div>
+            </details>
+            <details {{if eq $selectedType "pre-release"}}open{{end}}>
+              <summary>Pre Release</summary>
+              <div>
+              {{range .PreRelease}}{{$value := printf "pre-release_%s" .}}
+                <label class="secondary-btn">
+                  <input type="radio" name="v" value={{$value}}
+                  {{if eq $selectedVersion $value}}
+                    checked
+                  {{end}}
+                >{{.}}</label>
+              {{end}}
+              </div>
+            </details>
+            <details {{if eq $selectedType "nightly"}}open{{end}}>
+              <summary>Nightly</summary>
+              <div>
+              {{range .Nightly}}{{$value := printf "nightly_%s" .}}
+                <label class="secondary-btn">
+                  <input type="radio" name="v" value={{$value}}
+                  {{if eq $selectedVersion $value}}
+                    checked
+                  {{end}}
+                >{{.}}</label>
+              {{end}}
+              </div>
+            </details>
+          </fieldset>
+        </form>
+        </details>
+      </aside>
+      <section id="changelog-article">
+        <div hx-get="/changelog"
+            hx-trigger="load"
+            hx-target="#changelog-article"
+            hx-include="#version-filter"
+            hx-indicator="#loading-indicator">
+      </section>
+    </div>
+  </section>
+{{end}}
+
+{{define "changelog-article"}}
+  {{toHTML .}}
+{{end}}

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"time"
 )
@@ -257,6 +258,11 @@ func updateCache() {
 	if err != nil {
 		log.Printf("Error fetching versions: %v", err)
 		return
+	}
+
+	for i, versions := range versionsJson {
+		slices.Reverse(versions)
+		versionsJson[i] = versions
 	}
 
 	editorDownloadOptionsCache = &EditorDownloadOptions{

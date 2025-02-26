@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -420,6 +421,133 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	serveTemplate(w, "blog_article", data)
 }
 
+func GamesHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the game name from the URL
+	vars := mux.Vars(r)
+	gameName := vars["gameName"]
+
+	filePath := filepath.Join("data", "articles", "games", gameName+".md")
+	file, err := os.ReadFile(filePath)
+	if err != nil {
+		log.Printf("Error reading file '%s': %v", filePath, err)
+		http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
+		return
+	}
+	content := string(mdToHTML(file))
+
+	// Get metadata
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
+	if err != nil {
+		log.Fatal(err)
+	}
+	img, _ := doc.Find("meta[name='cover-image']").Attr("content")
+	description, _ := doc.Find("meta[name='short-description']").Attr("content")
+	title, _ := doc.Find("meta[name='game-name']").Attr("content")
+
+	data := BlogArticle{
+		MetaTags: MetaTags{
+			Image:       img,
+			Title:       "Blazium Engine - " + title,
+			Description: description,
+			Url:         "/games/" + gameName,
+		},
+		ArticleData: ArticleData{
+			Title: title,
+			Image: content, // Recycling Image for the content string
+		},
+	}
+
+	serveTemplate(w, "blog_article", data)
+}
+
+func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
+	cacheMutex.RLock()
+	defer cacheMutex.RUnlock()
+	if editorDownloadOptionsCache == nil {
+		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
+		return
+	}
+	versions := editorDownloadOptionsCache.Versions
+	buildTypes := make([]string, len(versions))
+	i := 0
+	for k := range versions {
+		buildTypes[i] = k
+		i++
+	}
+
+	buildType := buildTypes[0]
+	version := versions[buildType][0]
+
+	if r.URL.Query().Has("v") {
+		v := strings.Split(r.URL.Query().Get("v"), "_")
+		buildType = v[0]
+		version = v[1]
+	}
+
+	// if not htmx request or press changelog link serve base page
+	if r.Header.Get("hx-request") != "true" || r.Header.Get("hx-trigger-name") == "changelog-btn" {
+		var versionsData struct {
+			SelectedType    string
+			SelectedVersion string
+			Release         []string
+			PreRelease      []string
+			Nightly         []string
+		}
+		versionsData.SelectedType = buildType
+		versionsData.SelectedVersion = version
+		versionsData.Release = versions["release"]
+		versionsData.PreRelease = versions["pre-release"]
+		versionsData.Nightly = versions["nightly"]
+
+		serveTemplate(w, "changelog", versionsData)
+		return
+	}
+
+	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/changelog.html"
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatalf("failed to create request: %v", err)
+	}
+
+	if resp.StatusCode == 404 {
+		serveTemplate(w, "changelog-article", "<p>No changelog found for the selected version.</p>")
+		return
+	}
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp.Body.Close()
+
+	mainDetails := doc.Find("details:first-of-type").First()
+	mainDetails.ReplaceWithSelection(mainDetails.Children())
+	doc.Find("summary:first-of-type").First().Remove()
+	doc.Find("h2").First().Remove()
+	doc.Find("details:first-of-type").First().BeforeHtml("<h3>Commits</h3>")
+
+	// Link authors
+	doc.Find("blockquote b").Each(func(i int, author *goquery.Selection) {
+		user := author.Text()
+		author.SetHtml("<a href='https://github.com/" + user + "'>" + user + "</a>")
+	})
+
+	// Make commit hashes shorter and link them
+	content, err := doc.Html()
+	if err != nil {
+		log.Fatal(err)
+	}
+	re := regexp.MustCompile(`[a-z0-9]{40}`)
+	hashes := re.FindAllString(content, -1)
+	for _, hash := range hashes {
+		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "'>" + hash[:6] + "</a>"
+		rex := regexp.MustCompile(hash)
+		content = rex.ReplaceAllString(content, fixed)
+	}
+
+	serveTemplate(w, "changelog-article", content)
+}
+
 func main() {
 	// Generate templates from configs
 	if err := GenerateTemplates(); err != nil {
@@ -528,61 +656,27 @@ func main() {
 		serveTemplate(w, "dev_tools_download", nil)
 	}).Methods("GET")
 
-	// Serve games.tmpl on the path "/games"
-	r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
-		serveTemplate(w, "games", nil)
-	}).Methods("GET")
-
-	// Serve a game page on the path "/games/{gameName}"
-	r.HandleFunc("/games/{gameName}", func(w http.ResponseWriter, r *http.Request) {
-		// Get the game name from the URL
-		vars := mux.Vars(r)
-		gameName := vars["gameName"]
-
-		filePath := filepath.Join("data", "articles", "games", gameName+".md")
-		file, err := os.ReadFile(filePath)
-		if err != nil {
-			log.Printf("Error reading file '%s': %v", filePath, err)
-			http.Error(w, "Failed to read "+filePath, http.StatusInternalServerError)
-			return
-		}
-		content := string(mdToHTML(file))
-
-		// Get metadata
-		doc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
-		if err != nil {
-			log.Fatal(err)
-		}
-		img, _ := doc.Find("meta[name='cover-image']").Attr("content")
-		description, _ := doc.Find("meta[name='short-description']").Attr("content")
-		title, _ := doc.Find("meta[name='game-name']").Attr("content")
-
-		data := BlogArticle{
-			MetaTags: MetaTags{
-				Image:       img,
-				Title:       "Blazium Engine - " + title,
-				Description: description,
-				Url:         "/games/" + gameName,
-			},
-			ArticleData: ArticleData{
-				Title: title,
-				Image: content, // Recycling Image for the content string
-			},
-		}
-
-		serveTemplate(w, "blog_article", data)
-	}).Methods("GET")
-
 	// Serve blog.tmpl on the path "/blog"
 	r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "https://www.indiedb.com/engines/blazium-engine/articles")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	}).Methods("GET")
 
+	// Serve games.tmpl on the path "/games"
+	r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "games", nil)
+	}).Methods("GET")
+
+	// Serve a game page on the path "/games/{gameName}"
+	r.HandleFunc("/games/{gameName}", GamesHandler).Methods("GET")
+
 	r.HandleFunc("/blog-dev", BlogHandler).Methods("GET")
 
 	// Serve blog_article.tmpl on the path "/blog/article"
 	r.HandleFunc("/blog/article/{type}/{id}", BlogArticleHandler).Methods("GET")
+
+	// Serve changelog.tmpl on the path "/changelog"
+	r.HandleFunc("/changelog", ChangelogHandler).Methods("GET")
 
 	// // Serve snippets.tmpl on the path "/snippets"
 	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
