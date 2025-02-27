@@ -1131,7 +1131,7 @@ i.align:before {
   #download-options {
     display: flex;
     flex-direction: column;
-    gap: var(--margin-xxl);
+    gap: 3em;
     font: var(--p-big);
     min-height: 24em;
 
@@ -1178,12 +1178,8 @@ i.align:before {
         gap: var(--margin-xs);
       }
 
-      p,
-      a {
-        font: var(--p-big);
-      }
-
       p {
+        font: var(--p-big);
         margin-bottom: var(--margin-xs);
       }
     }

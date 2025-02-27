@@ -559,7 +559,7 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	serveTemplate(w, "changelog-article", content)
 }
 
-func ShaFileHandler(w http.ResponseWriter, r *http.Request) {
+func EditorFilesShaHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	shaType := vars["shaType"]
 
@@ -611,7 +611,56 @@ func ShaFileHandler(w http.ResponseWriter, r *http.Request) {
 		content += sha + "  " + data.FileName + "\n"
 	}
 
-	w.Header().Set("Content-Type", "application/text")
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Write([]byte(content))
+}
+
+func TemplatesFilesShaHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	shaType := vars["shaType"]
+
+	if shaType != "512" && shaType != "256" {
+		http.Error(w, "Invalid sha type", http.StatusBadRequest)
+		return
+	}
+
+	buildType := vars["buildType"]
+	version := vars["version"]
+
+	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/templates.json"
+	resp, err := http.Get(url)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting templates files data: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 404 {
+		http.Error(w, "Invalid buildType or version", http.StatusBadRequest)
+		return
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error reading editor files body: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	var templatesFilesData map[string]struct {
+		FileName string            `json:"filename"`
+		Checksum map[string]string `json:"checksum"`
+	}
+
+	if err := json.Unmarshal(body, &templatesFilesData); err != nil {
+		http.Error(w, fmt.Sprintf("Error reading templates files JSON: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	var content string
+	for _, data := range templatesFilesData {
+		content += data.Checksum[shaType] + "  " + data.FileName + "\n"
+	}
+
+	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Write([]byte(content))
 }
 
@@ -795,8 +844,10 @@ func main() {
 	// Serve download options for the tools download dropdowns
 	r.HandleFunc("/api/download-options/tools", ToolsDownloadOptionsHandler).Methods("GET")
 
-	// Serve editor sha signature as file
-	r.HandleFunc("/api/editor-sha/{buildType}/BlaziumEditor_v{version}.sha{shaType}", ShaFileHandler).Methods("GET")
+	// Serve editor files sha signature as file
+	r.HandleFunc("/api/editor-sha/{buildType}/BlaziumEditor_v{version}.sha{shaType}", EditorFilesShaHandler).Methods("GET")
+	// Serve templates files sha signature as file
+	r.HandleFunc("/api/templates-sha/{buildType}/Blazium_v{version}_export_templates.sha{shaType}", TemplatesFilesShaHandler).Methods("GET")
 
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)

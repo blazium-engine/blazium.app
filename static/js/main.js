@@ -217,7 +217,7 @@ function handleEditorDownload(content) {
       const templates = templatesContainer.querySelector("#templates");
       const templatesMono = templatesContainer.querySelector("#templates-mono");
 
-      const textContent = `${version} ${buildType}`
+      const textContent = `${buildType} ${version}`
 
       templates.href = `https://cdn.blazium.app/${buildType}/${version}/Blazium_v${version}_export_templates.tpz`
       const templatesLabel = templates.querySelector("span");
@@ -228,6 +228,15 @@ function handleEditorDownload(content) {
       const templatesMonoLabel = templatesMono.querySelector("span");
       if (templatesMonoLabel) {
         templatesMonoLabel.textContent = `${textContent} - .NET/C#`;
+      }
+
+      const sha256Button = content.querySelector("#templates-sha256-btn");
+      const sha512Button = content.querySelector("#templates-sha512-btn");
+      if (sha256Button) {
+        sha256Button.href = `/api/templates-sha/${buildType}/Blazium_v${version}_export_templates.sha256`
+      }
+      if (sha512Button) {
+        sha512Button.href = `/api/templates-sha/${buildType}/Blazium_v${version}_export_templates.sha512`
       }
     }
 
