@@ -192,6 +192,8 @@ function handleEditorDownload(content) {
     }
 
     // Update the links dynamically
+    const sha256Button = content.querySelector("#sha256-btn");
+    const sha512Button = content.querySelector("#sha512-btn");
     const changelogButton = content.querySelector("#changelog-btn");
     const templatesContainer = content.querySelector("#export-templates");
     const downloadButton = content.querySelector("#download-btn");
@@ -199,6 +201,13 @@ function handleEditorDownload(content) {
 
     const version = selectedOptions.version;
     const buildType = selectedOptions.buildType;
+
+    if (sha256Button) {
+      sha256Button.href = `/api/editor-sha/${buildType}/BlaziumEditor_v${version}.sha256`
+    }
+    if (sha512Button) {
+      sha512Button.href = `/api/editor-sha/${buildType}/BlaziumEditor_v${version}.sha512`
+    }
 
     if (changelogButton) {
       changelogButton.href = `/changelog?v=${buildType}_${version}`

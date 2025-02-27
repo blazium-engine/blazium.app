@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -275,7 +276,8 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatalf("failed to create request: %v", err)
+		http.Error(w, fmt.Sprintf("Failed to create request for article list: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	client := &http.Client{
@@ -283,13 +285,15 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("failed to make request: %v", err)
+		http.Error(w, fmt.Sprintf("Error making request for article list: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, fmt.Sprintf("Error creating document from article list html: %v", err), http.StatusInternalServerError)
+		return
 	}
 	resp.Body.Close()
 
@@ -340,7 +344,8 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("https://www.indiedb.com/groups/indiedb/%s/%s", articleType, id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatalf("failed to create request: %v", err)
+		http.Error(w, fmt.Sprintf("Failed to create request for article: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	client := &http.Client{
@@ -348,26 +353,30 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("failed to make request: %v", err)
+		http.Error(w, fmt.Sprintf("Error making request for article: %v", err), http.StatusInternalServerError)
+		return
 	}
+	defer resp.Body.Close()
 
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, fmt.Sprintf("Error creating document from article html: %v", err), http.StatusInternalServerError)
+		return
 	}
-	resp.Body.Close()
 
 	article := doc.Find("article #readarticle")
 
 	image, exists := doc.Find("article meta[itemprop=image]").Attr("content")
 	if !exists {
-		log.Fatal("image not found in article")
+		http.Error(w, fmt.Sprintf("Error image not found in article: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	indieDBLink, exists := doc.Find("article meta[itemprop=mainEntityOfPage]").Attr("itemid")
 	if !exists {
-		log.Fatal("indiedb link not found in article")
+		http.Error(w, fmt.Sprintf("Error IndieDB link not found in article: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	title := article.Find("div.title span.heading").Text()
@@ -400,7 +409,8 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 
 	content, err := articleContent.Html()
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, fmt.Sprintf("Error getting article html: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	data := BlogArticle{
@@ -506,7 +516,8 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/changelog.html"
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalf("failed to create request: %v", err)
+		http.Error(w, fmt.Sprintf("Error getting changelog: %v", err), http.StatusInternalServerError)
+		return
 	}
 
 	if resp.StatusCode == 404 {
@@ -516,7 +527,7 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, fmt.Sprintf("Error getting document from changelog html: %v", err), http.StatusInternalServerError)
 	}
 	resp.Body.Close()
 
@@ -529,23 +540,79 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	// Link authors
 	doc.Find("blockquote b").Each(func(i int, author *goquery.Selection) {
 		user := author.Text()
-		author.SetHtml("<a href='https://github.com/" + user + "'>" + user + "</a>")
+		author.SetHtml("<a href='https://github.com/" + user + "' target='_blank'>" + user + "</a>")
 	})
 
 	// Make commit hashes shorter and link them
 	content, err := doc.Html()
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, fmt.Sprintf("Error getting changelog html: %v", err), http.StatusInternalServerError)
 	}
 	re := regexp.MustCompile(`[a-z0-9]{40}`)
 	hashes := re.FindAllString(content, -1)
 	for _, hash := range hashes {
-		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "'>" + hash[:6] + "</a>"
+		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "' target='_blank'>" + hash[:6] + "</a>"
 		rex := regexp.MustCompile(hash)
 		content = rex.ReplaceAllString(content, fixed)
 	}
 
 	serveTemplate(w, "changelog-article", content)
+}
+
+func ShaFileHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	shaType := vars["shaType"]
+
+	if shaType != "512" && shaType != "256" {
+		http.Error(w, "Invalid sha type", http.StatusBadRequest)
+		return
+	}
+
+	buildType := vars["buildType"]
+	version := vars["version"]
+
+	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/editors.json"
+	resp, err := http.Get(url)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting editor files data: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 404 {
+		http.Error(w, "Invalid buildType or version", http.StatusBadRequest)
+		return
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error reading editor files body: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	var editorFilesData []struct {
+		FileName string `json:"filename"`
+		Sha256   string `json:"sha256"`
+		Sha512   string `json:"sha512"`
+	}
+
+	if err := json.Unmarshal(body, &editorFilesData); err != nil {
+		http.Error(w, fmt.Sprintf("Error reading editor files JSON: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	var content string
+	var sha string
+	for _, data := range editorFilesData {
+		if shaType == "512" {
+			sha = data.Sha512
+		} else {
+			sha = data.Sha256
+		}
+		content += sha + "  " + data.FileName + "\n"
+	}
+
+	w.Header().Set("Content-Type", "application/text")
+	w.Write([]byte(content))
 }
 
 func main() {
@@ -581,7 +648,7 @@ func main() {
 	// Redirect "/download" to "/download/prebuilt-binaries"
 	r.HandleFunc("/download", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "/download/prebuilt-binaries")
-		w.WriteHeader(http.StatusTemporaryRedirect)
+		w.WriteHeader(http.StatusSeeOther)
 	}).Methods("GET")
 
 	// Serve the download page handling the different tabs
@@ -727,6 +794,9 @@ func main() {
 	r.HandleFunc("/api/download-options/editor", EditorDownloadOptionsHandler).Methods("GET")
 	// Serve download options for the tools download dropdowns
 	r.HandleFunc("/api/download-options/tools", ToolsDownloadOptionsHandler).Methods("GET")
+
+	// Serve editor sha signature as file
+	r.HandleFunc("/api/editor-sha/{buildType}/BlaziumEditor_v{version}.sha{shaType}", ShaFileHandler).Methods("GET")
 
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)

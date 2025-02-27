@@ -34,12 +34,12 @@
 
   --h1: bold 4rem/1em var(--main-font);
   --h2: bold 3rem/1.2em var(--main-font);
-  --h3: bold 2.25rem/1.6em var(--main-font);
-  --h4: bold 1.5rem/1.6em var(--main-font);
+  --h3: bold 2.25rem/1.3em var(--main-font);
+  --h4: bold 1.5rem/1.3em var(--main-font);
 
   --p-small: normal 0.75rem/2em var(--secondary-font);
-  --p: normal 1rem/1.6em var(--secondary-font);
-  --p-big: normal 1.24rem/1.6em var(--secondary-font);
+  --p: normal 1.1rem/1.4em var(--secondary-font);
+  --p-big: normal 1.25rem/1.6em var(--secondary-font);
 
   --grain: url("/static/assets/grain.webp");
 
@@ -317,6 +317,10 @@ dialog#cookies-notice {
     font: var(--h4);
   }
 
+  h4 {
+    font: var(--p-big);
+  }
+
   .hideOnMobile {
     display: none;
   }
@@ -387,7 +391,7 @@ i.align:before {
   text-decoration: none;
   cursor: pointer;
   background-color: var(--accent-color);
-  padding: var(--margin-xs) var(--margin-m);
+  padding: var(--margin-xs) var(--margin-s);
   border-radius: 16px;
   font: var(--h4);
   color: white;
@@ -923,7 +927,7 @@ i.align:before {
 }
 
 /* Snippets section */
-#snippets {
+/* #snippets {
   display: flex;
   gap: var(--margin-m);
   margin-top: var(--margin-l);
@@ -1087,7 +1091,7 @@ i.align:before {
     background-color: var(--primary-color);
     padding: var(--margin-xs);
   }
-}
+} */
 
 /* Download section */
 #download {
@@ -1147,6 +1151,18 @@ i.align:before {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--margin-m);
+
+      span#secondary-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--margin-xxs);
+
+        span {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--margin-xxs);
+        }
+      }
 
       .code-toolbar {
         --min: calc(90vw - var(--margin-m) - var(--margin-m));
