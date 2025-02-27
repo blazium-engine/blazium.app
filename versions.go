@@ -260,11 +260,6 @@ func updateCache() {
 		return
 	}
 
-	for i, versions := range versionsJson {
-		slices.Reverse(versions)
-		versionsJson[i] = versions
-	}
-
 	editorDownloadOptionsCache = &EditorDownloadOptions{
 		Versions: versionsJson,
 		Options:  fileEditorOptions.Options,
@@ -332,6 +327,10 @@ func getEditorVersions() (map[string][]string, error) {
 			versions[buildType] = append(versions[buildType], version.Version)
 		}
 	}
+	for i, versionList := range versions {
+		slices.Reverse(versionList)
+		versions[i] = versionList
+	}
 	return versions, nil
 }
 
@@ -350,6 +349,10 @@ func getToolsVersions(tools []string) (map[string][]string, error) {
 		for _, version := range versionsData {
 			versions[tool] = append(versions[tool], version.Version)
 		}
+	}
+	for i, versionList := range versions {
+		slices.Reverse(versionList)
+		versions[i] = versionList
 	}
 	return versions, nil
 }
