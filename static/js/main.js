@@ -241,15 +241,18 @@ function handleEditorDownload(content) {
     }
 
     if (downloadButton) {
-      const os = selectedOptions.os.toLowerCase();
+      let os = selectedOptions.os.toLowerCase();
       let arch = "." + selectedOptions.arch.toLowerCase();
       if (os === "windows" && arch.includes("x86")) {
         arch = arch === ".x86_64" ? ".64bit" : ".32bit"
       } else if (os !== "linux") {
         arch = ""
       }
+      if (os === "horizon os") {
+        os = "android.meta"
+      }
 
-      const isMono =  selectedOptions.csharp === "with" ? ".mono" : ""
+      const isMono = selectedOptions.csharp === "with" && !os.startsWith("android") ? ".mono" : ""
 
       const link = `https://cdn.blazium.app/${buildType}/${version}/BlaziumEditor_v${version}_${os}${isMono}${arch}.zip`
       downloadButton.href = link;
