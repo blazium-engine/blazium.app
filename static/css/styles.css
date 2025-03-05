@@ -1115,7 +1115,6 @@ i.align:before {
       color: var(--accent-color);
       border-bottom: 2px solid var(--accent-color);
     }
-
     
     a i {
       min-width: 1.5ch;
