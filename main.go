@@ -288,14 +288,12 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error making request for article list: %v", err), http.StatusInternalServerError)
 		return
 	}
-
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating document from article list html: %v", err), http.StatusInternalServerError)
 		return
 	}
-	resp.Body.Close()
 
 	var articles []ArticleData
 
@@ -356,8 +354,6 @@ func BlogArticleHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error making request for article: %v", err), http.StatusInternalServerError)
 		return
 	}
-	defer resp.Body.Close()
-
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
@@ -519,17 +515,14 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error getting changelog: %v", err), http.StatusInternalServerError)
 		return
 	}
-
 	if resp.StatusCode == 404 {
 		serveTemplate(w, "changelog-article", "<p>No changelog found for the selected version.</p>")
 		return
 	}
-
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting document from changelog html: %v", err), http.StatusInternalServerError)
 	}
-	resp.Body.Close()
 
 	commitsDetails := doc.Find("details:first-of-type").First()
 	commitsDetails.ReplaceWithSelection(commitsDetails.Children())
@@ -671,6 +664,48 @@ func TemplatesFilesShaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(content))
 }
 
+func WhatIsBlaziumHandler(w http.ResponseWriter, r *http.Request) {
+	url := "https://raw.githubusercontent.com/blazium-engine/.github/refs/heads/main/profile/README.md"
+	resp, err := http.Get(url)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting GitHub organization README.md: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error reading GitHub organization README.md response body: %v", err), http.StatusInternalServerError)
+		return
+	}
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(mdToHTML(body))))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting document from README.md html: %v", err), http.StatusInternalServerError)
+	}
+
+	head := doc.Find("h1")
+	head.BeforeHtml("<h1>What is Blazium?</h1>")
+	head.Remove()
+	doc.Find("p:first-of-type").First().Remove()
+	doc.Find("br").Remove()
+
+	content, err := doc.Html()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error getting README.md html: %v", err), http.StatusInternalServerError)
+	}
+	var data struct {
+		MetaTags MetaTags
+		Content  string
+	}
+	data.MetaTags = MetaTags{
+		Title:       "Blazium Engine - What is Blazium?",
+		Description: "A game engine for 2D and 3D, Free and Open-Source, easy to use, there is more but not enough space here",
+		Url:         "/what-is-blazium",
+	}
+	data.Content = content
+
+	serveTemplate(w, "md_article", data)
+}
+
 func main() {
 	// Generate templates from configs
 	if err := GenerateTemplates(); err != nil {
@@ -753,17 +788,6 @@ func main() {
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")
 
-	// Serve what_is_blazium.tmpl on the path "/what-is-blazium"
-	r.HandleFunc("/what-is-blazium", func(w http.ResponseWriter, r *http.Request) {
-		filePath := filepath.Join("data", "articles", "what_is_blazium.md")
-		metaTags := MetaTags{
-			Title:       "Blazium Engine - What is Blazium?",
-			Description: "A game engine for 2D and 3D, Free and Open-Source, easy to use, there is more but not enough space here",
-			Url:         "/what-is-blazium",
-		}
-		serveMarkdown(w, filePath, metaTags)
-	}).Methods("GET")
-
 	// Serve brand_kit.tmpl on the path "/brand-kit"
 	r.HandleFunc("/brand-kit", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "brand_kit", nil)
@@ -789,6 +813,9 @@ func main() {
 	r.HandleFunc("/games", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "games", nil)
 	}).Methods("GET")
+
+	// Serve GitHub org readme on the path "/what-is-blazium"
+	r.HandleFunc("/what-is-blazium", WhatIsBlaziumHandler).Methods("GET")
 
 	// Serve a game page on the path "/games/{gameName}"
 	r.HandleFunc("/games/{gameName}", GamesHandler).Methods("GET")
