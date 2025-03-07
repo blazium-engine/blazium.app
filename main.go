@@ -531,14 +531,21 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	resp.Body.Close()
 
-	mainDetails := doc.Find("details:first-of-type").First()
-	mainDetails.ReplaceWithSelection(mainDetails.Children())
+	commitsDetails := doc.Find("details:first-of-type").First()
+	commitsDetails.ReplaceWithSelection(commitsDetails.Children())
 	doc.Find("summary:first-of-type").First().Remove()
 	doc.Find("h2").First().Remove()
 	doc.Find("details:first-of-type").First().BeforeHtml("<h3>Commits</h3>")
+	authors := doc.Find("blockquote b")
+
+	contributorsDetails := doc.Find("details:last-of-type").Last()
+	contributorsDetails.Find("summary:first-of-type").First().Remove()
+	contributorsDetails.BeforeHtml("<h3>Contributors</h3>")
+	authors = authors.AddSelection(contributorsDetails.Find("b"))
+	contributorsDetails.ReplaceWithSelection(contributorsDetails.Children())
 
 	// Link authors
-	doc.Find("blockquote b").Each(func(i int, author *goquery.Selection) {
+	authors.Each(func(i int, author *goquery.Selection) {
 		user := author.Text()
 		author.SetHtml("<a href='https://github.com/" + user + "' target='_blank'>" + user + "</a>")
 	})
