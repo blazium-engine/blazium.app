@@ -14,6 +14,13 @@
         "buttonText": "See on GitHub"
     },
     {
+        "name": "Export Blazium Game GitHub action",
+        "description": "Actions to build Blazium game for all platforms.",
+        "link": "https://github.com/blazium-engine/export-blazium-game",
+        "image": "blazium_cli.webp",
+        "buttonText": "See on GitHub"
+    },
+    {
         "name": "Setup Blazium CLI GitHub action",
         "description": "Setup Blazium CLI in you GitHub CI/CD to get the engine, templates or tools.",
         "link": "https://github.com/blazium-engine/setup-blazium-cli",
