@@ -310,8 +310,9 @@ func updateCache() {
 		Timestamp:            time.Now().Format(time.DateTime),
 		EditorFilesDownloads: editorFilesDownloads,
 	}
-	// Clean the memory
-	clear(editorFilesDownloads)
+	// Clean the memory then allocate
+	editorFilesDownloads = nil
+	editorFilesDownloads = make(EditorFilesDownloads)
 }
 
 // startCacheUpdater starts a ticker to update the cache every 30 minutes
