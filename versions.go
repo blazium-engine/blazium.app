@@ -307,7 +307,7 @@ func updateCache() {
 
 	// Update editor file analytics
 	editorFilesAnalyticsCache = &EditorFilesAnalytics{
-		Timestamp:            time.Now().Format(time.DateTime),
+		Timestamp:            time.Now().UTC().Format(time.DateTime),
 		EditorFilesDownloads: editorFilesDownloads,
 	}
 	// Clean the memory then allocate
