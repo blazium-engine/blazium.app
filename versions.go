@@ -57,10 +57,19 @@ type ToolsDownloadOptions struct {
 	Os       []string            `json:"os"`
 }
 
+type EditorFilesDownloads map[string]map[string]map[string]int
+type EditorFilesAnalytics struct {
+	Timestamp            string
+	EditorFilesDownloads EditorFilesDownloads
+}
+
 var (
+	cacheMutex                 sync.RWMutex
 	editorDownloadOptionsCache *EditorDownloadOptions
 	toolsDownloadOptionsCache  *ToolsDownloadOptions
-	cacheMutex                 sync.RWMutex
+	editorFilesAnalyticsCache  *EditorFilesAnalytics
+
+	editorFilesDownloads EditorFilesDownloads
 )
 
 func fetchCerebroTools(toolType string, osType string) ([]ToolData, error) {
@@ -295,6 +304,14 @@ func updateCache() {
 		Names:    fileToolsOptions.Names,
 		Os:       fileToolsOptions.Os,
 	}
+
+	// Update editor file analytics
+	editorFilesAnalyticsCache = &EditorFilesAnalytics{
+		Timestamp:            time.Now().Format(time.DateTime),
+		EditorFilesDownloads: editorFilesDownloads,
+	}
+	// Clean the memory
+	clear(editorFilesDownloads)
 }
 
 // startCacheUpdater starts a ticker to update the cache every 30 minutes

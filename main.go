@@ -161,28 +161,35 @@ func VersionDataHandler(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, versions)
 }
 
-// EditorDownloadOptionsHandler serves the cached editor download options.
-func EditorDownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
+// DownloadOptionsHandler serves the cached editor or tools download options.
+func DownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	what := vars["what"]
+
+	if what != "editor" && what != "tools" {
+		http.Error(w, "editor or tools", http.StatusBadRequest)
+		return
+	}
+
 	cacheMutex.RLock()
 	defer cacheMutex.RUnlock()
 
-	if editorDownloadOptionsCache == nil {
-		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
+	if what == "editor" {
+		if editorDownloadOptionsCache == nil {
+			http.Error(w, "Editor download options cache not available", http.StatusInternalServerError)
+			return
+		}
+		serveJSON(w, editorDownloadOptionsCache)
 		return
 	}
-	serveJSON(w, editorDownloadOptionsCache)
-}
-
-// ToolsDownloadOptionsHandler serves the cached tools download options.
-func ToolsDownloadOptionsHandler(w http.ResponseWriter, r *http.Request) {
-	cacheMutex.RLock()
-	defer cacheMutex.RUnlock()
-
-	if toolsDownloadOptionsCache == nil {
-		http.Error(w, "Cache not available", http.StatusServiceUnavailable)
+	if what == "tools" {
+		if toolsDownloadOptionsCache == nil {
+			http.Error(w, "Tools download options cache not available", http.StatusInternalServerError)
+			return
+		}
+		serveJSON(w, toolsDownloadOptionsCache)
 		return
 	}
-	serveJSON(w, toolsDownloadOptionsCache)
 }
 
 func handleFetchCerebroTools(w http.ResponseWriter, r *http.Request) {
@@ -706,6 +713,31 @@ func WhatIsBlaziumHandler(w http.ResponseWriter, r *http.Request) {
 	serveTemplate(w, "md_article", data)
 }
 
+func EditorDownloadHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	buildType := vars["buildType"]
+	version := vars["version"]
+	fileName := vars["fileName"]
+
+	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/" + fileName
+	w.Header().Set("Location", url)
+	w.WriteHeader(http.StatusSeeOther)
+
+	if r.Method == "GET" {
+		if editorFilesDownloads[buildType] == nil {
+			editorFilesDownloads[buildType] = make(map[string]map[string]int)
+		}
+		if editorFilesDownloads[buildType][version] == nil {
+			editorFilesDownloads[buildType][version] = make(map[string]int)
+		}
+		if editorFilesDownloads[buildType][version][fileName] == 0 {
+			editorFilesDownloads[buildType][version][fileName] = 1
+		} else {
+			editorFilesDownloads[buildType][version][fileName] += 1
+		}
+	}
+}
+
 func main() {
 	// Generate templates from configs
 	if err := GenerateTemplates(); err != nil {
@@ -854,10 +886,15 @@ func main() {
 		serveJSON(w, response)
 	})
 
-	// Serve all static files from the "static" directory
-	staticFileDirectory := http.Dir("./static")
-	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
-	r.PathPrefix("/static/").Handler(staticFileHandler)
+	// Serve editor files download analytics
+	r.HandleFunc("/api/analytics/editor", func(w http.ResponseWriter, r *http.Request) {
+		cacheMutex.RLock()
+		defer cacheMutex.RUnlock()
+		serveJSON(w, map[string]any{
+			"timestamp":            editorFilesAnalyticsCache.Timestamp,
+			"editorFilesDownloads": editorFilesAnalyticsCache.EditorFilesDownloads,
+		})
+	}).Methods("GET")
 
 	// API endpoint for /api/mirrorlist/{version}.json
 	// Format: 0.1.0.nightly.mono
@@ -873,21 +910,30 @@ func main() {
 	r.HandleFunc("/api/tools/{toolType}/{osType}", handleFetchCerebroTools).Methods("GET")
 	r.HandleFunc("/api/tools/{toolType}/{osType}/{toolVersion}", handleFetchCerebroToolData).Methods("GET")
 
-	// Serve download options for the editor download dropdowns
-	r.HandleFunc("/api/download-options/editor", EditorDownloadOptionsHandler).Methods("GET")
-	// Serve download options for the tools download dropdowns
-	r.HandleFunc("/api/download-options/tools", ToolsDownloadOptionsHandler).Methods("GET")
+	// Keep track of download numbers and redirect to cdn for editor downloads
+	r.HandleFunc("/api/download/editor/{buildType}/{version}/{fileName}", EditorDownloadHandler).Methods("HEAD", "GET")
+
+	// Serve download options for the editor and tools download dropdowns
+	r.HandleFunc("/api/download-options/{what}", DownloadOptionsHandler).Methods("GET")
 
 	// Serve editor files sha signature as file
 	r.HandleFunc("/api/editor-sha/{buildType}/BlaziumEditor_v{version}.sha{shaType}", EditorFilesShaHandler).Methods("GET")
 	// Serve templates files sha signature as file
 	r.HandleFunc("/api/templates-sha/{buildType}/Blazium_v{version}_export_templates.sha{shaType}", TemplatesFilesShaHandler).Methods("GET")
 
+	// Serve all static files from the "static" directory
+	staticFileDirectory := http.Dir("./static")
+	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
+	r.PathPrefix("/static/").Handler(staticFileHandler)
+
 	embedHandler := embedMiddleware(r)
 	corsHandler := enableCORS(embedHandler)
 
 	// Start the background cache updater
 	go startCacheUpdater()
+
+	// Allocate memory for analytics
+	editorFilesDownloads = make(EditorFilesDownloads)
 
 	// Start the server
 	fmt.Println("Starting server on :8080")
