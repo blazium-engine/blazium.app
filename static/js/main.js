@@ -245,8 +245,6 @@ function handleEditorDownload(content) {
       let arch = "." + selectedOptions.arch.toLowerCase();
       if (os === "windows" && arch.includes("x86")) {
         arch = arch === ".x86_64" ? ".64bit" : ".32bit"
-      } else if (os !== "linux") {
-        arch = ""
       }
       if (os === "horizon os") {
         os = "android.meta"
