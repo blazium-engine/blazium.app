@@ -219,12 +219,12 @@ function handleEditorDownload(content) {
 
       const textContent = `${buildType} ${version}`
 
-      templates.href = `https://cdn.blazium.app/${buildType}/${version}/Blazium_v${version}_export_templates.tpz`
+      templates.href = `/api/download/editor/${buildType}/${version}/Blazium_v${version}_export_templates.tpz`
       const templatesLabel = templates.querySelector("span");
       if (templatesLabel) {
         templatesLabel.textContent = textContent;
       }
-      templatesMono.href = `https://cdn.blazium.app/${buildType}/${version}/Blazium_v${version}_mono_export_templates.tpz`
+      templatesMono.href = `/api/download/editor/${buildType}/${version}/Blazium_v${version}_mono_export_templates.tpz`
       const templatesMonoLabel = templatesMono.querySelector("span");
       if (templatesMonoLabel) {
         templatesMonoLabel.textContent = `${textContent} - .NET/C#`;
@@ -418,11 +418,8 @@ function handleEditorDownload(content) {
         event.preventDefault();
 
         const href = element.getAttribute("href");
-        let url = href
-        if (elementId === "download-btn") {
-          const s = href.split("/").reverse();
-          url = `https://cdn.blazium.app/${s[2]}/${s[1]}/${s[0]}`;
-        }
+        const s = href.split("/").reverse();
+        const url = `https://cdn.blazium.app/${s[2]}/${s[1]}/${s[0]}`;
         try {
           const response = await fetch(url, { method: "HEAD"});
           if (response.status === 404) {

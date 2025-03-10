@@ -905,7 +905,7 @@ func main() {
 	r.HandleFunc("/api/tools/{toolType}/{osType}", handleFetchCerebroTools).Methods("GET")
 	r.HandleFunc("/api/tools/{toolType}/{osType}/{toolVersion}", handleFetchCerebroToolData).Methods("GET")
 
-	// Keep track of download numbers and redirect to cdn for editor downloads
+	// Keep track of download numbers and redirect to cdn for editor and template files downloads
 	r.HandleFunc("/api/download/editor/{buildType}/{version}/{fileName}", EditorDownloadHandler).Methods("GET")
 
 	// Serve download options for the editor and tools download dropdowns
