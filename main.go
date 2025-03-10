@@ -720,22 +720,17 @@ func EditorDownloadHandler(w http.ResponseWriter, r *http.Request) {
 	fileName := vars["fileName"]
 
 	url := "https://cdn.blazium.app/" + buildType + "/" + version + "/" + fileName
+
+	if editorFilesDownloads[buildType] == nil {
+		editorFilesDownloads[buildType] = make(map[string]map[string]int)
+	}
+	if editorFilesDownloads[buildType][version] == nil {
+		editorFilesDownloads[buildType][version] = make(map[string]int)
+	}
+	editorFilesDownloads[buildType][version][fileName]++
+
 	w.Header().Set("Location", url)
 	w.WriteHeader(http.StatusSeeOther)
-
-	if r.Method == "GET" {
-		if editorFilesDownloads[buildType] == nil {
-			editorFilesDownloads[buildType] = make(map[string]map[string]int)
-		}
-		if editorFilesDownloads[buildType][version] == nil {
-			editorFilesDownloads[buildType][version] = make(map[string]int)
-		}
-		if editorFilesDownloads[buildType][version][fileName] == 0 {
-			editorFilesDownloads[buildType][version][fileName] = 1
-		} else {
-			editorFilesDownloads[buildType][version][fileName] += 1
-		}
-	}
 }
 
 func main() {
@@ -911,7 +906,7 @@ func main() {
 	r.HandleFunc("/api/tools/{toolType}/{osType}/{toolVersion}", handleFetchCerebroToolData).Methods("GET")
 
 	// Keep track of download numbers and redirect to cdn for editor downloads
-	r.HandleFunc("/api/download/editor/{buildType}/{version}/{fileName}", EditorDownloadHandler).Methods("HEAD", "GET")
+	r.HandleFunc("/api/download/editor/{buildType}/{version}/{fileName}", EditorDownloadHandler).Methods("GET")
 
 	// Serve download options for the editor and tools download dropdowns
 	r.HandleFunc("/api/download-options/{what}", DownloadOptionsHandler).Methods("GET")

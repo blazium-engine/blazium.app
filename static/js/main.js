@@ -418,8 +418,13 @@ function handleEditorDownload(content) {
         event.preventDefault();
 
         const href = element.getAttribute("href");
+        let url = href
+        if (elementId === "download-btn") {
+          const s = href.split("/").reverse();
+          url = `https://cdn.blazium.app/${s[2]}/${s[1]}/${s[0]}`;
+        }
         try {
-          const response = await fetch(href, { method: "HEAD"});
+          const response = await fetch(url, { method: "HEAD"});
           if (response.status === 404) {
             alert("The file does not exist (404).");
           } else {
