@@ -805,13 +805,24 @@ func main() {
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")
 
-	// Serve licenses.tmpl on the path "/licenses"
+	// Serve licenses.md on the path "/licenses"
 	r.HandleFunc("/licenses", func(w http.ResponseWriter, r *http.Request) {
 		filePath := filepath.Join("data", "articles", "licenses.md")
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - Licenses",
 			Description: "Blazium Engine and website licenses",
 			Url:         "/licenses",
+		}
+		serveMarkdown(w, filePath, metaTags)
+	}).Methods("GET")
+
+	// Serve blazium_services.md on the path "/dev-tools/blazium-services"
+	r.HandleFunc("/dev-tools/blazium-services", func(w http.ResponseWriter, r *http.Request) {
+		filePath := filepath.Join("data", "articles", "blazium_services.md")
+		metaTags := MetaTags{
+			Title:       "Blazium Engine - Blazium Services",
+			Description: "A suite of services designed to simplify game development with aspects such as multiplayer, authentication and others",
+			Url:         "/dev-tools/blaizum-services",
 		}
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")

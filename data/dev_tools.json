@@ -1,5 +1,12 @@
 [
     {
+        "name": "Blazium Services",
+        "description": "A suite of services designed to simplify game development with aspects such as multiplayer, authentication and others.",
+        "link": "/dev-tools/blazium-services",
+        "image": "blazium_cli.webp",
+        "buttonText": "Read more about Blazium Services"
+    },
+    {
         "name": "Blazium CLI",
         "description": "Download Blazium and export templates from your terminal.",
         "link": "/dev-tools/download?tool=cli",
