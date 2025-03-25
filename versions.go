@@ -317,7 +317,7 @@ func updateCache() {
 
 // startCacheUpdater starts a ticker to update the cache every 30 minutes
 func startCacheUpdater() {
-	ticker := time.NewTicker(3 * time.Minute)
+	ticker := time.NewTicker(30 * time.Minute)
 	defer ticker.Stop()
 
 	// Update the cache initially
@@ -334,9 +334,14 @@ func getEditorVersions() (map[string][]string, error) {
 	versions := make(map[string][]string)
 	buildTypes := []string{"nightly", "pre-release", "release"}
 
+	var versionsData []VersionPayload
+	var err error
 	for _, buildType := range buildTypes {
-		// versionsData, err := localEditorVersions(buildType)
-		versionsData, err := fetchCerebroVersionData(buildType)
+		if os.Args[1] == "--local" {
+			versionsData, err = localEditorVersions(buildType)
+		} else {
+			versionsData, err = fetchCerebroVersionData(buildType)
+		}
 		if err != nil {
 			log.Printf("Error loading editor versions: %v", err)
 			return map[string][]string{}, nil
@@ -357,9 +362,14 @@ func getEditorVersions() (map[string][]string, error) {
 func getToolsVersions(tools []string) (map[string][]string, error) {
 	versions := make(map[string][]string)
 
+	var versionsData []ToolData
+	var err error
 	for _, tool := range tools {
-		// versionsData, err := localToolsVersions(tool, "windows")
-		versionsData, err := fetchCerebroTools(tool, "windows")
+		if os.Args[1] == "--local" {
+			versionsData, err = localToolsVersions(tool, "windows")
+		} else {
+			versionsData, err = fetchCerebroTools(tool, "windows")
+		}
 		if err != nil {
 			log.Printf("Error loading tool versions: %v", err)
 			return map[string][]string{}, nil

@@ -1,0 +1,24 @@
+{{define "features-cards"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "features-cards-godot44"{{"}}"}}
+{{- template "gen-cards" (dict "cards" . "link" "godot44")}}
+{{"{{"}}end{{"}}"}}
+{{"{{"}}define "features-cards-modules"{{"}}"}}
+{{- template "gen-cards" (dict "cards" . "link" "modules")}}
+{{"{{"}}end{{"}}"}}
+{{"{{"}}define "features-cards-blazium-sdk"{{"}}"}}
+{{- template "gen-cards" (dict "cards" . "link" "blazium-sdk")}}
+{{"{{"}}end{{"}}"}}
+{{- end}}
+
+{{define "gen-cards"}}
+  {{- $link := .link}}
+  {{- range .cards}}
+    {{- if eq .Link $link}}
+  <div class="card">
+    <h4>{{toHTML .Name}}</h4>
+    <p>{{toHTML .Description}}</p>
+  </div>
+    {{- end}}
+  {{- end}}
+{{- end}}

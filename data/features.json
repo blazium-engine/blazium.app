@@ -1,0 +1,102 @@
+[
+    {
+        "name": "Taken from Godot 4.4",
+        "description": "We've carefully cherry-picked several features and bug fixes from Godot 4.4 that maintain full compatibility with Godot 4.3 projects. This means you can start using Blazium right away, without any changes to your project, while benefiting from select enhancements from 4.4. Following are some of the key features.",
+        "link": "godot44"
+    },
+    {
+        "name": "Jolt physics",
+        "description": "The Jolt extension has been used as the de facto physics engine by many Godot developers since its inception in late 2022, so it only made sense to integrate it into the engine directly.",
+        "link": "godot44"
+    },
+    {
+        "name": "Embedded game window",
+        "description": "Modify your game from within the editor while it is running or paused. Click on elements within the scene and move the camera, allowing you to explore your game worlds in ways not possible before. <b>Note:</b> this only works on Linux, Windows, and Android for now.",
+        "link": "godot44"
+    },
+    {
+        "name": "Android editor support for XR devices",
+        "description": "Because the editor itself is a project made with the engine, it can be made available in more unconventional places. Currently supported on Meta Quest 3, Quest 3S, and Quest Pro.",
+        "link": "godot44"
+    },
+    {
+        "name": "3D physics interpolation",
+        "description": "By decoupling physics ticks and display frame rates, physics interpolation creates additional frames between the last physics position and the current one. This reduces jitter and creates a smoother appearance, especially on displays with a high refresh rate.",
+        "link": "godot44"
+    },
+    {
+        "name": "Universal UID support",
+        "description": "All imported files will have an UID, making the editor more resistant to changes in your filesystem organization, and therefore more suitable to larger projects.",
+        "link": "godot44"
+    },
+    {
+        "name": "<code>@export_tool_button</code> annotation",
+        "description": "You can create buttons in the inspector from <code>@tool</code> scripts.",
+        "link": "godot44"
+    },
+    {
+        "name": "Custom colors for collision shapes",
+        "description": "Collision shapes now have <code>debug_color</code> and <code>debug_fill</code> properties for you to customize in the editor. If “Visible Collision Shapes” is enabled in the debug menu, you can even change these at runtime.",
+        "link": "godot44"
+    },
+    {
+        "name": "Vertex shading",
+        "description": "A new shading option for materials, which can be turned on from within existing material nodes or force enabled on all materials via the project settings.",
+        "link": "godot44"
+    },
+    {
+        "name": "Emission shapes for 3D particle systems",
+        "description": "You can rely on a visualization of the 3D particle systems you are placing in your scene, instead of having to guess based on the emission shape’s properties alone.",
+        "link": "godot44"
+    },
+    {
+        "name": "Camera3D preview",
+        "description": "Enjoy a preview of its capture directly in the inspector, without having to open another viewport or switching back and forth anymore.",
+        "link": "godot44"
+    },
+    {
+        "name": "GDSript tooltips",
+        "description": "Hovering over functions, variables, classes, etc. in the GDScript editor will greet you with a tooltip pop-up containing further information from the integrated documentation.",
+        "link": "godot44"
+    },
+    {
+        "name": "SQLite resource",
+        "description": "Easly import and use an SQLite database with dedicated nodes.",
+        "link": "modules"
+    },
+    {
+        "name": "GodotSteam integration",
+        "description": "Thanks to the <a href='https://godotsteam.com' target='_blank'>GodotSteam</a> module, Blazium comes with an implemetation of the Steamworks SDK, allowing you to easly use it without extra work.",
+        "link": "modules"
+    },
+    {
+        "name": "Blazium Services",
+        "description": "Out-of-the-box integration with our suite of services designed to simplify game development with aspects such as multiplayer, authentication, etc. which are designed to be scalable, lightweight and work on all platforms. <a href='/dev-tools/blazium-services'>Click here to know more</a>",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Discord applications",
+        "description": "Use the <code>DiscordEmbededAppClient</code> node to interface with Discord easing the creation of Activities.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Youtube Playables",
+        "description": "Use the <code>YoutubePlayablesClient</code> to publish your game to YouTube.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "POGR analytics",
+        "description": "Ease of use of pogr's analitycs service.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Dotenv files support",
+        "description": "If you want to deploy your game and have secrets loaded into it on the server side, you can now create a .env file and have it load from next to the executable.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Better CSV support",
+        "description": "Go beyond translations and import arbitrary CSV files",
+        "link": "blazium-sdk"
+    }
+]

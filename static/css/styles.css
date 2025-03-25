@@ -43,7 +43,7 @@
 
   --grain: url("/static/assets/grain.webp");
 
-  --page-width: 90rem
+  --page-width: 95rem
 }
 
 * {
@@ -503,7 +503,7 @@ i.align:before {
   overflow-y: auto;
   transform-origin: top;
   background-color: var(--primary-color);
-  max-height: 4lh;
+  max-height: 6lh;
   border: 1px solid var(--secondary-color);
   border-radius: 4px;
   box-sizing: border-box;
@@ -543,7 +543,23 @@ i.align:before {
   }
 }
 
-.card {
+.card:not(:has(img)) {
+  all: unset;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--secondary-color);
+  max-width: 90vw;
+  padding: var(--margin-m);
+  background: var(--primary-color);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--margin-xxl);
+}
+
+.card:has(img) {
   all: unset;
   cursor: pointer;
   position: relative;
@@ -583,7 +599,7 @@ i.align:before {
   }
 }
 
-.card:hover {
+.card:has(img):hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   border-color: var(--accent-color);
@@ -593,7 +609,7 @@ i.align:before {
   }
 }
 
-.card:has(a) {
+.card:has(img):has(a) {
   cursor: default;
 }
 
@@ -601,7 +617,7 @@ i.align:before {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: var(--margin-s);
-  margin-top: var(--margin-l);
+  margin-block: var(--margin-l);
 }
 
 .card-grid-container.fill {
@@ -612,10 +628,13 @@ i.align:before {
 }
 
 .head-section {
+  margin-bottom: var(--margin-l);
+
   p {
     font: var(--p-big);
     margin-top: var(--margin-l);
   }
+
   h2 {
     margin-top: var(--margin-l);
   }
@@ -840,6 +859,15 @@ i.align:before {
 }
 
 #changelog {
+  #loading-indicator {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    pointer-events: none;
+    background-color: var(--t-primary-color);
+    font: var(--p-big);
+  }
+
   div#content {
     display: flex;
     gap: var(--margin-xxl);
@@ -1267,4 +1295,11 @@ i.align:before {
   .color-card.dark-gray {
     background-color: #404040;
   }
+}
+
+#features-list-button {
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+  margin-top: var(--margin-xxl);
 }

@@ -17,7 +17,6 @@
     <h1>Blazium changelog</h1>
     <div id="content">
       <aside>
-        <i id="loading-indicator" class="htmx-indicator">Loading...</i>
         <form id="version-filter"
             action="/changelog" method="get"
             hx-target="#changelog-article"
@@ -72,6 +71,7 @@
         </form>
         </details>
       </aside>
+      <i id="loading-indicator" class="htmx-indicator">Loading...</i>
       <section id="changelog-article">
         <div hx-get="/changelog"
             hx-trigger="load"

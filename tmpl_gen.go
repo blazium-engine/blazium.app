@@ -38,7 +38,7 @@ func mdToHTML(md []byte) []byte {
 
 // loadTemplates parses all templates in the basePath folder, including subfolders.
 func loadTemplates(basePath string) error {
-	// Define functions to be used in templates
+	// functions to be used in templates
 	funcMap := template.FuncMap{
 		// Creates a key:value pair from the arguments
 		"dict": func(values ...any) map[string]any {
@@ -51,7 +51,7 @@ func loadTemplates(basePath string) error {
 		// Creates a sequence of numbers, needed for loops in templates
 		"seq": func(n int) []int {
 			numbers := make([]int, n)
-			for i := 0; i < n; i++ {
+			for i := range n {
 				numbers[i] = i + 1
 			}
 			return numbers
@@ -75,6 +75,9 @@ func loadTemplates(basePath string) error {
 
 	// Use ParseGlob to parse all .tmpl files in the basePath directories
 	pattern := filepath.Join(basePath, "*/*.tmpl")
+	if strings.Contains(basePath, "generators") {
+		pattern = filepath.Join(basePath, "*.tmpl")
+	}
 	_, err := templates.ParseGlob(pattern)
 	if err != nil {
 		return fmt.Errorf("error parsing templates: %w", err)
@@ -97,13 +100,7 @@ func prepareDirectory(path string) error {
 }
 
 // Helper function to parse and execute a template
-func executeTemplate(templatePath string, templateName string, outputPath string, data any) error {
-	// Parse the template
-	tmpl, err := template.ParseFiles(templatePath)
-	if err != nil {
-		return fmt.Errorf("error parsing template '%s': %w", templatePath, err)
-	}
-
+func executeTemplate(templateName string, outputPath string, data any) error {
 	// Create the output file
 	outputFile, err := os.Create(outputPath)
 	if err != nil {
@@ -112,7 +109,7 @@ func executeTemplate(templatePath string, templateName string, outputPath string
 	defer outputFile.Close()
 
 	// Execute the template with the provided data
-	if err := tmpl.ExecuteTemplate(outputFile, templateName, data); err != nil {
+	if err := templates.ExecuteTemplate(outputFile, templateName, data); err != nil {
 		return fmt.Errorf("error executing template '%s': %w", templateName, err)
 	}
 
@@ -122,7 +119,6 @@ func executeTemplate(templatePath string, templateName string, outputPath string
 // Generate templates for dev tools cards
 func GenerateRoadMaps() error {
 	filePath := filepath.Join("data", "roadmaps.json")
-	templatePath := filepath.Join("templates", "generators", "roadmaps.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "roadmaps.tmpl")
 
 	type Embed struct {
@@ -142,7 +138,7 @@ func GenerateRoadMaps() error {
 		return fmt.Errorf("error loading roadmaps data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "roadmaps", outputPath, roadMaps); err != nil {
+	if err := executeTemplate("roadmaps", outputPath, roadMaps); err != nil {
 		return fmt.Errorf("error generating roadmaps: %w", err)
 	}
 	return nil
@@ -151,7 +147,6 @@ func GenerateRoadMaps() error {
 // Generate templates for dev tools cards
 func GenerateGames() error {
 	filePath := filepath.Join("data", "games.json")
-	templatePath := filepath.Join("templates", "generators", "games_cards.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "games_cards.tmpl")
 
 	var games []Card
@@ -160,7 +155,7 @@ func GenerateGames() error {
 		return fmt.Errorf("error loading games data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "games-cards", outputPath, games); err != nil {
+	if err := executeTemplate("games-cards", outputPath, games); err != nil {
 		return fmt.Errorf("error generating games cards: %w", err)
 	}
 	return nil
@@ -169,7 +164,6 @@ func GenerateGames() error {
 // Generate templates for dev tools cards
 func GenerateDevTools() error {
 	filePath := filepath.Join("data", "dev_tools.json")
-	templatePath := filepath.Join("templates", "generators", "dev_tools_cards.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "dev_tools_cards.tmpl")
 
 	var devTools []Card
@@ -178,8 +172,25 @@ func GenerateDevTools() error {
 		return fmt.Errorf("error loading dev tools data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "dev-tools-cards", outputPath, devTools); err != nil {
+	if err := executeTemplate("dev-tools-cards", outputPath, devTools); err != nil {
 		return fmt.Errorf("error generating dev tools cards: %w", err)
+	}
+	return nil
+}
+
+// Generate templates for features cards
+func GenerateFeatures() error {
+	filePath := filepath.Join("data", "features.json")
+	outputPath := filepath.Join("templates", "runtime", "generated", "features_cards.tmpl")
+
+	var features []Card
+
+	if err := readJSONFile(filePath, &features); err != nil {
+		return fmt.Errorf("error loading features data: %w", err)
+	}
+
+	if err := executeTemplate("features-cards", outputPath, features); err != nil {
+		return fmt.Errorf("error generating features cards: %w", err)
 	}
 	return nil
 }
@@ -187,20 +198,15 @@ func GenerateDevTools() error {
 // Generate templates for digital store buttons
 func GenerateDigitalStores() error {
 	filePath := filepath.Join("data", "digital_stores.json")
-	templatePath := filepath.Join("templates", "generators", "digital_store_buttons.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "digital_store_buttons.tmpl")
 
-	var digitalStores []struct {
-		Name  string `json:"name"`
-		Link  string `json:"link"`
-		Image string `json:"image"`
-	}
+	var digitalStores []Card
 
 	if err := readJSONFile(filePath, &digitalStores); err != nil {
 		return fmt.Errorf("error loading digital stores data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "digital-store-buttons", outputPath, digitalStores); err != nil {
+	if err := executeTemplate("digital-store-buttons", outputPath, digitalStores); err != nil {
 		return fmt.Errorf("error generating digital store buttons: %w", err)
 	}
 	return nil
@@ -209,7 +215,6 @@ func GenerateDigitalStores() error {
 // Generate links templates
 func GenerateLinks() error {
 	filePath := filepath.Join("data", "links.json")
-	templatePath := filepath.Join("templates", "generators", "links.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "links.tmpl")
 
 	var links map[string]string
@@ -218,7 +223,7 @@ func GenerateLinks() error {
 		return fmt.Errorf("error loading links data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "links", outputPath, links); err != nil {
+	if err := executeTemplate("links", outputPath, links); err != nil {
 		return fmt.Errorf("error generating links: %w", err)
 	}
 	return nil
@@ -227,7 +232,6 @@ func GenerateLinks() error {
 // Generate release card template
 func GenerateReleaseCard() error {
 	filePath := filepath.Join("data", "release_card.json")
-	templatePath := filepath.Join("templates", "generators", "release_card.tmpl")
 	outputPath := filepath.Join("templates", "runtime", "generated", "release_card.tmpl")
 
 	var card Card
@@ -236,7 +240,7 @@ func GenerateReleaseCard() error {
 		return fmt.Errorf("error loading release card data: %w", err)
 	}
 
-	if err := executeTemplate(templatePath, "release-card", outputPath, card); err != nil {
+	if err := executeTemplate("release-card", outputPath, card); err != nil {
 		return fmt.Errorf("error generating release card: %w", err)
 	}
 	return nil
@@ -248,6 +252,10 @@ func GenerateTemplates() error {
 	if err := prepareDirectory(dir); err != nil {
 		return fmt.Errorf("error preparing generated templates directory: %w", err)
 	}
+	// Load generator templates
+	if err := loadTemplates("./templates/generators"); err != nil {
+		return fmt.Errorf("error loading generators templates: %w", err)
+	}
 
 	if err := GenerateRoadMaps(); err != nil {
 		return err
@@ -256,6 +264,9 @@ func GenerateTemplates() error {
 		return err
 	}
 	if err := GenerateDevTools(); err != nil {
+		return err
+	}
+	if err := GenerateFeatures(); err != nil {
 		return err
 	}
 	if err := GenerateDigitalStores(); err != nil {

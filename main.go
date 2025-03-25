@@ -783,6 +783,11 @@ func main() {
 		serveTemplate(w, "roadmaps", nil)
 	}).Methods("GET")
 
+	// Serve features.tmpl on the path "/features"
+	r.HandleFunc("/features", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "features", nil)
+	}).Methods("GET")
+
 	// Serve privacy_policy.md on the path "/privacy-policy"
 	r.HandleFunc("/privacy-policy", func(w http.ResponseWriter, r *http.Request) {
 		filePath := filepath.Join("data", "articles", "privacy_policy.md")

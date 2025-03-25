@@ -1,7 +1,7 @@
 [
     {
         "name": "Blazium Services",
-        "description": "A suite of services designed to simplify game development with aspects such as multiplayer, authentication and others.",
+        "description": "A suite of services designed to simplify game development with aspects such as multiplayer, authentication, etc.",
         "link": "/dev-tools/blazium-services",
         "image": "blazium_cli.webp",
         "buttonText": "Read more about Blazium Services"
