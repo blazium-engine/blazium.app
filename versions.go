@@ -317,7 +317,7 @@ func updateCache() {
 
 // startCacheUpdater starts a ticker to update the cache every 30 minutes
 func startCacheUpdater() {
-	ticker := time.NewTicker(30 * time.Minute)
+	ticker := time.NewTicker(3 * time.Minute)
 	defer ticker.Stop()
 
 	// Update the cache initially
