@@ -1,5 +1,45 @@
 [
     {
+        "name": "Blazium Services",
+        "description": "Seamlessly integrate with our suite of services using dedicated nodes for each, streamlining game development with features like multiplayer, authentication, and more. Designed to be scalable, lightweight, and compatible across all platforms. <a href='/dev-tools/blazium-services'>Click here to learn more</a>.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Discord applications",
+        "description": "Use the <code>DiscordEmbededAppClient</code> node to seamlessly interface with Discord, simplifying the creation of Activities.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Youtube Playables",
+        "description": "With the new <code>YoutubePlayablesClient</code> node, you can easily use the YouTube Playables SDK.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "POGR integration",
+        "description": "Use the <code>POGRClient</code> node to seamlessly interface with the POGR API, making interactions more efficient and straightforward. <a href='https://pogr.gg/developer' target='_blank'>What is POGR</a>.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Dotenv files support",
+        "description": "If you want to deploy your game and have secrets loaded into it on the server side, you can now create a .env file and have it load from next to the executable with the new <code>ENV</code> singleton.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "Better CSV support",
+        "description": "Go beyond translations and import any CSV file with expanded import options.",
+        "link": "blazium-sdk"
+    },
+    {
+        "name": "SQLite database resource",
+        "description": "Easily import and utilize an SQLite database with dedicated nodes, powered by <a href='https://github.com/V-Sekai/godot-vsk-sqlite' target='_blank'>VseKai's SQLite module</a>.",
+        "link": "modules"
+    },
+    {
+        "name": "GodotSteam integration",
+        "description": "Thanks to the <a href='https://godotsteam.com' target='_blank'>GodotSteam</a> module, Blazium includes a built-in implementation of the Steamworks SDK, allowing you to use it effortlessly with no extra work.",
+        "link": "modules"
+    },
+    {
         "name": "Taken from Godot 4.4",
         "description": "We've carefully cherry-picked several features and bug fixes from Godot 4.4 that maintain full compatibility with Godot 4.3 projects. This means you can start using Blazium right away, without any changes to your project, while benefiting from select enhancements from 4.4. Following are some of the key features.",
         "link": "godot44"
@@ -58,45 +98,5 @@
         "name": "GDSript tooltips",
         "description": "Hovering over functions, variables, classes, etc. in the GDScript editor will greet you with a tooltip pop-up containing further information from the integrated documentation.",
         "link": "godot44"
-    },
-    {
-        "name": "SQLite resource",
-        "description": "Easly import and use an SQLite database with dedicated nodes.",
-        "link": "modules"
-    },
-    {
-        "name": "GodotSteam integration",
-        "description": "Thanks to the <a href='https://godotsteam.com' target='_blank'>GodotSteam</a> module, Blazium comes with an implemetation of the Steamworks SDK, allowing you to easly use it without extra work.",
-        "link": "modules"
-    },
-    {
-        "name": "Blazium Services",
-        "description": "Out-of-the-box integration with our suite of services designed to simplify game development with aspects such as multiplayer, authentication, etc. which are designed to be scalable, lightweight and work on all platforms. <a href='/dev-tools/blazium-services'>Click here to know more</a>",
-        "link": "blazium-sdk"
-    },
-    {
-        "name": "Discord applications",
-        "description": "Use the <code>DiscordEmbededAppClient</code> node to interface with Discord easing the creation of Activities.",
-        "link": "blazium-sdk"
-    },
-    {
-        "name": "Youtube Playables",
-        "description": "Use the <code>YoutubePlayablesClient</code> to publish your game to YouTube.",
-        "link": "blazium-sdk"
-    },
-    {
-        "name": "POGR analytics",
-        "description": "Ease of use of pogr's analitycs service.",
-        "link": "blazium-sdk"
-    },
-    {
-        "name": "Dotenv files support",
-        "description": "If you want to deploy your game and have secrets loaded into it on the server side, you can now create a .env file and have it load from next to the executable.",
-        "link": "blazium-sdk"
-    },
-    {
-        "name": "Better CSV support",
-        "description": "Go beyond translations and import arbitrary CSV files",
-        "link": "blazium-sdk"
     }
 ]

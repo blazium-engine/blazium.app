@@ -1,7 +1,7 @@
 # Blazium Services
 
 Blazium Services are a suite of services designed to simplify game development
-with aspects such as multiplayer, authentication, etc. Whether you’re a solo
+with aspects such as multiplayer, authentication, and more. Whether you’re a solo
 developer working on a casual multiplayer game or a studio planning an ambitious
 MMO, Blazium offers scalable, lightweight services to meet your needs.
 They are designed to integrate inside the Blazium engine and work on
