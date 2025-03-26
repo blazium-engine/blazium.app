@@ -337,8 +337,10 @@ func getEditorVersions() (map[string][]string, error) {
 	var versionsData []VersionPayload
 	var err error
 	for _, buildType := range buildTypes {
-		if os.Args[1] == "--local" {
-			versionsData, err = localEditorVersions(buildType)
+		if len(os.Args) > 1 {
+			if os.Args[1] == "--local" {
+				versionsData, err = localEditorVersions(buildType)
+			}
 		} else {
 			versionsData, err = fetchCerebroVersionData(buildType)
 		}
@@ -365,8 +367,10 @@ func getToolsVersions(tools []string) (map[string][]string, error) {
 	var versionsData []ToolData
 	var err error
 	for _, tool := range tools {
-		if os.Args[1] == "--local" {
-			versionsData, err = localToolsVersions(tool, "windows")
+		if len(os.Args) > 1 {
+			if os.Args[1] == "--local" {
+				versionsData, err = localToolsVersions(tool, "windows")
+			}
 		} else {
 			versionsData, err = fetchCerebroTools(tool, "windows")
 		}
