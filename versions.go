@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"time"
 )
@@ -376,6 +377,10 @@ func getToolsVersions(tools []string) (map[string][]string, error) {
 		for _, version := range versionsData {
 			versions[tool] = append(versions[tool], version.Version)
 		}
+	}
+	for i, versionList := range versions {
+		slices.Reverse(versionList)
+		versions[i] = versionList
 	}
 	return versions, nil
 }
