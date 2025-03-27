@@ -5,7 +5,8 @@
             "Linux",
             "MacOS",
             "Android",
-            "Horizon OS"
+            "Horizon OS",
+            "Web"
         ],
         "arch": [
             "x86_64",

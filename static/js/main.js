@@ -184,7 +184,7 @@ function handleEditorDownload(content) {
     // Hide arch and mono dropdown when android
     const androidToHide = content.querySelector("#no-android");
     if (androidToHide) {
-      if (selectedOptions.os === "Android" || selectedOptions.os === "Horizon OS") {
+      if (["Android", "Horizon OS", "Web"].some((os) => selectedOptions.os === os)) {
         androidToHide.style.display = "none";
       } else if (androidToHide.style.display === "none") {
         androidToHide.style.display = "inline-block";
@@ -357,15 +357,7 @@ function handleEditorDownload(content) {
   };
 
   const getAvailableBuilds = () => {
-    let buildTypes = ["release", "prerelease","nightly"];
-    for (let i = 0; i < buildTypes.length; i++) {
-      const type = buildTypes[i];
-      if (type in versions) {
-        if (versions[type].length !== 0) {
-          return buildTypes.slice(i)
-        }
-      }
-    }
+    return ["release", "pre-release", "nightly"].filter((t) => t in versions);
   }
 
   // Fetch and populate dropdowns
@@ -387,6 +379,7 @@ function handleEditorDownload(content) {
       // Populate menu items
       let optionList;
       const availableBuilds = getAvailableBuilds();
+      
       if (dropdown.id === "version") {
         optionList = versions[availableBuilds[0]];
       } else if (dropdown.id === "buildType") {
