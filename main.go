@@ -559,7 +559,7 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`[a-z0-9]{40}`)
 	hashes := re.FindAllString(content, -1)
 	for _, hash := range hashes {
-		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "' target='_blank'>" + hash[:6] + "</a>"
+		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "' target='_blank'>" + hash[:7] + "</a>"
 		rex := regexp.MustCompile(hash)
 		content = rex.ReplaceAllString(content, fixed)
 	}

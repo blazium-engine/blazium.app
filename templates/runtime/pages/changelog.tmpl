@@ -15,6 +15,7 @@
   {{$selectedVersion := printf "%s_%s" .SelectedType .SelectedVersion}}
   <section id="changelog" class="article md">
     <h1>Blazium changelog</h1>
+    <i id="loading-indicator" class="htmx-indicator">Loading...</i>
     <div id="content">
       <aside>
         <form id="version-filter"
@@ -71,7 +72,6 @@
         </form>
         </details>
       </aside>
-      <i id="loading-indicator" class="htmx-indicator">Loading...</i>
       <section id="changelog-article">
         <div hx-get="/changelog"
             hx-trigger="load"

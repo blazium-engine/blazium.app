@@ -129,9 +129,12 @@ a:hover {
 main {
   padding-top: 10em;
   width: var(--page-width);
-  max-width: 90%;
   min-height: 32vh;
   margin-inline: auto;
+  max-width: 90%;
+  @media(max-width: 640px) {
+    max-width: 98%;
+  }
 }
 
 header {
@@ -859,6 +862,9 @@ i.align:before {
 }
 
 #changelog {
+  min-height: 75vh;
+  word-wrap: break-word;
+
   #loading-indicator {
     position: absolute;
     left: 50%;
