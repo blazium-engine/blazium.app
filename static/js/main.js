@@ -140,26 +140,25 @@ function handleEditorDownload(content) {
   var options;
   var commands;
 
+  const selectDropdownItem = (dropdownId, itemId) => {
+    const dropdown = content.querySelector("#"+dropdownId);
+    const dropdownButton = dropdown.querySelector(".dropdown-button");
+    const dropdownMenu = dropdown.querySelector(".dropdown-menu");
+    const itemToSelect = dropdownMenu.querySelector("#"+itemId);
+
+    selectItem(itemToSelect, dropdownButton, dropdownMenu, false);
+  }
+
   // Helper function to set links and text after selecting an option
   const setLinks = (firstLoad=false) => {
     if (firstLoad) {
       const {os, arch} = getSystemInfo();
 
       if (os) {
-        const osDropdown = content.querySelector("#os");
-        const osDropdownButton = osDropdown.querySelector(".dropdown-button");
-        const osDropdownMenu = osDropdown.querySelector(".dropdown-menu");
-        const itemToSelect = osDropdownMenu.querySelector("#"+os);
-
-        selectItem(itemToSelect, osDropdownButton, osDropdownMenu, false);
+        selectDropdownItem("os", os);
       }
       if (arch) {
-        const archDropdown = content.querySelector("#arch");
-        const archDropdownButton = archDropdown.querySelector(".dropdown-button");
-        const archDropdownMenu = archDropdown.querySelector(".dropdown-menu");
-        const itemToSelect = archDropdownMenu.querySelector("#"+arch);
-
-        selectItem(itemToSelect, archDropdownButton, archDropdownMenu, false);
+        selectDropdownItem("arch", arch);
       }
     }
 
@@ -170,6 +169,21 @@ function handleEditorDownload(content) {
       const selectedItem = dropdown.querySelector(".selected");
       selectedOptions[dropdown.id] = selectedItem.textContent;
     });
+
+    // Hide arm builds for linux since we don't build them
+    const arm32 = content.querySelector("#ARM32");
+    const arm64 = content.querySelector("#ARM64");
+    if (selectedOptions.os === "Linux") {
+      arm32.style.display = "none";
+      arm64.style.display = "none";
+
+      if (selectedOptions.arch.startsWith("ARM")) {
+        selectDropdownItem("arch", "x86_64");
+      }
+    } else {
+      arm32.style.display = "block";
+      arm64.style.display = "block";
+    }
 
     // Hide arch dropdown when macOS
     const macosToHide = content.querySelector("#no-macos");
