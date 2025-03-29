@@ -51,7 +51,7 @@
     },
     {
         "name": "Embedded game window",
-        "description": "Modify your game from within the editor while it is running or paused. Click on elements within the scene and move the camera, allowing you to explore your game worlds in ways not possible before. <b>Note:</b> this only works on Linux, Windows, and Android for now.",
+        "description": "Have you game embeded in the editor seamlessly and interact with the rest of the editor, while still keeping the processes separate in the background.<br><b>Note:</b> this feature is not avaiable for MacOS.",
         "link": "godot44"
     },
     {
