@@ -6,6 +6,7 @@
             "MacOS",
             "Android",
             "Horizon OS",
+            "PICO OS",
             "Web"
         ],
         "arch": [

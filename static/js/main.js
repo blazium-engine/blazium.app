@@ -198,7 +198,7 @@ function handleEditorDownload(content) {
     // Hide arch and mono dropdown when android
     const androidToHide = content.querySelector("#no-android");
     if (androidToHide) {
-      if (["Android", "Horizon OS", "Web"].some((os) => selectedOptions.os === os)) {
+      if (["Android", "Horizon OS", "PICO OS", "Web"].some((os) => selectedOptions.os === os)) {
         androidToHide.style.display = "none";
       } else if (androidToHide.style.display === "none") {
         androidToHide.style.display = "inline-block";
@@ -266,6 +266,9 @@ function handleEditorDownload(content) {
       }
       if (os === "horizon os") {
         os = "android.meta"
+      }
+      if (os === "pico os") {
+        os = "android.pico"
       }
 
       const isMono = selectedOptions.csharp === "with" && !os.startsWith("android") ? ".mono" : ""
