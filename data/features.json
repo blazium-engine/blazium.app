@@ -98,5 +98,20 @@
         "name": "GDSript tooltips",
         "description": "Hovering over functions, variables, classes, etc. in the GDScript editor will greet you with a tooltip pop-up containing further information from the integrated documentation.",
         "link": "godot44"
+    },
+    {
+        "name": "AgX tone mapping",
+        "description": "AgX gives a movie-esque quality to renders and is capable of handling very bright scenes better than our other available options.",
+        "link": "godot44"
+    },
+    {
+        "name": "<code>LookAtModifier3D</code>",
+        "description": "This new node type is used to handle 3D model procedural animation. It is specialized to make a character model look in the target direction.",
+        "link": "godot44"
+    },
+    {
+        "name": "<code>SpringBoneSimulator3D</code>",
+        "description": "Bones can now have physics applied to them, enabling dynamic, real-time jiggle effects that enhance both realism and responsiveness in animations.",
+        "link": "godot44"
     }
 ]
