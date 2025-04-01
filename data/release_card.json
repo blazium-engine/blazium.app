@@ -1,7 +1,7 @@
 {
-    "name": "Currently only nightly releases",
-    "description": "We are still in the process of testing and polishing for the first release. In the meantime, you can help by testing the latest nightly build available on the download page.",
-    "link": "/download",
-    "image": "/static/assets/homepage/pattern.webp",
-    "buttonText": "Get the latest nightly"
+    "name": "Blaizum Release 0.4.90",
+    "description": "We’re happy to announce the first release of Blazium Engine! It’s been a heck of a journey and we’d like to give a very big thank you to our community and sponsors for helping our team get this far. We couldn’t have done it without your passion and efforts",
+    "link": "https://www.indiedb.com/engines/blazium-engine/news/blazium-release-0490",
+    "image": "/static/assets/release_card.jpg",
+    "buttonText": "Read the article"
 }
