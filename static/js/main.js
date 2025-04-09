@@ -198,7 +198,7 @@ function handleEditorDownload(content) {
     // Hide arch and mono dropdown when android
     const androidToHide = content.querySelector("#no-android");
     if (androidToHide) {
-      if (["Android", "Horizon OS", "PICO OS", "Web"].some((os) => selectedOptions.os === os)) {
+      if (["Android", "Horizon OS", "PICO OS", "Web"].includes(selectedOptions.os)) {
         androidToHide.style.display = "none";
       } else if (androidToHide.style.display === "none") {
         androidToHide.style.display = "inline-block";
