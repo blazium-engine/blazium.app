@@ -6,7 +6,7 @@ Uses [discord-inviter](https://github.com/blazium-engine/discord-inviter) to red
 
 ## Tip for local development
 
-Use the `--local` flag to connect to `blazium.app` to not do failing requests to cerbero.
+Use the `--local` flag to do requests to `blazium.app` instead of cerbero for editor and tools data.
 ```
 go run . --local
 ```
