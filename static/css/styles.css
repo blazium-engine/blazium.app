@@ -107,7 +107,7 @@ h4 {
 
 p {
   font: var(--p);
-  color: var(--gray-70);
+  color: var(--gray-80);
   a {
     text-decoration: underline;
     font: inherit;
@@ -118,7 +118,7 @@ p {
 a {
   text-decoration: none;
   font: var(--p-big);
-  color: var(--gray-70);
+  color: var(--gray-80);
   transition: color 0.3s ease;
 }
 
@@ -486,7 +486,7 @@ i.align:before {
   }
 
   i {
-    color: var(--gray-70);
+    color: var(--gray-80);
   }
 }
 
