@@ -858,6 +858,45 @@ i.align:before {
   }
 }
 
+#team-members {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.team-member {
+  display: flex;
+  gap: 1em;
+  align-items: start;
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 1em;
+  flex-direction: column;
+
+  p {
+    margin-bottom: 0;
+  }
+
+  section {
+    display: flex;
+    align-items: start;
+    gap: 1em;
+
+    img {
+      aspect-ratio: 1;
+      max-width: 64px !important;
+      min-width: 64px !important;
+    }
+
+    h3 {
+      font: var(--h4);
+    }
+
+    p {
+      border-bottom: 1px solid var(--secondary-color);
+    }
+  }
+}
+
 #changelog {
   min-height: 75vh;
   word-wrap: break-word;

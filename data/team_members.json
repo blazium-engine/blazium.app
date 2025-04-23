@@ -1,0 +1,65 @@
+[
+    {
+        "name": "Randolph William Aarseth II (Bioblaze Payne)",
+        "description": "Hi, I am an Autodidactic Polymath Polyglot Programmer, I specialize in DRIPP Methodology of Software development, and focus mainly on having fun, making games, and just coding. Over 20+ Years of Programming experience.",
+        "link": "Back-end, Games and Engine dev",
+        "image": "https://github.com/Bioblaze.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Dragos Daian (Ughuuu)",
+        "description": "Hi. I am a Software Engineer who found out about Godot some years ago. I was interested in making a squishy cooking 2d game, but kept finding things missing in the Engine (physics, cloud services, etc.), so I started working on box2D and rapier physics plugins, 2d softbody plugin, etc.",
+        "link": "Back-end, Games and Engine dev",
+        "image": "https://github.com/Ughuuu.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Jonathan (jss2a98aj)",
+        "description": "Hello, I am a gameplay programmer and technical artist with a background in software engineering. Before Blazium was created, I had been maintaining a private fork of Godot for around two years, and had been using Godot for more than five. 3D rendering and C# script support are areas I pay special attention to, as one of the larger projects I work on relies on both.",
+        "link": "Games and Engine dev",
+        "image": "https://github.com/jss2a98aj.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Nicholas Santos Shiden (sshiiden)",
+        "description": "I'm a partly self-taught programmer who's been working with Godot since 2019.",
+        "link": "Website, Games and Engine dev",
+        "image": "https://github.com/sshiiden.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Mounir Tohami (WhalesState)",
+        "description": "Self-taught (3D Artist, Pixel Artist, and Indie Game Developer).",
+        "link": "Games and Engine dev",
+        "image": "https://github.com/WhalesState.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Propolys (rokai08)",
+        "description": "Hi, Indie Game Developer, worked in game engines like Unity, but came over to the better one.",
+        "link": "Games dev",
+        "image": "https://github.com/rokai08.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "TamashiiDev (PrzyDev)",
+        "description": "Game Developer for over 10+ years, self taught. Self-taught web developer with stack being the MERN stack mainly. Has led communities with over 5000+ people. Worked on and with the Godot Engine and GDScript for over 3+ years. Currently developing the next indie Monster Taming RPG Game sensation: “Waga Tamashii: My Very Soul”.",
+        "link": "Moderator and Game dev",
+        "image": "https://github.com/PrzyDev.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Subu (inmorgan)",
+        "description": "Author in game development. When not working on my next game project, I enjoy gaming with friends and writing on the next chapter of my mythos.",
+        "link": "Moderator",
+        "image": "https://github.com/inmorgan.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Luke (Flare199)",
+        "description": "Hi, I am a Cyber Security & Software Developer who works as a Network Automation Engineer. I enjoy reading and playing video games, especially space games. I have multiple years of programming experience and some time spent in game development. Hope to see you all around feel free to say hello!",
+        "link": "Moderator",
+        "image": "https://github.com/flare199.png?size=128",
+        "buttonText": ""
+    }
+]

@@ -1,0 +1,16 @@
+{{/* Template for the meet the team page */}}
+
+{{define "meet_the_team"}}
+  {{template "main-head" (dict
+    "Title" "Blazium Engine - Meet The Team"
+    "Description" "Mantainers of the Blazium engine"
+    "Url" "/meet-the-team"
+  )}}
+  <section class="article md">
+    <h1>Meet the team</h1>
+    <section id="team-members">
+      {{template "team-members"}}
+    </section>
+  </section>
+  {{template "main-foot"}}
+{{end}}

@@ -1,0 +1,17 @@
+{{define "team-members"}}
+{{- "{{"}}/* THIS FILE WAS GENERATED CHANGES WILL BE OVERWRITTEN */{{"}}"}}
+{{"{{"}}define "team-members"{{"}}"}}
+{{- range .}}
+  <div class="team-member">
+    <section>
+      <img src="{{.Image}}" alt="{{.Name}} avatar">
+      <div>
+        <h3>{{.Name}}</h3>
+        <p>{{.Link}}</p>
+      </div>
+    </section>
+    <p>{{.Description}}</p>
+  </div>
+{{- end}}
+{{"{{"}}end{{"}}"}}
+{{- end}}
