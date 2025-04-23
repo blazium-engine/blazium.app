@@ -870,6 +870,7 @@ i.align:before {
   align-items: start;
   border-bottom: 2px solid var(--secondary-color);
   padding-bottom: 1em;
+  margin-top: 2em;
   flex-direction: column;
 
   p {
