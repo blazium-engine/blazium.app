@@ -827,7 +827,7 @@ func main() {
 		metaTags := MetaTags{
 			Title:       "Blazium Engine - Blazium Services",
 			Description: "A suite of services designed to simplify game development with aspects such as multiplayer, authentication and others",
-			Url:         "/dev-tools/blaizum-services",
+			Url:         "/dev-tools/blazium-services",
 		}
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")
