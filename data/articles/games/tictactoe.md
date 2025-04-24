@@ -1,5 +1,5 @@
 <div style="display:none"><!-- Meta Data -->
-<meta name="cover-image" content="/static/assets/games/tictactoe/discord2.png">
+<meta name="cover-image" content="/static/assets/games/tictactoe/cover.png">
 <meta name="short-description" content="A multiplayer lobby-based TicTacToe game made in the Blazium Engine.">
 <meta name="game-name" content="Project TicTacToe">
 </div>
