@@ -2,6 +2,16 @@
     {
         "name": "Project Hangman",
         "link": "hangman",
-        "image": "cover.png"
+        "image": "discord2.png"
+    },
+    {
+        "name": "Project TicTacToe",
+        "link": "tictactoe",
+        "image": "discord2.png"
+    },
+    {
+        "name": "Project Quiz",
+        "link": "quiz",
+        "image": "discord2.png"
     }
 ]
