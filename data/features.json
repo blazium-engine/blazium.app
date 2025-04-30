@@ -30,6 +30,11 @@
         "link": "blazium-sdk"
     },
     {
+        "name": "Six-Way Lighting Material",
+        "description": "A Volumetric Lighting Shader using a Six-Directional Lighting Model (SDLM) designed to simulate realistic light interaction within semi-transparent volumes like cloud, smoke, fog and fire. <a href='https://github.com/blazium-engine/blazium/pull/441' target='_blank'>Read more.</a>",
+        "link": "modules"
+    },
+    {
         "name": "SQLite database resource",
         "description": "Easily import and utilize an SQLite database with dedicated nodes, powered by <a href='https://github.com/V-Sekai/godot-vsk-sqlite' target='_blank'>VseKai's SQLite module</a>.",
         "link": "modules"
