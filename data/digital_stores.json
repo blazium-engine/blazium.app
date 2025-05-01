@@ -1,10 +1,5 @@
 [
     {
-        "name": "Steam",
-        "link": "https://store.steampowered.com/app/3293450",
-        "image": "Steam.svg"
-    },
-    {
         "name": "Itch.io",
         "link": "https://blaziumengine.itch.io/blazium-engine",
         "image": "Itch_io.svg"
