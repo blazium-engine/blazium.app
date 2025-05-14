@@ -100,7 +100,7 @@
         "link": "godot44"
     },
     {
-        "name": "GDSript tooltips",
+        "name": "GDScript tooltips",
         "description": "Hovering over functions, variables, classes, etc. in the GDScript editor will greet you with a tooltip pop-up containing further information from the integrated documentation.",
         "link": "godot44"
     },
