@@ -52,4 +52,4 @@ Here is the list of currently available services with a link to their documentat
 - [Lobby](https://docs.blazium.app/classes/class_lobbyclient.html)
 - [Scripted Lobby](https://docs.blazium.app/classes/class_authoritativelobbyclient.html)
 - [Login](https://docs.blazium.app/classes/class_loginclient.html)
-- [Master Server](https://docs.blazium.app/classes/class_loginclient.htmlMasterServer)
+- [Master Server](https://docs.blazium.app/classes/class_masterserverclient.html)
