@@ -36,7 +36,7 @@
     },
     {
         "name": "SQLite database resource",
-        "description": "Easily import and utilize an SQLite database with dedicated nodes, powered by <a href='https://github.com/V-Sekai/godot-vsk-sqlite' target='_blank'>VseKai's SQLite module</a>.",
+        "description": "Easily import and utilize an SQLite database with dedicated nodes, powered by <a href='https://github.com/V-Sekai/godot-vsk-sqlite' target='_blank'>V-Sekai's SQLite module</a>.",
         "link": "modules"
     },
     {
