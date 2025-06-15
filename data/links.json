@@ -1,11 +1,10 @@
 {
-    "discord": "https://chat.blazium.app",
+    "discord": "https://discord.com/invite/vmJMrGAcb2",
     "twitter": "https://x.com/BlaziumEngine",
     "youtube": "https://youtube.com/@blazium",
     "blazium-git": "https://github.com/blazium-engine",
     "website-git": "https://github.com/blazium-engine/blazium.app",
     "blazium-assets": "https://github.com/blazium-engine/blazium-assets",
     "docs": "https://docs.blazium.app",
-    "web-editor": "https://editor.blazium.app",
-    "feed": "https://rss.indiedb.com/engines/blazium-engine/articles/feed/rss.xml"
+    "web-editor": "https://editor.blazium.app"
 }

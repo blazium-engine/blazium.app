@@ -5,8 +5,8 @@
 </div>
 
 <div>
-<a href="https://quiz.blazium.app" target="_blank">
-<img src="/static/assets/buttons/web_button.webp" class="indiedb"></a>
+<!-- <a href="https://quiz.blazium.app" target="_blank">
+<img src="/static/assets/buttons/web_button.webp" class="indiedb"></a> -->
 <a href="https://blaziumengine.itch.io/project-quiz" target="_blank">
 <img src="/static/assets/buttons/itchio_button.webp" class="indiedb"></a>
 <a href="https://discord.com/oauth2/authorize?client_id=1356627698448859238" target="_blank">
