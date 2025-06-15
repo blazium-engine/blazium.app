@@ -877,26 +877,6 @@ func main() {
 	// Serve changelog.tmpl on the path "/changelog"
 	r.HandleFunc("/changelog", ChangelogHandler).Methods("GET")
 
-	// // Serve snippets.tmpl on the path "/snippets"
-	// r.HandleFunc("/snippets", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "snippets", nil)
-	// }).Methods("GET")
-
-	// // Serve snippet_article.tmpl on the path "/snippets/article"
-	// r.HandleFunc("/snippets/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "snippet_article", nil)
-	// }).Methods("GET")
-
-	// Serve showcase.tmpl on the path "/showcase"
-	// r.HandleFunc("/showcase", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "showcase", nil)
-	// }).Methods("GET")
-
-	// Serve showcase_article.tmpl on the path "/showcase/article"
-	// r.HandleFunc("/showcase/article", func(w http.ResponseWriter, r *http.Request) {
-	// 	serveTemplate(w, "showcase_article", nil)
-	// }).Methods("GET")
-
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		// Define a health check response structure
 		response := map[string]string{"status": "healthy"}
