@@ -181,7 +181,7 @@ function handleEditorDownload(content) {
         selectDropdownItem("arch", "x86_64");
       }
     } else {
-      arm32.style.display = "block";
+      arm32.style.display = "none";
       arm64.style.display = "block";
     }
 
