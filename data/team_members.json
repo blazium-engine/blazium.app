@@ -1,12 +1,5 @@
 [
     {
-        "name": "Dragos Daian (Ughuuu)",
-        "description": "Hi. I am a Software Engineer who found out about Godot some years ago. I was interested in making a squishy cooking 2d game, but kept finding things missing in the Engine (physics, cloud services, etc.), so I started working on box2D and rapier physics plugins, 2d softbody plugin, etc.",
-        "link": "Back-end, Games and Engine dev",
-        "image": "https://github.com/Ughuuu.png?size=128",
-        "buttonText": ""
-    },
-    {
         "name": "Randolph William Aarseth II (Bioblaze Payne)",
         "description": "Hi, I am an Autodidactic Polymath Polyglot Programmer, I specialize in DRIPP Methodology of Software development, and focus mainly on having fun, making games, and just coding. Over 20+ Years of Programming experience.",
         "link": "Back-end, Games and Engine dev",
