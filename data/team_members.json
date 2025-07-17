@@ -14,17 +14,10 @@
         "buttonText": ""
     },
     {
-        "name": "Nicholas Santos Shiden (sshiiden)",
-        "description": "I'm a partly self-taught programmer who's been using Godot since 2019.",
-        "link": "Website, Games and Engine dev",
-        "image": "https://github.com/sshiiden.png?size=128",
-        "buttonText": ""
-    },
-    {
-        "name": "Propolys (rokai08)",
-        "description": "Hi, Indie Game Developer, worked in game engines like Unity, but came over to the better one.",
+        "name": "Gaishains (HArryOrno)",
+        "description": "Hi I'm a gameplay and UI programmer. I am new to Godot but have past experience in C++ and Unity. Although fairly new to programming I have spent a lot of time looking at how games work and what makes for a fun experience for the player.",
         "link": "Games dev",
-        "image": "https://github.com/rokai08.png?size=128",
+        "image": "https://github.com/HArryOrno.png?size=128",
         "buttonText": ""
     },
     {
@@ -32,6 +25,13 @@
         "description": "Self-taught (3D Artist, Pixel Artist, and Indie Game Developer).",
         "link": "Games and Engine dev",
         "image": "https://github.com/WhalesState.png?size=128",
+        "buttonText": ""
+    },
+    {
+        "name": "Nicholas Santos Shiden (sshiiden)",
+        "description": "I'm a partly self-taught programmer who's been using Godot since 2019.",
+        "link": "Front-end, Games and Engine dev",
+        "image": "https://github.com/sshiiden.png?size=128",
         "buttonText": ""
     },
     {
