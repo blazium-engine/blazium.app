@@ -3,15 +3,5 @@
         "name": "Project Hangman",
         "link": "hangman",
         "image": "cover.png"
-    },
-    {
-        "name": "Project TicTacToe",
-        "link": "tictactoe",
-        "image": "cover.png"
-    },
-    {
-        "name": "Project Quiz",
-        "link": "quiz",
-        "image": "cover.png"
     }
 ]
