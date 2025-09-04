@@ -832,9 +832,14 @@ func main() {
 		serveMarkdown(w, filePath, metaTags)
 	}).Methods("GET")
 
-	// Serve meet_the_team.md on the path "/meet-the-team"
+	// Serve meet_the_team template on the path "/meet-the-team"
 	r.HandleFunc("/meet-the-team", func(w http.ResponseWriter, r *http.Request) {
 		serveTemplate(w, "meet_the_team", nil)
+	}).Methods("GET")
+
+	// Serve sponsors template on the path "/sponsors"
+	r.HandleFunc("/sponsors", func(w http.ResponseWriter, r *http.Request) {
+		serveTemplate(w, "sponsors_page", nil)
 	}).Methods("GET")
 
 	// Serve brand_kit.tmpl on the path "/brand-kit"

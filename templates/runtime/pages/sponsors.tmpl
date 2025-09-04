@@ -1,0 +1,18 @@
+{{/* Template for the sponsors page */}}
+
+{{define "sponsors_page"}}
+  {{template "main-head" (dict
+    "Title" "Blazium Engine - Sponsors"
+    "Description" "Sponsors of the Blazium project"
+    "Url" "/sponsors"
+  )}}
+  <section class="article md">
+    <h1>Sponsors</h1>
+    <p>The Blazium project is sponsored by:</p>
+    <section id="sponsors">
+      {{template "sponsors"}}
+    </section>
+    <p>If you are interested in a corporate sponsorship, please write to <a href="mailto:business@divine.games">business@divine.games</a>.</p>
+  </section>
+  {{template "main-foot"}}
+{{end}}

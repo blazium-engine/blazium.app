@@ -178,6 +178,23 @@ func GenerateTeamMembers() error {
 	return nil
 }
 
+// Generate templates for sponsors cards
+func GenerateSponsors() error {
+	filePath := filepath.Join("data", "sponsors.json")
+	outputPath := filepath.Join("templates", "runtime", "generated", "sponsors.tmpl")
+
+	var sponsors []Card
+
+	if err := readJSONFile(filePath, &sponsors); err != nil {
+		return fmt.Errorf("error loading sponsors data: %w", err)
+	}
+
+	if err := executeTemplate("sponsors", outputPath, sponsors); err != nil {
+		return fmt.Errorf("error generating sponsors: %w", err)
+	}
+	return nil
+}
+
 // Generate templates for dev tools cards
 func GenerateDevTools() error {
 	filePath := filepath.Join("data", "dev_tools.json")
@@ -278,6 +295,9 @@ func GenerateTemplates() error {
 		return err
 	}
 	if err := GenerateTeamMembers(); err != nil {
+		return err
+	}
+	if err := GenerateSponsors(); err != nil {
 		return err
 	}
 	if err := GenerateGames(); err != nil {
