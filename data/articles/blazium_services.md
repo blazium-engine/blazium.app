@@ -46,10 +46,11 @@ Blazium engine comes out-of-the-box with these services as nodes,
 so that integration is easy and quick, with no manual setup needed.
 We also have a free server on our domain that the nodes connect to automatically,
 so that you can start using our services as soon as you need it.
-
+<!-- 
 ### Services
 Here is the list of currently available services with a link to their documentation.
 - [Lobby](https://docs.blazium.app/classes/class_lobbyclient.html)
 - [Scripted Lobby](https://docs.blazium.app/classes/class_authoritativelobbyclient.html)
 - [Login](https://docs.blazium.app/classes/class_loginclient.html)
 - [Master Server](https://docs.blazium.app/classes/class_masterserverclient.html)
+-->
