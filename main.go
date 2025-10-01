@@ -857,10 +857,16 @@ func main() {
 		serveTemplate(w, "dev_tools_download", nil)
 	}).Methods("GET")
 
-	// Serve blog.tmpl on the path "/blog"
+	// Redirect to IndieDB articles
 	r.HandleFunc("/blog", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "https://www.indiedb.com/engines/blazium-engine/articles")
-		w.WriteHeader(http.StatusTemporaryRedirect)
+		w.WriteHeader(http.StatusPermanentRedirect)
+	}).Methods("GET")
+
+	// Redirect to discord server invite
+	r.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Location", "https://discord.com/invite/vmJMrGAcb2")
+		w.WriteHeader(http.StatusPermanentRedirect)
 	}).Methods("GET")
 
 	// Serve games.tmpl on the path "/games"
