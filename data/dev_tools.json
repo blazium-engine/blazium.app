@@ -16,28 +16,28 @@
     {
         "name": "Docker web build template",
         "description": "Deploy your webgame made with Blazium anywhere on the web.",
-        "link": "https://github.com/blazium-engine/docker-webbuild-template",
+        "link": "https://github.com/blazium-games/docker-webbuild-template",
         "image": "discord_template.webp",
         "buttonText": "See on GitHub"
     },
     {
         "name": "Export Blazium Game GitHub action",
         "description": "Actions to build your Blazium game for all platforms.",
-        "link": "https://github.com/blazium-engine/export-blazium-game",
+        "link": "https://github.com/blazium-games/export-blazium-game",
         "image": "blazium_game_action.webp",
         "buttonText": "See on GitHub"
     },
     {
         "name": "Setup Blazium CLI GitHub action",
         "description": "Setup Blazium CLI in your GitHub CI/CD to get the engine, templates or tools.",
-        "link": "https://github.com/blazium-engine/setup-blazium-cli",
+        "link": "https://github.com/blazium-games/setup-blazium-cli",
         "image": "blazium_cli_action.webp",
         "buttonText": "See on GitHub"
     },
     {
         "name": "Setup Blazium Engine GitHub action",
         "description": "Setup Blazium Engine for your GitHub CI/CD automation.",
-        "link": "https://github.com/blazium-engine/setup-blazium-engine",
+        "link": "https://github.com/blazium-games/setup-blazium-engine",
         "image": "blazium_engine_action.webp",
         "buttonText": "See on GitHub"
     }

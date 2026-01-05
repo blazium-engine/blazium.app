@@ -559,7 +559,7 @@ func ChangelogHandler(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`[a-z0-9]{40}`)
 	hashes := re.FindAllString(content, -1)
 	for _, hash := range hashes {
-		fixed := "<a href='https://github.com/blazium-engine/blazium/commit/" + hash + "' target='_blank'>" + hash[:7] + "</a>"
+		fixed := "<a href='https://github.com/blazium-games/blazium/commit/" + hash + "' target='_blank'>" + hash[:7] + "</a>"
 		rex := regexp.MustCompile(hash)
 		content = rex.ReplaceAllString(content, fixed)
 	}
@@ -673,7 +673,7 @@ func TemplatesFilesShaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func WhatIsBlaziumHandler(w http.ResponseWriter, r *http.Request) {
-	url := "https://raw.githubusercontent.com/blazium-engine/.github/refs/heads/main/profile/README.md"
+	url := "https://raw.githubusercontent.com/blazium-games/.github/refs/heads/main/profile/README.md"
 	resp, err := http.Get(url)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error getting GitHub organization README.md: %v", err), http.StatusInternalServerError)

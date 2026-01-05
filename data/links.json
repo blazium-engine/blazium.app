@@ -1,10 +1,10 @@
 {
     "discord": "https://blazium.app/chat",
-    "twitter": "https://x.com/BlaziumEngine",
+    "twitter": "https://x.com/BlaziumGames",
     "youtube": "https://youtube.com/@blazium",
-    "blazium-git": "https://github.com/blazium-engine",
-    "website-git": "https://github.com/blazium-engine/blazium.app",
-    "blazium-assets": "https://github.com/blazium-engine/blazium-assets",
+    "blazium-git": "https://github.com/blazium-games",
+    "website-git": "https://github.com/blazium-games/blazium.app",
+    "blazium-assets": "https://github.com/blazium-games/blazium-assets",
     "docs": "https://docs.godotengine.org/en/4.4",
     "web-editor": "https://editor.blazium.app"
 }
